@@ -30,10 +30,11 @@ public class QueryExecutorPoolDefinition {
     private final String poolName;
     private final List<ExecutorPoolProperty> executorPoolPropertyList;
 
-    private ExecutorPoolProperty maxPoolSize = null;
-    private ExecutorPoolProperty threadCount = null;
+    private ExecutorPoolProperty maxExecutorPoolSize = null;
+    private ExecutorPoolProperty coreThreadCount = null;
+    private ExecutorPoolProperty maxThreadCount = null;
     private ExecutorPoolProperty threadsReadResults = null;
-    private ExecutorPoolProperty queueSize = null;
+    private ExecutorPoolProperty completionQueueSize = null;
 
     public QueryExecutorPoolDefinition(final String poolName, final List<ExecutorPoolProperty> executorPropertyList) {
         this.poolName = poolName;
@@ -67,37 +68,48 @@ public class QueryExecutorPoolDefinition {
 
             switch (executorPoolProperty.getEnumType()) {
 
-                case MAX_POOL_SIZE:
-                    this.maxPoolSize = this.validateProperty(this.maxPoolSize, executorPoolProperty);
+                case MAX_EXECUTOR_POOL_SIZE:
+                    this.maxExecutorPoolSize = this.validateProperty(this.maxExecutorPoolSize, executorPoolProperty);
                     break;
 
-                case THREAD_COUNT:
-                    this.threadCount = this.validateProperty(this.threadCount, executorPoolProperty);
+                case CORE_THREAD_COUNT:
+                    this.coreThreadCount = this.validateProperty(this.coreThreadCount, executorPoolProperty);
+                    break;
+
+                case MAX_THREAD_COUNT:
+                    this.maxThreadCount = this.validateProperty(this.maxThreadCount, executorPoolProperty);
                     break;
 
                 case THREADS_READ_RESULTS:
                     this.threadsReadResults = this.validateProperty(this.threadsReadResults, executorPoolProperty);
                     break;
 
-                case QUEUE_SIZE:
-                    this.queueSize = this.validateProperty(this.queueSize, executorPoolProperty);
+                case COMPLETION_QUEUE_SIZE:
+                    this.completionQueueSize = this.validateProperty(this.completionQueueSize, executorPoolProperty);
                     break;
             }
         }
     }
 
-    public int getMaxPoolSize() throws HBqlException {
-        if (this.maxPoolSize != null)
-            return this.maxPoolSize.getIntegerValue();
+    public int getMaxExecutorPoolSize() throws HBqlException {
+        if (this.maxExecutorPoolSize != null)
+            return this.maxExecutorPoolSize.getIntegerValue();
         else
-            return QueryExecutorPoolManager.defaultMaxPoolSize;
+            return QueryExecutorPoolManager.defaultMaxExecutorPoolSize;
     }
 
-    public int getThreadCount() throws HBqlException {
-        if (this.threadCount != null)
-            return this.threadCount.getIntegerValue();
+    public int getCoreThreadCount() throws HBqlException {
+        if (this.coreThreadCount != null)
+            return this.coreThreadCount.getIntegerValue();
         else
-            return QueryExecutorPoolManager.defaultThreadCount;
+            return QueryExecutorPoolManager.defaultCoreThreadCount;
+    }
+
+    public int getMaxThreadCount() throws HBqlException {
+        if (this.maxThreadCount != null)
+            return this.maxThreadCount.getIntegerValue();
+        else
+            return QueryExecutorPoolManager.defaultMaxThreadCount;
     }
 
     public boolean getThreadsReadResults() throws HBqlException {
@@ -107,19 +119,20 @@ public class QueryExecutorPoolDefinition {
             return QueryExecutorPoolManager.defaultThreadsReadResults;
     }
 
-    public int getQueueSize() throws HBqlException {
-        if (this.queueSize != null)
-            return this.queueSize.getIntegerValue();
+    public int getCompletionQueueSize() throws HBqlException {
+        if (this.completionQueueSize != null)
+            return this.completionQueueSize.getIntegerValue();
         else
-            return QueryExecutorPoolManager.defaultQueueSize;
+            return QueryExecutorPoolManager.defaultCompletionQueueSize;
     }
 
     public String asString() {
         try {
-            return "MAX_POOL_SIZE : " + this.getMaxPoolSize()
-                   + ", THREAD_COUNT : " + this.getThreadCount()
+            return ", MAX_EXECUTOR_POOL_SIZE : " + this.getMaxExecutorPoolSize()
+                   + ", CORE_THREAD_COUNT : " + this.getCoreThreadCount()
+                   + ", MAX_THREAD_COUNT : " + this.getMaxThreadCount()
                    + ", THREADS_READ_RESULTS : " + this.getThreadsReadResults()
-                   + ", QUEUE_SIZE : " + this.getQueueSize();
+                   + ", COMPLETION_QUEUE_SIZE : " + this.getCompletionQueueSize();
         }
         catch (HBqlException e) {
             return "Invalid expression";

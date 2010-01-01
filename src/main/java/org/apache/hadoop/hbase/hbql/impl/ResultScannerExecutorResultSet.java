@@ -31,7 +31,6 @@ import org.apache.hadoop.hbase.hbql.util.QueueElement;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
-import java.util.concurrent.Callable;
 
 
 public class ResultScannerExecutorResultSet<T> extends HResultSetImpl<T, ResultScanner> {
@@ -40,24 +39,25 @@ public class ResultScannerExecutorResultSet<T> extends HResultSetImpl<T, ResultS
         super(query, executor);
     }
 
-    protected void submitWork() throws HBqlException {
-        final List<RowRequest> rowRequestList = this.getQuery().getRowRequestList();
+    protected void submitWork(final List<RowRequest> rowRequestList) {
         for (final RowRequest rowRequest : rowRequestList) {
-            final Callable<String> job = new Callable<String>() {
-                public String call() throws HBqlException, InterruptedException {
+            final Runnable job = new Runnable() {
+                public void run() {
                     try {
                         final ResultScanner resultScanner = rowRequest.getResultScanner(getSelectStmt().getMapping(),
                                                                                         getWithArgs(),
                                                                                         getHTableWrapper().getHTable());
-                        getExecutor().getCompletionQueue().putElement(resultScanner);
+                        getExecutorWithQueue().putElement(resultScanner);
+                    }
+                    catch (HBqlException e) {
+                        e.printStackTrace();
                     }
                     finally {
-                        getExecutor().getCompletionQueue().markCompletion();
+                        getExecutorWithQueue().putCompletion();
                     }
-                    return "OK";
                 }
             };
-            this.getExecutor().submit(job);
+            this.getExecutorWithQueue().submitWorkToThreadPoolExecutor(job);
         }
     }
 
@@ -67,28 +67,22 @@ public class ResultScannerExecutorResultSet<T> extends HResultSetImpl<T, ResultS
             return new ResultSetIterator<T, ResultScanner>(this) {
 
                 protected boolean moreResultsPending() {
-                    return getExecutor().moreResultsPending(getExecutor().getCompletionQueue().getCompletionCount());
+                    return getExecutorWithQueue().moreResultsPending();
                 }
 
                 protected Iterator<Result> getNextResultIterator() throws HBqlException {
                     final ResultScanner resultScanner;
                     while (true) {
-                        try {
-                            final QueueElement<ResultScanner> queueElement = getExecutor().getCompletionQueue()
-                                    .takeElement();
-                            if (queueElement.isCompleteToken()) {
-                                if (!moreResultsPending()) {
-                                    resultScanner = null;
-                                    break;
-                                }
-                            }
-                            else {
-                                resultScanner = queueElement.getElement();
+                        final QueueElement<ResultScanner> queueElement = getExecutorWithQueue().takeElement();
+                        if (queueElement.isCompleteToken()) {
+                            if (!moreResultsPending()) {
+                                resultScanner = null;
                                 break;
                             }
                         }
-                        catch (InterruptedException e) {
-                            throw new HBqlException(e);
+                        else {
+                            resultScanner = queueElement.getElement();
+                            break;
                         }
                     }
 

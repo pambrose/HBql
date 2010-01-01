@@ -202,10 +202,11 @@ executorPoolPropertyList returns [List<ExecutorPoolProperty> retval]
 
 executorPoolProperty returns [ExecutorPoolProperty retval]
 options {backtrack=true;}	
-	: k=keyMAX_POOL_SIZE COLON v=exprValue		{retval = new ExecutorPoolProperty($k.retval, $v.retval);}
-	| k=keyTHREAD_COUNT COLON v=exprValue		{retval = new ExecutorPoolProperty($k.retval, $v.retval);}
+	: k=keyMAX_EXECUTOR_POOL_SIZE COLON v=exprValue	{retval = new ExecutorPoolProperty($k.retval, $v.retval);}
+	| k=keyCORE_THREAD_COUNT COLON v=exprValue	{retval = new ExecutorPoolProperty($k.retval, $v.retval);}
+	| k=keyMAX_THREAD_COUNT COLON v=exprValue	{retval = new ExecutorPoolProperty($k.retval, $v.retval);}
 	| k=keyTHREADS_READ_RESULTS COLON v=exprValue	{retval = new ExecutorPoolProperty($k.retval, $v.retval);}
-	| k=keyQUEUE_SIZE COLON v=exprValue		{retval = new ExecutorPoolProperty($k.retval, $v.retval);}
+	| k=keyCOMPLETION_QUEUE_SIZE COLON v=exprValue	{retval = new ExecutorPoolProperty($k.retval, $v.retval);}
 	;
 
 familyPropertyList returns [List<FamilyProperty> retval]							
@@ -563,10 +564,11 @@ WS 	: (' ' |'\t' |'\n' |'\r' )+ {skip();};
 
 
 // Any changes in these require a change in the ExecutorPool.Type enums
-keyMAX_POOL_SIZE returns [String retval]           : {isKeyword(input, "MAX_POOL_SIZE")}? id=ID {retval = $id.text;};
-keyQUEUE_SIZE returns [String retval]              : {isKeyword(input, "QUEUE_SIZE")}? id=ID {retval = $id.text;};
-keyTHREAD_COUNT returns [String retval]            : {isKeyword(input, "THREAD_COUNT")}? id=ID {retval = $id.text;};
+keyMAX_EXECUTOR_POOL_SIZE returns [String retval]  : {isKeyword(input, "MAX_EXECUTOR_POOL_SIZE")}? id=ID {retval = $id.text;};
+keyCORE_THREAD_COUNT returns [String retval]       : {isKeyword(input, "CORE_THREAD_COUNT")}? id=ID {retval = $id.text;};
+keyMAX_THREAD_COUNT returns [String retval]        : {isKeyword(input, "MAX_THREAD_COUNT")}? id=ID {retval = $id.text;};
 keyTHREADS_READ_RESULTS returns [String retval]    : {isKeyword(input, "THREADS_READ_RESULTS")}? id=ID {retval = $id.text;};
+keyCOMPLETION_QUEUE_SIZE returns [String retval]   : {isKeyword(input, "COMPLETION_QUEUE_SIZE")}? id=ID {retval = $id.text;};
 
 // Any changes to these require a change in the FamilyProperty.Type enums
 keyBLOCK_CACHE_ENABLED returns [String retval]	   : {isKeyword(input, "BLOCK_CACHE_ENABLED")}? id=ID {retval = $id.text;};

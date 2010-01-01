@@ -47,7 +47,7 @@ import org.apache.hadoop.hbase.hbql.mapping.FamilyMapping;
 import org.apache.hadoop.hbase.hbql.mapping.TableMapping;
 import org.apache.hadoop.hbase.hbql.statement.args.KeyInfo;
 import org.apache.hadoop.hbase.hbql.statement.args.WithArgs;
-import org.apache.hadoop.hbase.hbql.util.ExecutorWithQueue;
+import org.apache.hadoop.hbase.hbql.util.CompletionQueueExecutor;
 import org.apache.hadoop.hbase.hbql.util.Maps;
 import org.apache.hadoop.hbase.hbql.util.PoolableElement;
 import org.apache.hadoop.hbase.hbql.util.Sets;
@@ -280,8 +280,14 @@ public class HConnectionImpl implements HConnection, PoolableElement {
             this.release();
         }
         else {
-            this.closed = true;
-            this.reset();
+            if (!this.isClosed()) {
+                synchronized (this) {
+                    if (!this.isClosed()) {
+                        this.reset();
+                        this.closed = true;
+                    }
+                }
+            }
         }
     }
 
@@ -463,23 +469,23 @@ public class HConnectionImpl implements HConnection, PoolableElement {
     }
 
     // The value returned from this call must be eventually released.
-    public ExecutorWithQueue getExecutorForConnection() throws HBqlException {
+    public CompletionQueueExecutor getExecutorForConnection() throws HBqlException {
         // If Connection is assigned an Executor, then just return it.  Otherwise, get one from the pool
-        final ExecutorWithQueue executorQueue = this.getQueryExecutor() != null
-                                                ? this.getQueryExecutorImpl().getExecutor()
-                                                : this.takeExecutorFromPool();
+        final CompletionQueueExecutor executorQueue = this.getQueryExecutor() != null
+                                                      ? this.getQueryExecutorImpl().getExecutor()
+                                                      : this.takeExecutorFromPool();
         // Reset it prior to handing it out
         executorQueue.reset();
         return executorQueue;
     }
 
-    private ExecutorWithQueue takeExecutorFromPool() throws HBqlException {
+    private CompletionQueueExecutor takeExecutorFromPool() throws HBqlException {
         this.validateExecutorPoolNameExists(this.getQueryExecutorPoolName());
         final QueryExecutorPool pool = QueryExecutorPoolManager.getExecutorPool(this.getQueryExecutorPoolName());
         return pool.take();
     }
 
-    public boolean usesAQueryExecutor() {
+    public boolean usesQueryExecutor() {
         return this.getQueryExecutor() != null || Utils.isValidString(this.getQueryExecutorPoolName());
     }
 

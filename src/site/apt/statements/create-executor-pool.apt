@@ -13,10 +13,11 @@ CREATE QUERY EXECUTOR POOL
 CREATE [QUERY] EXECUTOR POOL pool_name ['(' executorArg [, ...] ')'] [IF bool_expr]
 
 executorArg:
-    MAX_POOL_SIZE ':' int_expr
-    | THREAD_COUNT ':' int_expr
+    MAX_EXECUTOR_POOL_SIZE ':' int_expr
+    | CORE_THREAD_COUNT ':' int_expr
+    | MAX_THREAD_COUNT ':' int_expr
     | THREADS_READ_RESULTS ':' bool_expr
-    | QUEUE_SIZE ':' int_expr
+    | COMPLETION_QUEUE_SIZE ':' int_expr
 
 ---------------------------
 
@@ -28,8 +29,9 @@ executorArg:
     from a QueryExecutorPool using HConncetion.setQueryExecutorPoolName(), or a dedicated QueryExecutor can
     be assigned using HConncetion.setQueryExecutor().
 
-    * A QueryExecutorPool has a maximum size (MAX_POOL_SIZE parameter)
-    and each QueryExecutor in the pool has a fixed number of threads (THREAD_COUNT parameter).
+    * A QueryExecutorPool has a maximum size (MAX_EXECUTOR_POOL_SIZE parameter)
+    and each QueryExecutor in the pool has a core number of threads (CORE_THREAD_COUNT parameter) and a 
+    maximum number of threads (MAX_THREAD_COUNT parameter).
 
     * A QueryExecutor pool request will block if all elements in the pool have been already taken.
     A pooled QueryExecutor is released back to a pool when the ResultSet is closed (when the ResultSet
@@ -48,7 +50,7 @@ executorArg:
     values across Scan results will be merged in the ResultSet iterator.
     There is no guarantee on the order in which keys and key ranges are returned.
 
-    * The QUEUE_SIZE parameter determines the size of the queue used by the threads to return data
+    * The COMPLETION_QUEUE_SIZE parameter is the size of the queue used by the threads to return data
     to the main thread.  If THREADS_READ_RESULTS is false, then it is the size of the queue used to
     return ResultScanner objects and if THREADS_READ_RESULTS is true, it is the the size of the queue used to
     Result objects.

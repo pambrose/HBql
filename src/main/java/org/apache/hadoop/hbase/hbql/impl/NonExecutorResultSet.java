@@ -28,6 +28,7 @@ import org.apache.hadoop.hbase.hbql.util.NullIterator;
 
 import java.io.IOException;
 import java.util.Iterator;
+import java.util.List;
 
 public class NonExecutorResultSet<T> extends HResultSetImpl<T, Object> {
 
@@ -42,7 +43,7 @@ public class NonExecutorResultSet<T> extends HResultSetImpl<T, Object> {
         return this.rowRequestIterator;
     }
 
-    protected void submitWork() throws HBqlException {
+    protected void submitWork(final List<RowRequest> rowRequestList) {
         // No op
     }
 

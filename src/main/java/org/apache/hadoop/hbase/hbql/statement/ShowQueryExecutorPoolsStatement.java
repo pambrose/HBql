@@ -37,8 +37,13 @@ public class ShowQueryExecutorPoolsStatement extends BasicStatement implements C
         final ExecutionResults retval = new ExecutionResults();
         retval.out.println("Query Executor Pools: ");
         for (final QueryExecutorPool executorPool : QueryExecutorPoolManager.getQueryExecutorPools())
-            retval.out.println("\t" + executorPool.getName() + "( max_pool_size: " + executorPool.getMaxPoolSize()
-                               + ", thread_count: " + executorPool.getThreadCount() + ")");
+            retval.out.println("\t" + executorPool.getName() + "(" +
+                               "MAX_EXECUTOR_POOL_SIZE: " + executorPool.getMaxPoolSize()
+                               + ", CORE_THREAD_COUNT: " + executorPool.getCoreThreadCount()
+                               + ", MAX_THREAD_COUNT: " + executorPool.getMaxThreadCount()
+                               + ", THREADS_READ_RESULTS: " + executorPool.getThreadsReadResults()
+                               + ", COMPLETION_QUEUE_SIZE: " + executorPool.getCompletionQueueSize()
+                               + ")");
 
         retval.out.flush();
         return retval;

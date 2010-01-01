@@ -28,7 +28,8 @@ import org.apache.hadoop.hbase.hbql.client.HResultSet;
 import org.apache.hadoop.hbase.hbql.client.QueryListener;
 import org.apache.hadoop.hbase.hbql.statement.SelectStatement;
 import org.apache.hadoop.hbase.hbql.statement.args.WithArgs;
-import org.apache.hadoop.hbase.hbql.util.ExecutorWithQueue;
+import org.apache.hadoop.hbase.hbql.statement.select.RowRequest;
+import org.apache.hadoop.hbase.hbql.util.CompletionQueueExecutor;
 import org.apache.hadoop.hbase.hbql.util.Lists;
 
 import java.util.Iterator;
@@ -44,24 +45,22 @@ public abstract class HResultSetImpl<T, R> implements HResultSet<T> {
     private final List<ResultScanner> resultScannerList = Lists.newArrayList();
     private ResultScanner currentResultScanner = null;
     private AggregateRecord aggregateRecord;
+    private HTableWrapper tableWrapper;
 
     private final Query<T> query;
     private final ExpressionTree clientExpressionTree;
-    private HTableWrapper tableWrapper;
-    private final ExecutorWithQueue<R> executor;
+    private final CompletionQueueExecutor<R> executorWithQueue;
 
     private volatile boolean closed = false;
 
-    protected HResultSetImpl(final Query<T> query, final ExecutorWithQueue<R> executor) throws HBqlException {
+    protected HResultSetImpl(final Query<T> query, final CompletionQueueExecutor<R> executor) throws HBqlException {
         this.query = query;
-        this.executor = executor;
-
+        this.executorWithQueue = executor;
         this.clientExpressionTree = this.getWithArgs().getClientExpressionTree();
         this.returnedRecordLimit = this.getWithArgs().getLimit();
-        this.tableWrapper = this.getHConnectionImpl().newHTableWrapper(this.getWithArgs(), this.getTableName());
 
+        this.setTableWrapper(this.getHConnectionImpl().newHTableWrapper(this.getWithArgs(), this.getTableName()));
         this.getQuery().getSelectStmt().determineIfAggregateQuery();
-
         this.setAggregateRecord(AggregateRecord.newAggregateRecord(this.getQuery().getSelectStmt()));
 
         // Set it once per evaluation
@@ -72,16 +71,26 @@ public abstract class HResultSetImpl<T, R> implements HResultSet<T> {
                 listener.onQueryInit();
         }
 
-        // Submit work to executor
-        this.submitWork();
+        if (this.getExecutorWithQueue() != null) {
+            // Submit work to executor
+            final List<RowRequest> rowRequestList = this.getQuery().getRowRequestList();
+            this.getExecutorWithQueue().submitWorkToSubmitterThread(
+                    new Runnable() {
+                        public void run() {
+                            submitWork(rowRequestList);
+                            getExecutorWithQueue().putCompletion();
+                        }
+                    }
+            );
+        }
     }
 
-    protected abstract void submitWork() throws HBqlException;
+    protected abstract void submitWork(final List<RowRequest> rowRequestList);
 
     public abstract Iterator<T> iterator();
 
-    protected ExecutorWithQueue<R> getExecutor() {
-        return this.executor;
+    protected CompletionQueueExecutor<R> getExecutorWithQueue() {
+        return this.executorWithQueue;
     }
 
     protected void setAggregateRecord(final AggregateRecord aggregateRecord) {
@@ -131,8 +140,8 @@ public abstract class HResultSetImpl<T, R> implements HResultSet<T> {
                     for (final ResultScanner scanner : this.getResultScannerList())
                         closeResultScanner(scanner, false);
                     this.getResultScannerList().clear();
-                    if (this.getExecutor() != null)
-                        this.getExecutor().release();
+                    if (this.getExecutorWithQueue() != null)
+                        this.getExecutorWithQueue().release();
                     this.closed = true;
                 }
             }

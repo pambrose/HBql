@@ -98,8 +98,10 @@ public class MappingManager {
             // Do not check cached mappings map, go to the server for answer
             final String sql = "SELECT mapping_name FROM system_mappings WITH KEYS ?";
             final HPreparedStatement stmt = this.getConnection().prepareStatement(sql);
+            ((HStatementImpl)stmt).setIgnoreQueryExecutor(true);
             stmt.setParameter(1, mappingName);
             final List<HRecord> recs = stmt.executeQueryAndFetch();
+            stmt.close();
             final boolean retval = recs.size() > 0;
 
             if (!retval) {

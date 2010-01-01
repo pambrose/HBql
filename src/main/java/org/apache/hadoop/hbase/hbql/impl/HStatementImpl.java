@@ -40,6 +40,7 @@ public class HStatementImpl implements HStatement {
     private final HConnectionImpl connection;
     private HResultSet resultSet = null;
     private volatile boolean closed = false;
+    private boolean ignoreQueryExecutor = false;
 
     public HStatementImpl(final HConnectionImpl conn) {
         this.connection = conn;
@@ -51,6 +52,14 @@ public class HStatementImpl implements HStatement {
 
     public <T> HResultSet<T> getResultSet() {
         return (HResultSet<T>)this.resultSet;
+    }
+
+    public boolean getIgnoreQueryExecutor() {
+        return ignoreQueryExecutor;
+    }
+
+    public void setIgnoreQueryExecutor(final boolean ignoreQueryExecutor) {
+        this.ignoreQueryExecutor = ignoreQueryExecutor;
     }
 
     public ExecutionResults executeUpdate(final HBqlStatement statement) throws HBqlException {
@@ -75,7 +84,7 @@ public class HStatementImpl implements HStatement {
             throw new HBqlException("executeQuery() requires a SELECT statement");
 
         final Query<T> query = Query.newQuery(this.getHConnectionImpl(), (SelectStatement)statement, clazz);
-        final HResultSet<T> rs = query.newResultSet();
+        final HResultSet<T> rs = query.newResultSet(this.getIgnoreQueryExecutor());
         this.resultSet = rs;
         return this.resultSet;
     }

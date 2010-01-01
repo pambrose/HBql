@@ -28,9 +28,10 @@ import java.util.Map;
 
 public class QueryExecutorPoolManager {
 
-    public static int defaultMaxPoolSize = 10;
-    public static int defaultThreadCount = 5;
-    public static int defaultQueueSize = 25;
+    public static int defaultMaxExecutorPoolSize = 5;
+    public static int defaultCoreThreadCount = 1;
+    public static int defaultMaxThreadCount = 10;
+    public static int defaultCompletionQueueSize = 25;
     public static boolean defaultThreadsReadResults = true;
 
     private static Map<String, QueryExecutorPool> executorPoolMap = Maps.newConcurrentHashMap();
@@ -40,19 +41,21 @@ public class QueryExecutorPoolManager {
     }
 
     public static QueryExecutorPool newQueryExecutorPool(final String poolName,
-                                                         final int maxPoolSize,
-                                                         final int threadCount,
+                                                         final int maxExecutorPoolSize,
+                                                         final int coreThreadCount,
+                                                         final int maxThreadCount,
                                                          final boolean threadsReadResults,
-                                                         final int queueSize) throws HBqlException {
+                                                         final int completionQueueSize) throws HBqlException {
 
         if (Utils.isValidString(poolName) && getExecutorPoolMap().containsKey(poolName))
             throw new HBqlException("Executor pool already exists: " + poolName);
 
         final QueryExecutorPool executorPool = new QueryExecutorPool(poolName,
-                                                                     maxPoolSize,
-                                                                     threadCount,
+                                                                     maxExecutorPoolSize,
+                                                                     coreThreadCount,
+                                                                     maxThreadCount,
                                                                      threadsReadResults,
-                                                                     queueSize);
+                                                                     completionQueueSize);
         QueryExecutorPoolManager.getExecutorPoolMap().put(executorPool.getName(), executorPool);
 
         return executorPool;

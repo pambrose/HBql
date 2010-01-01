@@ -45,16 +45,17 @@ public class CreateQueryExecutorPoolStatement extends BasicStatement implements 
         this.getArgs().validateExecutorPoolPropertyList();
 
         QueryExecutorPoolManager.newQueryExecutorPool(this.getArgs().getPoolName(),
-                                                      this.getArgs().getMaxPoolSize(),
-                                                      this.getArgs().getThreadCount(),
+                                                      this.getArgs().getMaxExecutorPoolSize(),
+                                                      this.getArgs().getCoreThreadCount(),
+                                                      this.getArgs().getMaxThreadCount(),
                                                       this.getArgs().getThreadsReadResults(),
-                                                      this.getArgs().getQueueSize());
+                                                      this.getArgs().getCompletionQueueSize());
 
         return new ExecutionResults("Executor pool " + this.getArgs().getPoolName() + " created.");
     }
 
 
     public static String usage() {
-        return "CREATE [QUERY] EXECUTOR POOL pool_name (MAX_POOL_SIZE: int_expr, THREAD_COUNT: int_expr, THREADS_READ_RESULTS: bool_expr, QUEUE_SIZE: int_expr) [IF bool_expr]";
+        return "CREATE [QUERY] EXECUTOR POOL pool_name (MAX_EXECUTOR_POOL_SIZE: int_expr, CORE_THREAD_COUNT: int_expr, MAX_THREAD_COUNT: int_expr, THREADS_READ_RESULTS: bool_expr, COMPLETION_QUEUE_SIZE: int_expr) [IF bool_expr]";
     }
 }

@@ -201,9 +201,10 @@ public class ServerFilterTest extends TestSupport {
     public void simpleSelect9a() throws HBqlException {
 
         HStatement stmt = connection.createStatement();
-        System.out.println(stmt.execute("CREATE EXECUTOR POOL threadPool1 (max_pool_size: 5, thread_count: 2, " +
-                                        "threads_read_results: true, queue_size: 100) " +
-                                        "if not queryExecutorPoolExists('threadPool1')"));
+        System.out
+                .println(stmt.execute("CREATE EXECUTOR POOL threadPool1 (max_executor_pool_size: 5, max_thread_count: 2, " +
+                                      "threads_read_results: true, completion_queue_size: 100) " +
+                                      "if not queryExecutorPoolExists('threadPool1')"));
 
         // ExecutorPoolManager.newExecutorPool("threadPool1", 2, 10);
         connection.setQueryExecutorPoolName("threadPool1");
@@ -225,7 +226,7 @@ public class ServerFilterTest extends TestSupport {
     @Test
     public void simpleSelect9b() throws HBqlException {
 
-        QueryExecutor executor = QueryExecutor.newQueryExecutor(4, true, 100);
+        QueryExecutor executor = QueryExecutor.newQueryExecutor(2, 4, true, 100);
         connection.setQueryExecutor(executor);
 
         for (int i = 0; i < 100; i++) {
@@ -248,12 +249,14 @@ public class ServerFilterTest extends TestSupport {
 
         HStatement stmt = connection.createStatement();
 
-        System.out.println(stmt.execute("CREATE EXECUTOR POOL threadPool1 (max_pool_size: 5, thread_count: 4, " +
-                                        "threads_read_results: true, queue_size: 100) " +
-                                        "if not queryExecutorPoolExists('threadPool1')"));
+        System.out
+                .println(stmt.execute("CREATE EXECUTOR POOL threadPool1 (max_executor_pool_size: 5, max_thread_count: 4, " +
+                                      "threads_read_results: true, completion_queue_size: 100) " +
+                                      "if not queryExecutorPoolExists('threadPool1')"));
         System.out.println(stmt.execute("DROP EXECUTOR POOL threadPool1 if queryExecutorPoolExists('threadPool1')"));
-        System.out.println(stmt.execute("CREATE EXECUTOR POOL threadPool1 (max_pool_size: 5, thread_count: 4, " +
-                                        "threads_read_results: true, queue_size: 100)"));
+        System.out
+                .println(stmt.execute("CREATE EXECUTOR POOL threadPool1 (max_executor_pool_size: 5, max_thread_count: 4, " +
+                                      "threads_read_results: true, completion_queue_size: 100)"));
 
         connection.setQueryExecutorPoolName("threadPool1");
 
@@ -308,6 +311,7 @@ public class ServerFilterTest extends TestSupport {
             System.out.println("Creating query executor pool: " + poolName);
             QueryExecutorPoolManager.newQueryExecutorPool(poolName,
                                                           Utils.getRandomPositiveInt(5),
+                                                          Utils.getRandomPositiveInt(2),
                                                           Utils.getRandomPositiveInt(5),
                                                           Utils.getRandomBoolean(),
                                                           Utils.getRandomPositiveInt(10));
@@ -318,7 +322,8 @@ public class ServerFilterTest extends TestSupport {
         for (int i = 0; i < repeats; i++) {
             final int totalJobs = Utils.getRandomPositiveInt(50);
             final int maxKeyRangeCount = Utils.getRandomPositiveInt(100);
-            final ExecutorService threadPool = Executors.newFixedThreadPool(Utils.getRandomPositiveInt(10));
+            final int poolSize = Utils.getRandomPositiveInt(10);
+            final ExecutorService threadPool = Executors.newFixedThreadPool(poolSize);
             final CountDownLatch latch = new CountDownLatch(totalJobs);
 
             for (int tj = 0; tj < totalJobs; tj++) {

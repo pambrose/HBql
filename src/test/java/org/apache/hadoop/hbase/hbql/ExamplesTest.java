@@ -395,17 +395,17 @@ public class ExamplesTest extends TestSupport {
         HConnection connection = HConnectionManager.newConnection();
 
         // Create Query Executor Pool named execPool if it doesn't already exist.
-        connection.execute("CREATE QUERY EXECUTOR POOL execPool (MAX_POOL_SIZE: 5, THREAD_COUNT: 10) IF NOT queryExecutorPoolExists('execPool')");
+        connection.execute("CREATE QUERY EXECUTOR POOL execPool (MAX_EXECUTOR_POOL_SIZE: 5, MAX_THREAD_COUNT: 10) IF NOT queryExecutorPoolExists('execPool')");
 
         // Or, using the API
         if (!QueryExecutorPoolManager.queryExecutorPoolExists("execPool"))
-            QueryExecutorPoolManager.newQueryExecutorPool("execPool", 5, 10, true, 100);
+            QueryExecutorPoolManager.newQueryExecutorPool("execPool", 5, 5, 10, true, 100);
 
         // Then assign the connection a query executor pool name to use for queries
         connection.setQueryExecutorPoolName("execPool");
 
         // Or could use a dedicated QueryExecutor, rather than one from a pool:
-        QueryExecutor executor = QueryExecutor.newQueryExecutor(10, true, 100);
+        QueryExecutor executor = QueryExecutor.newQueryExecutor(5, 10, true, 100);
         connection.setQueryExecutor(executor);
 
         // Now use connection in a query.
@@ -628,7 +628,7 @@ public class ExamplesTest extends TestSupport {
 
         // Create Query Executor Pool named execPool if it doesn't already exist.
         if (!QueryExecutorPoolManager.queryExecutorPoolExists("execPool"))
-            QueryExecutorPoolManager.newQueryExecutorPool("execPool", 5, 10, true, 100);
+            QueryExecutorPoolManager.newQueryExecutorPool("execPool", 5, 5, 10, true, 100);
 
         // Take a connection from the connection pool
         HConnection connection = connectionPool.takeConnection();

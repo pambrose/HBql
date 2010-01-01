@@ -31,17 +31,18 @@ public class ExecutorPoolProperty extends ExpressionProperty {
 
     public static enum Type implements PropertyType {
 
-        MAX_POOL_SIZE(new ArgumentListTypeSignature(IntegerValue.class), "MAX_POOL_SIZE"),
-        THREAD_COUNT(new ArgumentListTypeSignature(IntegerValue.class), "THREAD_COUNT"),
-        THREADS_READ_RESULTS(new ArgumentListTypeSignature(BooleanValue.class), "THREADS_READ_RESULTS"),
-        QUEUE_SIZE(new ArgumentListTypeSignature(IntegerValue.class), "QUEUE_SIZE");
+        MAX_EXECUTOR_POOL_SIZE(new ArgumentListTypeSignature(IntegerValue.class)),
+        CORE_THREAD_COUNT(new ArgumentListTypeSignature(IntegerValue.class)),
+        MAX_THREAD_COUNT(new ArgumentListTypeSignature(IntegerValue.class)),
+        THREADS_READ_RESULTS(new ArgumentListTypeSignature(BooleanValue.class)),
+        COMPLETION_QUEUE_SIZE(new ArgumentListTypeSignature(IntegerValue.class));
 
         private final ArgumentListTypeSignature typeSignature;
         private final String description;
 
-        Type(final ArgumentListTypeSignature typeSignature, final String description) {
+        Type(final ArgumentListTypeSignature typeSignature) {
             this.typeSignature = typeSignature;
-            this.description = description;
+            this.description = this.name();
         }
 
         public ArgumentListTypeSignature getTypeSignature() {

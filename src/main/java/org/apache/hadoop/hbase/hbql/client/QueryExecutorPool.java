@@ -22,41 +22,54 @@ package org.apache.hadoop.hbase.hbql.client;
 
 import org.apache.hadoop.hbase.hbql.impl.ResultExecutor;
 import org.apache.hadoop.hbase.hbql.impl.ResultScannerExecutor;
+import org.apache.hadoop.hbase.hbql.util.CompletionQueueExecutor;
 import org.apache.hadoop.hbase.hbql.util.ElementPool;
-import org.apache.hadoop.hbase.hbql.util.ExecutorWithQueue;
 
-public class QueryExecutorPool extends ElementPool<ExecutorWithQueue> {
+public class QueryExecutorPool extends ElementPool<CompletionQueueExecutor> {
 
-    private final int threadCount;
+    private final int coreThreadCount;
+    private final int maxThreadCount;
     private final boolean threadsReadResults;
-    private final int queueSize;
+    private final int completionQueueSize;
 
     public QueryExecutorPool(final String name,
-                             final int maxPoolSize,
-                             final int threadCount,
+                             final int maxExecutorPoolSize,
+                             final int coreThreadCount,
+                             final int maxThreadCount,
                              final boolean threadsReadResults,
-                             final int queueSize) {
-        super(name, maxPoolSize);
-        this.threadCount = threadCount;
+                             final int completionQueueSize) {
+        super(name, maxExecutorPoolSize);
+        this.coreThreadCount = coreThreadCount;
+        this.maxThreadCount = maxThreadCount;
         this.threadsReadResults = threadsReadResults;
-        this.queueSize = queueSize;
+        this.completionQueueSize = completionQueueSize;
     }
 
-    public int getThreadCount() {
-        return this.threadCount;
+    public int getCoreThreadCount() {
+        return this.coreThreadCount;
+    }
+
+    public int getMaxThreadCount() {
+        return this.maxThreadCount;
     }
 
     public boolean getThreadsReadResults() {
         return this.threadsReadResults;
     }
 
-    public int getQueueSize() {
-        return this.queueSize;
+    public int getCompletionQueueSize() {
+        return this.completionQueueSize;
     }
 
-    protected ExecutorWithQueue newElement() throws HBqlException {
+    protected CompletionQueueExecutor newElement() throws HBqlException {
         return this.getThreadsReadResults()
-               ? ResultExecutor.newPooledResultExecutor(this, this.getThreadCount(), this.getQueueSize())
-               : ResultScannerExecutor.newPooledResultScannerExecutor(this, this.getThreadCount(), this.getQueueSize());
+               ? ResultExecutor.newPooledResultExecutor(this,
+                                                        this.getCoreThreadCount(),
+                                                        this.getMaxThreadCount(),
+                                                        this.getCompletionQueueSize())
+               : ResultScannerExecutor.newPooledResultScannerExecutor(this,
+                                                                      this.getCoreThreadCount(),
+                                                                      this.getMaxThreadCount(),
+                                                                      this.getCompletionQueueSize());
     }
 }

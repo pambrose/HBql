@@ -22,22 +22,28 @@ package org.apache.hadoop.hbase.hbql.impl;
 
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.hbql.client.QueryExecutorPool;
-import org.apache.hadoop.hbase.hbql.util.ExecutorWithQueue;
+import org.apache.hadoop.hbase.hbql.util.CompletionQueueExecutor;
 
-public class ResultExecutor extends ExecutorWithQueue<Result> {
+public class ResultExecutor extends CompletionQueueExecutor<Result> {
 
-    private ResultExecutor(final QueryExecutorPool executorPool, final int threadCount, final int queueSize) {
-        super(executorPool, threadCount, queueSize);
+    private ResultExecutor(final QueryExecutorPool executorPool,
+                           final int coreThreadCount,
+                           final int maxThreadCount,
+                           final int completionQueueSize) {
+        super(executorPool, coreThreadCount, maxThreadCount, completionQueueSize);
     }
 
     public static ResultExecutor newPooledResultExecutor(final QueryExecutorPool executorPool,
-                                                         final int threadCount,
-                                                         final int queueSize) {
-        return new ResultExecutor(executorPool, threadCount, queueSize);
+                                                         final int coreThreadCount,
+                                                         final int maxThreadCount,
+                                                         final int completionQueueSize) {
+        return new ResultExecutor(executorPool, coreThreadCount, maxThreadCount, completionQueueSize);
     }
 
-    public static ResultExecutor newResultExecutor(final int threadCount, final int queueSize) {
-        return new ResultExecutor(null, threadCount, queueSize);
+    public static ResultExecutor newResultExecutor(final int coreThreadCount,
+                                                   final int maxThreadCount,
+                                                   final int completionQueueSize) {
+        return new ResultExecutor(null, coreThreadCount, maxThreadCount, completionQueueSize);
     }
 
     public boolean threadsReadResults() {

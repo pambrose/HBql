@@ -33,8 +33,8 @@ import java.util.List;
 
 public class HPreparedStatementImpl extends HStatementImpl implements HPreparedStatement {
 
-    final String sql;
-    final HBqlStatement statement;
+    private final String sql;
+    private final HBqlStatement statement;
 
     public HPreparedStatementImpl(final HConnectionImpl hbqlConnection, final String sql) throws HBqlException {
         super(hbqlConnection);

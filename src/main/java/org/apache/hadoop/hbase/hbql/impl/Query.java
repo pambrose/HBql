@@ -30,7 +30,7 @@ import org.apache.hadoop.hbase.hbql.mapping.ResultAccessor;
 import org.apache.hadoop.hbase.hbql.statement.SelectStatement;
 import org.apache.hadoop.hbase.hbql.statement.args.WithArgs;
 import org.apache.hadoop.hbase.hbql.statement.select.RowRequest;
-import org.apache.hadoop.hbase.hbql.util.ExecutorWithQueue;
+import org.apache.hadoop.hbase.hbql.util.CompletionQueueExecutor;
 import org.apache.hadoop.hbase.hbql.util.Lists;
 import org.apache.hadoop.hbase.hbql.util.Sets;
 
@@ -105,17 +105,17 @@ public class Query<T> {
             this.getListeners().clear();
     }
 
-    public HResultSet<T> newResultSet() throws HBqlException {
-        if (this.getHConnectionImpl().usesAQueryExecutor()) {
+    public HResultSet<T> newResultSet(final boolean ignoreQueryExecutor) throws HBqlException {
+        if (!this.getHConnectionImpl().usesQueryExecutor() || ignoreQueryExecutor) {
+            return new NonExecutorResultSet<T>(this);
+        }
+        else {
             // This may block waiting for a Executor to become available from the ExecutorPool
-            final ExecutorWithQueue executor = this.getHConnectionImpl().getExecutorForConnection();
+            final CompletionQueueExecutor executor = this.getHConnectionImpl().getExecutorForConnection();
             if (executor.threadsReadResults())
                 return new ResultExecutorResultSet<T>(this, (ResultExecutor)executor);
             else
                 return new ResultScannerExecutorResultSet<T>(this, (ResultScannerExecutor)executor);
-        }
-        else {
-            return new NonExecutorResultSet<T>(this);
         }
     }
 }

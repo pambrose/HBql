@@ -34,7 +34,6 @@ import org.apache.hadoop.hbase.hbql.util.QueueElement;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
-import java.util.concurrent.Callable;
 
 
 public class ResultExecutorResultSet<T> extends HResultSetImpl<T, Result> {
@@ -43,11 +42,10 @@ public class ResultExecutorResultSet<T> extends HResultSetImpl<T, Result> {
         super(query, executor);
     }
 
-    protected void submitWork() throws HBqlException {
-        final List<RowRequest> rowRequestList = this.getQuery().getRowRequestList();
+    protected void submitWork(final List<RowRequest> rowRequestList) {
         for (final RowRequest rowRequest : rowRequestList) {
-            final Callable<String> job = new Callable<String>() {
-                public String call() throws HBqlException, InterruptedException {
+            final Runnable job = new Runnable() {
+                public void run() {
                     try {
                         final ResultScanner scanner = rowRequest.getResultScanner(getSelectStmt().getMapping(),
                                                                                   getWithArgs(),
@@ -66,18 +64,22 @@ public class ResultExecutorResultSet<T> extends HResultSetImpl<T, Result> {
                                 continue;
                             }
 
-                            getExecutor().getCompletionQueue().putElement(result);
+                            getExecutorWithQueue().putElement(result);
                         }
 
                         scanner.close();
                     }
-                    finally {
-                        getExecutor().getCompletionQueue().markCompletion();
+
+                    catch (HBqlException e) {
+                        e.printStackTrace();
                     }
-                    return "OK";
+                    finally {
+                        getExecutorWithQueue().putCompletion();
+                    }
                 }
             };
-            this.getExecutor().submit(job);
+
+            this.getExecutorWithQueue().submitWorkToThreadPoolExecutor(job);
         }
     }
 
@@ -118,7 +120,7 @@ public class ResultExecutorResultSet<T> extends HResultSetImpl<T, Result> {
                 }
 
                 protected boolean moreResultsPending() {
-                    return getExecutor().moreResultsPending(getExecutor().getCompletionQueue().getCompletionCount());
+                    return getExecutorWithQueue().moreResultsPending();
                 }
 
                 @SuppressWarnings("unchecked")
@@ -129,20 +131,15 @@ public class ResultExecutorResultSet<T> extends HResultSetImpl<T, Result> {
                     // Read data until all jobs have sent DONE tokens
                     while (true) {
                         final Result result;
-                        try {
-                            final QueueElement<Result> queueElement = getExecutor().getCompletionQueue().takeElement();
-                            if (queueElement.isCompleteToken()) {
-                                if (!moreResultsPending())
-                                    break;
-                                else
-                                    continue;
-                            }
-                            else {
-                                result = queueElement.getElement();
-                            }
+                        final QueueElement<Result> queueElement = getExecutorWithQueue().takeElement();
+                        if (queueElement.isCompleteToken()) {
+                            if (!moreResultsPending())
+                                break;
+                            else
+                                continue;
                         }
-                        catch (InterruptedException e) {
-                            throw new HBqlException(e);
+                        else {
+                            result = queueElement.getElement();
                         }
 
                         incrementReturnedRecordCount();

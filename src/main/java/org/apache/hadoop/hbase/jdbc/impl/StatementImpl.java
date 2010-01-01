@@ -98,7 +98,7 @@ public class StatementImpl implements Statement {
             throw new HBqlException("executeQuery() requires a SELECT statement");
 
         final Query<HRecord> query = Query.newQuery(this.getHConnectionImpl(), (SelectStatement)stmt, HRecord.class);
-        final HResultSet<HRecord> hResultSet = query.newResultSet();
+        final HResultSet<HRecord> hResultSet = query.newResultSet(false);
         final ResultSet resultSet = new ResultSetImpl(this, hResultSet);
         this.setResultSet(resultSet);
         return this.getResultSet();

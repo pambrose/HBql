@@ -126,7 +126,7 @@ public class ImportStatement extends BasicStatement implements ConnectionStateme
         // selectStatement.validate(connection);
 
         final Query<HRecord> query = Query.newQuery(conn, selectStatement, HRecord.class);
-        final HResultSet<HRecord> results = query.newResultSet();
+        final HResultSet<HRecord> results = query.newResultSet(false);
         for (final HRecord rec : results) {
             for (final String columnName : rec.getColumnNameList()) {
                 out.println(columnName + ": " + rec.getCurrentValue(columnName));

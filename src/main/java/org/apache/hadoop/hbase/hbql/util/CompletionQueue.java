@@ -20,21 +20,23 @@
 
 package org.apache.hadoop.hbase.hbql.util;
 
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
+
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class QueueWithCompletion<T> {
+public class CompletionQueue<T> {
 
-    private final BlockingQueue<QueueElement<T>> queue;
+    private final BlockingQueue<QueueElement<T>> blockingQueue;
     private final AtomicInteger completionCounter = new AtomicInteger(0);
 
-    public QueueWithCompletion(final int size) {
-        this.queue = new ArrayBlockingQueue<QueueElement<T>>(size, true);
+    public CompletionQueue(final int size) {
+        this.blockingQueue = new ArrayBlockingQueue<QueueElement<T>>(size, true);
     }
 
-    private BlockingQueue<QueueElement<T>> getQueue() {
-        return this.queue;
+    private BlockingQueue<QueueElement<T>> getBlockingQueue() {
+        return this.blockingQueue;
     }
 
     private AtomicInteger getCompletionCounter() {
@@ -45,26 +47,40 @@ public class QueueWithCompletion<T> {
         return this.getCompletionCounter().get();
     }
 
-    public void putElement(final T val) throws InterruptedException {
+    public void putElement(final T val) throws HBqlException {
         final QueueElement<T> element = QueueElement.newElement(val);
-        this.getQueue().put(element);
+        try {
+            this.getBlockingQueue().put(element);
+        }
+        catch (InterruptedException e) {
+            throw new HBqlException(e);
+        }
     }
 
-    public void markCompletion() throws InterruptedException {
+    public void putCompletion() {
         final QueueElement<T> element = QueueElement.newComplete();
-        this.getQueue().put(element);
+        try {
+            this.getBlockingQueue().put(element);
+        }
+        catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
-    public QueueElement<T> takeElement() throws InterruptedException {
-        final QueueElement<T> queueElement = this.getQueue().take();
-        if (queueElement.isCompleteToken())
-            this.getCompletionCounter().incrementAndGet();
-
-        return queueElement;
+    public QueueElement<T> takeElement() throws HBqlException {
+        try {
+            final QueueElement<T> queueElement = this.getBlockingQueue().take();
+            if (queueElement.isCompleteToken())
+                this.getCompletionCounter().incrementAndGet();
+            return queueElement;
+        }
+        catch (InterruptedException e) {
+            throw new HBqlException(e);
+        }
     }
 
     public void reset() {
         this.getCompletionCounter().set(0);
-        this.getQueue().clear();
+        this.getBlockingQueue().clear();
     }
 }
