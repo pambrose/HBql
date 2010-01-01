@@ -31,6 +31,7 @@ public class QueryExecutorPoolManager {
     public static int defaultMaxExecutorPoolSize = 5;
     public static int defaultCoreThreadCount = 1;
     public static int defaultMaxThreadCount = 10;
+    public static long defaultKeepAliveSecs = Long.MAX_VALUE;
     public static int defaultCompletionQueueSize = 25;
     public static boolean defaultThreadsReadResults = true;
 
@@ -44,6 +45,7 @@ public class QueryExecutorPoolManager {
                                                          final int maxExecutorPoolSize,
                                                          final int coreThreadCount,
                                                          final int maxThreadCount,
+                                                         final long keepAliveSecs,
                                                          final boolean threadsReadResults,
                                                          final int completionQueueSize) throws HBqlException {
 
@@ -54,6 +56,7 @@ public class QueryExecutorPoolManager {
                                                                      maxExecutorPoolSize,
                                                                      coreThreadCount,
                                                                      maxThreadCount,
+                                                                     keepAliveSecs,
                                                                      threadsReadResults,
                                                                      completionQueueSize);
         QueryExecutorPoolManager.getExecutorPoolMap().put(executorPool.getName(), executorPool);

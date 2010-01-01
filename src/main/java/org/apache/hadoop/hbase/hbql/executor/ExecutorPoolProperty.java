@@ -26,6 +26,7 @@ import org.apache.expreval.expr.PropertyType;
 import org.apache.expreval.expr.node.BooleanValue;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.expreval.expr.node.IntegerValue;
+import org.apache.expreval.expr.node.LongValue;
 
 public class ExecutorPoolProperty extends ExpressionProperty {
 
@@ -34,6 +35,7 @@ public class ExecutorPoolProperty extends ExpressionProperty {
         MAX_EXECUTOR_POOL_SIZE(new ArgumentListTypeSignature(IntegerValue.class)),
         CORE_THREAD_COUNT(new ArgumentListTypeSignature(IntegerValue.class)),
         MAX_THREAD_COUNT(new ArgumentListTypeSignature(IntegerValue.class)),
+        KEEP_ALIVE_SECS(new ArgumentListTypeSignature(LongValue.class)),
         THREADS_READ_RESULTS(new ArgumentListTypeSignature(BooleanValue.class)),
         COMPLETION_QUEUE_SIZE(new ArgumentListTypeSignature(IntegerValue.class));
 

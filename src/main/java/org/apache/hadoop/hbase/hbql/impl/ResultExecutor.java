@@ -29,21 +29,24 @@ public class ResultExecutor extends CompletionQueueExecutor<Result> {
     private ResultExecutor(final QueryExecutorPool executorPool,
                            final int coreThreadCount,
                            final int maxThreadCount,
+                           final long keepAliveSecs,
                            final int completionQueueSize) {
-        super(executorPool, coreThreadCount, maxThreadCount, completionQueueSize);
+        super(executorPool, coreThreadCount, maxThreadCount, keepAliveSecs, completionQueueSize);
     }
 
     public static ResultExecutor newPooledResultExecutor(final QueryExecutorPool executorPool,
                                                          final int coreThreadCount,
                                                          final int maxThreadCount,
+                                                         final long keepAliveSecs,
                                                          final int completionQueueSize) {
-        return new ResultExecutor(executorPool, coreThreadCount, maxThreadCount, completionQueueSize);
+        return new ResultExecutor(executorPool, coreThreadCount, maxThreadCount, keepAliveSecs, completionQueueSize);
     }
 
     public static ResultExecutor newResultExecutor(final int coreThreadCount,
                                                    final int maxThreadCount,
+                                                   final long keepAliveSecs,
                                                    final int completionQueueSize) {
-        return new ResultExecutor(null, coreThreadCount, maxThreadCount, completionQueueSize);
+        return new ResultExecutor(null, coreThreadCount, maxThreadCount, keepAliveSecs, completionQueueSize);
     }
 
     public boolean threadsReadResults() {

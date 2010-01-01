@@ -29,6 +29,7 @@ public class QueryExecutorPool extends ElementPool<CompletionQueueExecutor> {
 
     private final int coreThreadCount;
     private final int maxThreadCount;
+    private final long keepAliveSecs;
     private final boolean threadsReadResults;
     private final int completionQueueSize;
 
@@ -36,11 +37,13 @@ public class QueryExecutorPool extends ElementPool<CompletionQueueExecutor> {
                              final int maxExecutorPoolSize,
                              final int coreThreadCount,
                              final int maxThreadCount,
+                             final long keepAliveSecs,
                              final boolean threadsReadResults,
                              final int completionQueueSize) {
         super(name, maxExecutorPoolSize);
         this.coreThreadCount = coreThreadCount;
         this.maxThreadCount = maxThreadCount;
+        this.keepAliveSecs = keepAliveSecs;
         this.threadsReadResults = threadsReadResults;
         this.completionQueueSize = completionQueueSize;
     }
@@ -51,6 +54,10 @@ public class QueryExecutorPool extends ElementPool<CompletionQueueExecutor> {
 
     public int getMaxThreadCount() {
         return this.maxThreadCount;
+    }
+
+    public long getKeepAliveSecs() {
+        return this.keepAliveSecs;
     }
 
     public boolean getThreadsReadResults() {
@@ -66,10 +73,12 @@ public class QueryExecutorPool extends ElementPool<CompletionQueueExecutor> {
                ? ResultExecutor.newPooledResultExecutor(this,
                                                         this.getCoreThreadCount(),
                                                         this.getMaxThreadCount(),
+                                                        this.getKeepAliveSecs(),
                                                         this.getCompletionQueueSize())
                : ResultScannerExecutor.newPooledResultScannerExecutor(this,
                                                                       this.getCoreThreadCount(),
                                                                       this.getMaxThreadCount(),
+                                                                      this.getKeepAliveSecs(),
                                                                       this.getCompletionQueueSize());
     }
 }

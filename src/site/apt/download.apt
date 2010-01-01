@@ -5,14 +5,14 @@
 
 Releases
 
-    *{{{./downloads/hbql-0.9.15-alpha.zip}0.9.15-alpha.zip}}
+    *{{{./downloads/hbql-0.9.16-alpha.zip}0.9.16-alpha.zip}}
     
-    *{{{./downloads/hbql-0.9.15-alpha.tar.gz}0.9.15-alpha.tar.gz}}
+    *{{{./downloads/hbql-0.9.16-alpha.tar.gz}0.9.16-alpha.tar.gz}}
 
 
 Javadocs
 
-    *{{{./downloads/javadocs-0.9.15-alpha.zip}javadocs-0.9.15-alpha.zip}}
+    *{{{./downloads/javadocs-0.9.16-alpha.zip}javadocs-0.9.16-alpha.zip}}
     
 
 Source
@@ -25,6 +25,10 @@ git clone git://github.com/pambrose/HBql.git
 
 
 Release Notes
+
+    0.9.16-alpha -- 12/31/09
+
+        * Improved QueryExecutor with queued thread pool work submission and additional parameters. 
 
     0.9.15-alpha -- 12/30/09
 

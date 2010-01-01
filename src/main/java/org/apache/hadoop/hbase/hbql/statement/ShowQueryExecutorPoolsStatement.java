@@ -41,6 +41,7 @@ public class ShowQueryExecutorPoolsStatement extends BasicStatement implements C
                                "MAX_EXECUTOR_POOL_SIZE: " + executorPool.getMaxPoolSize()
                                + ", CORE_THREAD_COUNT: " + executorPool.getCoreThreadCount()
                                + ", MAX_THREAD_COUNT: " + executorPool.getMaxThreadCount()
+                               + ", KEEP_ALIVE_SECS: " + executorPool.getKeepAliveSecs()
                                + ", THREADS_READ_RESULTS: " + executorPool.getThreadsReadResults()
                                + ", COMPLETION_QUEUE_SIZE: " + executorPool.getCompletionQueueSize()
                                + ")");

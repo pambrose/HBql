@@ -28,14 +28,17 @@ public class QueryExecutor {
 
     public static QueryExecutor newQueryExecutor(final int coreThreadCount,
                                                  final int maxThreadCount,
+                                                 final long keepAliveSecs,
                                                  final boolean threadsReadResults,
                                                  final int queueSize) {
         return new QueryExecutorImpl(threadsReadResults
                                      ? ResultExecutor.newResultExecutor(coreThreadCount,
                                                                         maxThreadCount,
+                                                                        keepAliveSecs,
                                                                         queueSize)
                                      : ResultScannerExecutor.newResultScannerExecutor(coreThreadCount,
                                                                                       maxThreadCount,
+                                                                                      keepAliveSecs,
                                                                                       queueSize));
     }
 

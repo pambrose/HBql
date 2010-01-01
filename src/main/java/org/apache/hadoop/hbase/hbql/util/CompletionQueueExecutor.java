@@ -83,12 +83,13 @@ public abstract class CompletionQueueExecutor<T> implements PoolableElement {
     protected CompletionQueueExecutor(final QueryExecutorPool executorPool,
                                       final int coreThreadCount,
                                       final int maxThreadCount,
+                                      final long keepAliveSecs,
                                       final int completionQueueSize) {
         this.executorPool = executorPool;
-        final BlockingQueue<Runnable> backingQueue = new ArrayBlockingQueue<Runnable>(maxThreadCount * 2);
+        final BlockingQueue<Runnable> backingQueue = new ArrayBlockingQueue<Runnable>(maxThreadCount * 5);
         this.threadPoolExecutor = new LocalThreadPoolExecutor(coreThreadCount,
                                                               maxThreadCount,
-                                                              Long.MAX_VALUE,
+                                                              keepAliveSecs,
                                                               TimeUnit.SECONDS,
                                                               backingQueue,
                                                               new LocalCallerRunsPolicy());
@@ -170,17 +171,12 @@ public abstract class CompletionQueueExecutor<T> implements PoolableElement {
     }
 
     public void close() {
-        // Release if it is a pool element
-        if (this.isPooled()) {
-            this.getExecutorPool().release(this);
-        }
-        else {
-            if (!this.isClosed()) {
-                synchronized (this) {
-                    if (!this.isClosed()) {
-                        this.getThreadPoolExecutor().shutdown();
-                        this.closed = true;
-                    }
+        if (!this.isClosed()) {
+            synchronized (this) {
+                if (!this.isClosed()) {
+                    this.release();
+                    this.getThreadPoolExecutor().shutdown();
+                    this.closed = true;
                 }
             }
         }

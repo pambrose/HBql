@@ -33,6 +33,7 @@ public class QueryExecutorPoolDefinition {
     private ExecutorPoolProperty maxExecutorPoolSize = null;
     private ExecutorPoolProperty coreThreadCount = null;
     private ExecutorPoolProperty maxThreadCount = null;
+    private ExecutorPoolProperty keepAliveSecs = null;
     private ExecutorPoolProperty threadsReadResults = null;
     private ExecutorPoolProperty completionQueueSize = null;
 
@@ -80,6 +81,10 @@ public class QueryExecutorPoolDefinition {
                     this.maxThreadCount = this.validateProperty(this.maxThreadCount, executorPoolProperty);
                     break;
 
+                case KEEP_ALIVE_SECS:
+                    this.keepAliveSecs = this.validateProperty(this.keepAliveSecs, executorPoolProperty);
+                    break;
+
                 case THREADS_READ_RESULTS:
                     this.threadsReadResults = this.validateProperty(this.threadsReadResults, executorPoolProperty);
                     break;
@@ -112,6 +117,13 @@ public class QueryExecutorPoolDefinition {
             return QueryExecutorPoolManager.defaultMaxThreadCount;
     }
 
+    public long getKeepAliveSecs() throws HBqlException {
+        if (this.keepAliveSecs != null)
+            return this.keepAliveSecs.getIntegerValue();
+        else
+            return QueryExecutorPoolManager.defaultKeepAliveSecs;
+    }
+
     public boolean getThreadsReadResults() throws HBqlException {
         if (this.threadsReadResults != null)
             return this.threadsReadResults.getBooleanValue();
@@ -131,6 +143,7 @@ public class QueryExecutorPoolDefinition {
             return ", MAX_EXECUTOR_POOL_SIZE : " + this.getMaxExecutorPoolSize()
                    + ", CORE_THREAD_COUNT : " + this.getCoreThreadCount()
                    + ", MAX_THREAD_COUNT : " + this.getMaxThreadCount()
+                   + ", KEEP_ALIVE_SECS : " + this.getKeepAliveSecs()
                    + ", THREADS_READ_RESULTS : " + this.getThreadsReadResults()
                    + ", COMPLETION_QUEUE_SIZE : " + this.getCompletionQueueSize();
         }

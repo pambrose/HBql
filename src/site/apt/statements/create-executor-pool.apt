@@ -16,6 +16,7 @@ executorArg:
     MAX_EXECUTOR_POOL_SIZE ':' int_expr
     | CORE_THREAD_COUNT ':' int_expr
     | MAX_THREAD_COUNT ':' int_expr
+    | KEEP_ALIVE_SECS ':' long_expr
     | THREADS_READ_RESULTS ':' bool_expr
     | COMPLETION_QUEUE_SIZE ':' int_expr
 
@@ -63,7 +64,11 @@ executorArg:
 
         ** QueryExecutorPoolManager.defaultMaxPoolSize
 
-        ** QueryExecutorPoolManager.defaultThreadCount
+        ** QueryExecutorPoolManager.defaultCoreThreadCount
+
+        ** QueryExecutorPoolManager.defaultMaxThreadCount
+
+        ** QueryExecutorPoolManager.defaultKeepAliveSecs
 
         ** QueryExecutorPoolManager.defaultQueueSize
         

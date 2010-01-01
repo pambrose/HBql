@@ -48,6 +48,7 @@ public class CreateQueryExecutorPoolStatement extends BasicStatement implements 
                                                       this.getArgs().getMaxExecutorPoolSize(),
                                                       this.getArgs().getCoreThreadCount(),
                                                       this.getArgs().getMaxThreadCount(),
+                                                      this.getArgs().getKeepAliveSecs(),
                                                       this.getArgs().getThreadsReadResults(),
                                                       this.getArgs().getCompletionQueueSize());
 

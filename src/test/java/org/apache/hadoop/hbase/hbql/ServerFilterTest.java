@@ -226,7 +226,7 @@ public class ServerFilterTest extends TestSupport {
     @Test
     public void simpleSelect9b() throws HBqlException {
 
-        QueryExecutor executor = QueryExecutor.newQueryExecutor(2, 4, true, 100);
+        QueryExecutor executor = QueryExecutor.newQueryExecutor(2, 4, Long.MAX_VALUE, true, 100);
         connection.setQueryExecutor(executor);
 
         for (int i = 0; i < 100; i++) {
@@ -313,6 +313,7 @@ public class ServerFilterTest extends TestSupport {
                                                           Utils.getRandomPositiveInt(5),
                                                           Utils.getRandomPositiveInt(2),
                                                           Utils.getRandomPositiveInt(5),
+                                                          Long.MAX_VALUE,
                                                           Utils.getRandomBoolean(),
                                                           Utils.getRandomPositiveInt(10));
         }

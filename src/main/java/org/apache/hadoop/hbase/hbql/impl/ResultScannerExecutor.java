@@ -29,21 +29,24 @@ public class ResultScannerExecutor extends CompletionQueueExecutor<ResultScanner
     public ResultScannerExecutor(final QueryExecutorPool executorPool,
                                  final int coreThreadCount,
                                  final int maxThreadCount,
+                                 final long keepAliveSecs,
                                  final int queueSize) {
-        super(executorPool, coreThreadCount, maxThreadCount, queueSize);
+        super(executorPool, coreThreadCount, maxThreadCount, keepAliveSecs, queueSize);
     }
 
     public static ResultScannerExecutor newPooledResultScannerExecutor(final QueryExecutorPool executorPool,
                                                                        final int coreThreadCount,
                                                                        final int maxThreadCount,
+                                                                       final long keepAliveSecs,
                                                                        final int queueSize) {
-        return new ResultScannerExecutor(executorPool, coreThreadCount, maxThreadCount, queueSize);
+        return new ResultScannerExecutor(executorPool, coreThreadCount, maxThreadCount, keepAliveSecs, queueSize);
     }
 
     public static ResultScannerExecutor newResultScannerExecutor(final int coreThreadCount,
                                                                  final int maxThreadCount,
+                                                                 final long keepAliveSecs,
                                                                  final int queueSize) {
-        return new ResultScannerExecutor(null, coreThreadCount, maxThreadCount, queueSize);
+        return new ResultScannerExecutor(null, coreThreadCount, maxThreadCount, keepAliveSecs, queueSize);
     }
 
     public boolean threadsReadResults() {
