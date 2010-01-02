@@ -31,7 +31,7 @@ public class HConnectionManager {
         return HConnectionManager.newConnection(null);
     }
 
-    public static synchronized HConnection newConnection(final HBaseConfiguration config) throws HBqlException {
+    public static HConnection newConnection(final HBaseConfiguration config) throws HBqlException {
         return new HConnectionImpl(config, null, getMaxPoolReferencesPerTablePerConnection());
     }
 

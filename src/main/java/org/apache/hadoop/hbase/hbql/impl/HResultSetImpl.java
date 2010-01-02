@@ -34,6 +34,7 @@ import org.apache.hadoop.hbase.hbql.util.Lists;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 
 public abstract class HResultSetImpl<T, R> implements HResultSet<T> {
@@ -42,6 +43,7 @@ public abstract class HResultSetImpl<T, R> implements HResultSet<T> {
     private final AtomicLong returnedRecordCount = new AtomicLong(0L);
     private final long returnedRecordLimit;
 
+    private AtomicBoolean atomicClosed = new AtomicBoolean(false);
     private final List<ResultScanner> resultScannerList = Lists.newArrayList();
     private ResultScanner currentResultScanner = null;
     private AggregateRecord aggregateRecord;
@@ -50,8 +52,6 @@ public abstract class HResultSetImpl<T, R> implements HResultSet<T> {
     private final Query<T> query;
     private final ExpressionTree clientExpressionTree;
     private final CompletionQueueExecutor<R> completionQueueExecutor;
-
-    private volatile boolean closed = false;
 
     protected HResultSetImpl(final Query<T> query,
                              final CompletionQueueExecutor<R> completionQueueExecutor) throws HBqlException {
@@ -110,8 +110,12 @@ public abstract class HResultSetImpl<T, R> implements HResultSet<T> {
         return this.currentResultScanner;
     }
 
+    private AtomicBoolean getAtomicClosed() {
+        return this.atomicClosed;
+    }
+
     public boolean isClosed() {
-        return this.closed;
+        return this.getAtomicClosed().get();
     }
 
     protected void setCurrentResultScanner(final ResultScanner currentResultScanner) {
@@ -135,17 +139,12 @@ public abstract class HResultSetImpl<T, R> implements HResultSet<T> {
     }
 
     public void close() {
-        if (!this.isClosed()) {
-            synchronized (this) {
-                if (!this.isClosed()) {
-                    for (final ResultScanner scanner : this.getResultScannerList())
-                        closeResultScanner(scanner, false);
-                    this.getResultScannerList().clear();
-                    if (this.getCompletionQueueExecutor() != null)
-                        this.getCompletionQueueExecutor().release();
-                    this.closed = true;
-                }
-            }
+        if (!this.getAtomicClosed().getAndSet(true)) {
+            for (final ResultScanner scanner : this.getResultScannerList())
+                closeResultScanner(scanner, false);
+            this.getResultScannerList().clear();
+            if (this.getCompletionQueueExecutor() != null)
+                this.getCompletionQueueExecutor().release();
         }
     }
 

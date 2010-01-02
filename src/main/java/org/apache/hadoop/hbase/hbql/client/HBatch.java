@@ -43,7 +43,7 @@ public class HBatch<T> {
 
     private final HConnection connection;
 
-    private final Map<String, List<BatchAction>> actionList = Maps.newHashMap();
+    private final Map<String, List<BatchAction>> actionMap = Maps.newHashMap();
 
     public HBatch(final HConnection connection) {
         this.connection = connection;
@@ -61,15 +61,15 @@ public class HBatch<T> {
         return (HConnectionImpl)this.getConnection();
     }
 
-    public Map<String, List<BatchAction>> getActionList() {
-        return this.actionList;
+    public Map<String, List<BatchAction>> getActionMap() {
+        return this.actionMap;
     }
 
     public synchronized List<BatchAction> getActionList(final String tableName) {
-        List<BatchAction> retval = this.getActionList().get(tableName);
+        List<BatchAction> retval = this.getActionMap().get(tableName);
         if (retval == null) {
             retval = Lists.newArrayList();
-            this.getActionList().put(tableName, retval);
+            this.getActionMap().put(tableName, retval);
         }
         return retval;
     }
@@ -154,7 +154,7 @@ public class HBatch<T> {
 
     public void apply() throws HBqlException {
         try {
-            for (final String tableName : this.getActionList().keySet()) {
+            for (final String tableName : this.getActionMap().keySet()) {
                 HTableWrapper tableref = null;
                 try {
                     tableref = this.getHConnectionImpl().newHTableWrapper(null, tableName);

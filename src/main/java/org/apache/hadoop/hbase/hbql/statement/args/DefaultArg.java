@@ -26,6 +26,7 @@ import org.apache.expreval.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 
 import java.io.Serializable;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class DefaultArg extends ExpressionProperty implements Serializable {
 
@@ -34,7 +35,7 @@ public class DefaultArg extends ExpressionProperty implements Serializable {
     // We have to make value transient because Object is not serializable for hbqlfilter
     // We will compute it again on the server after reset is called
     private transient Object value = null;
-    private volatile boolean computed = false;
+    private AtomicBoolean atomicComputed = new AtomicBoolean(false);
 
     public DefaultArg(final Class<? extends GenericValue> exprType, final GenericValue expr) throws HBqlException {
         super(new ArgumentListTypeSignature(exprType), expr);
@@ -45,25 +46,21 @@ public class DefaultArg extends ExpressionProperty implements Serializable {
         this.getDefaultValue();
     }
 
-    private boolean isComputed() {
-        return this.computed;
+    private AtomicBoolean getAtomicComputed() {
+        return this.atomicComputed;
     }
 
     public void reset() {
-        this.computed = false;
+        this.getAtomicComputed().set(false);
         this.value = null;
     }
 
     public Object getDefaultValue() throws HBqlException {
-        if (!this.isComputed()) {
-            synchronized (this) {
-                if (!this.isComputed()) {
-                    // Type checking happens in this call, so we force it above in the constructor
-                    this.value = this.evaluateConstant(0, false);
-                    this.computed = true;
-                }
-            }
+        if (!this.getAtomicComputed().getAndSet(true)) {
+            // Type checking happens in this call, so we force it above in the constructor
+            this.value = this.evaluateConstant(0, false);
         }
+
         return this.value;
     }
 

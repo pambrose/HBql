@@ -57,23 +57,23 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class HConnectionImpl implements HConnection, PoolableElement {
 
     public final static String MAXTABLEREFS = "maxtablerefs";
     public final static String MASTER = "hbase.master";
 
+    private final AtomicBoolean atomicClosed = new AtomicBoolean(false);
     private final HBaseConfiguration hbaseConfig;
     private final HTablePool tablePool;
     private final HConnectionPoolImpl connectionPool;
     private final int maxTablePoolReferencesPerTable;
-
     private final MappingManager mappingManager;
-    private volatile Map<Class, AnnotationResultAccessor> annotationMappingMap = null;
 
+    private volatile Map<Class, AnnotationResultAccessor> annotationMappingMap = null;
     private volatile HBaseAdmin hbaseAdmin = null;
     private volatile IndexedTableAdmin indexTableAdmin = null;
-    private volatile boolean closed = false;
 
     private String executorPoolName = null;
     private QueryExecutor queryExecutor = null;
@@ -274,25 +274,23 @@ public class HConnectionImpl implements HConnection, PoolableElement {
         this.getConnectionPool().releaseConnection(this);
     }
 
+    private AtomicBoolean getAtomicClosed() {
+        return this.atomicClosed;
+    }
+
+    public boolean isClosed() {
+        return this.getAtomicClosed().get();
+    }
+
     public void close() throws HBqlException {
         // If it is a pool conection, just give it back to pool (reset() will be called on release)
         if (this.isPooled()) {
             this.release();
         }
         else {
-            if (!this.isClosed()) {
-                synchronized (this) {
-                    if (!this.isClosed()) {
-                        this.reset();
-                        this.closed = true;
-                    }
-                }
-            }
+            if (!this.getAtomicClosed().getAndSet(true))
+                this.reset();
         }
-    }
-
-    public boolean isClosed() {
-        return this.closed;
     }
 
     private void checkIfClosed() throws HBqlException {

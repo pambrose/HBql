@@ -34,8 +34,9 @@ public class NamedParameters implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private volatile List<NamedParameter> paramList = null;
     private final SortedSet<NamedParameter> paramSet = new TreeSet<NamedParameter>(NamedParameter.getComparator());
+
+    private volatile List<NamedParameter> paramList = null;
 
     private List<NamedParameter> getParamList() {
         return this.paramList;
@@ -51,7 +52,6 @@ public class NamedParameters implements Serializable {
     }
 
     public List<NamedParameter> getParameterList() {
-
         if (this.getParamList() == null) {
             synchronized (this) {
                 if (this.getParamList() == null) {

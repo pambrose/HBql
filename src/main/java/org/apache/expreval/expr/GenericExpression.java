@@ -47,6 +47,7 @@ import org.apache.hadoop.hbase.hbql.util.Lists;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public abstract class GenericExpression implements GenericValue {
 
@@ -63,7 +64,7 @@ public abstract class GenericExpression implements GenericValue {
     private final ExpressionType type;
     private final List<GenericValue> genericValueList = Lists.newArrayList();
     private MultipleExpressionContext expressionContext = null;
-    private volatile boolean allArgsOptimized = false;
+    private final AtomicBoolean allArgsOptimized = new AtomicBoolean(false);
 
     protected GenericExpression(final ExpressionType type, final GenericValue... exprs) {
         this(type, Arrays.asList(exprs));
@@ -203,21 +204,14 @@ public abstract class GenericExpression implements GenericValue {
         return this.expressionContext;
     }
 
-    private boolean areAllArgsOptimized() {
-        return allArgsOptimized;
+    private AtomicBoolean getAllArgsOptimized() {
+        return this.allArgsOptimized;
     }
 
     protected void optimizeAllArgs() throws HBqlException {
-
-        if (!this.areAllArgsOptimized()) {
-            synchronized (this) {
-                if (!this.areAllArgsOptimized()) {
-                    for (int i = 0; i < this.getGenericValueList().size(); i++)
-                        this.setArg(i, this.getExprArg(i).getOptimizedValue());
-
-                    this.allArgsOptimized = true;
-                }
-            }
+        if (!this.getAllArgsOptimized().getAndSet(true)) {
+            for (int i = 0; i < this.getGenericValueList().size(); i++)
+                this.setArg(i, this.getExprArg(i).getOptimizedValue());
         }
     }
 

@@ -45,7 +45,7 @@ public class MappingManager {
         this.connection = conn;
     }
 
-    public synchronized void clear() {
+    public void clear() {
         this.getUserMappingsMap().clear();
         this.getCachedMappingsMap().clear();
     }

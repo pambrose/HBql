@@ -31,16 +31,17 @@ import java.util.concurrent.RejectedExecutionHandler;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public abstract class CompletionQueueExecutor<T> implements PoolableElement {
 
+    private final AtomicBoolean atomicClosed = new AtomicBoolean(false);
     private final QueryExecutorPool executorPool;
     private final ExecutorService submitterThread = Executors.newSingleThreadExecutor();
     private final LocalThreadPoolExecutor threadPoolExecutor;
     private final CompletionQueue<T> completionQueue;
     private final AtomicInteger workSubmittedCounter = new AtomicInteger(0);
-    private volatile boolean closed = false;
 
     private static class LocalCallerRunsPolicy extends ThreadPoolExecutor.CallerRunsPolicy {
 
@@ -153,8 +154,12 @@ public abstract class CompletionQueueExecutor<T> implements PoolableElement {
         return this.getThreadPoolExecutor().getRejectionCount();
     }
 
+    private AtomicBoolean getAtomicClosed() {
+        return this.atomicClosed;
+    }
+
     public boolean isClosed() {
-        return this.closed;
+        return this.getAtomicClosed().get();
     }
 
     public boolean moreResultsPending() {
@@ -190,14 +195,9 @@ public abstract class CompletionQueueExecutor<T> implements PoolableElement {
     }
 
     public void close() {
-        if (!this.isClosed()) {
-            synchronized (this) {
-                if (!this.isClosed()) {
-                    this.release();
-                    this.getThreadPoolExecutor().shutdown();
-                    this.closed = true;
-                }
-            }
+        if (!this.getAtomicClosed().getAndSet(true)) {
+            this.release();
+            this.getThreadPoolExecutor().shutdown();
         }
     }
 }

@@ -33,13 +33,14 @@ import org.apache.hadoop.hbase.hbql.statement.SelectStatement;
 import org.apache.hadoop.hbase.hbql.util.Lists;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 
 public class HStatementImpl implements HStatement {
 
+    private final AtomicBoolean atomicClosed = new AtomicBoolean(false);
     private final HConnectionImpl connection;
     private HResultSet resultSet = null;
-    private volatile boolean closed = false;
     private boolean ignoreQueryExecutor = false;
 
     public HStatementImpl(final HConnectionImpl conn) {
@@ -143,17 +144,18 @@ public class HStatementImpl implements HStatement {
         return this.executeUpdate(Utils.parseHBqlStatement(sql));
     }
 
-    public synchronized void close() throws HBqlException {
+    private AtomicBoolean getAtomicClosed() {
+        return this.atomicClosed;
+    }
 
-        if (!isClosed()) {
-            this.closed = true;
-
+    public void close() throws HBqlException {
+        if (!this.getAtomicClosed().getAndSet(true)) {
             if (this.getResultSet() != null)
                 this.getResultSet().close();
         }
     }
 
     public boolean isClosed() {
-        return this.closed;
+        return this.getAtomicClosed().get();
     }
 }
