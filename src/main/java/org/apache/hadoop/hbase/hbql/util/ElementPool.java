@@ -74,7 +74,7 @@ public abstract class ElementPool<T extends PoolableElement> {
         }
     }
 
-    public synchronized T take() throws HBqlException {
+    protected synchronized T take() throws HBqlException {
 
         // Grow the pool as necessary, rather than front-loading it.
         if (this.getElementPool().size() == 0)
@@ -91,8 +91,8 @@ public abstract class ElementPool<T extends PoolableElement> {
         }
     }
 
-    public void release(final T element) {
-        //element.reset();
+    protected void release(final T element) {
+        element.reset();
         this.getElementPool().add(element);
         this.getTakenElementCount().decrementAndGet();
     }

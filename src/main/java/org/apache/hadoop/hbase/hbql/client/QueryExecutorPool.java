@@ -68,6 +68,14 @@ public class QueryExecutorPool extends ElementPool<CompletionQueueExecutor> {
         return this.completionQueueSize;
     }
 
+    public CompletionQueueExecutor takeQueryExecutor() throws HBqlException {
+        return this.take();
+    }
+
+    public void releaseQueryExecutor(final CompletionQueueExecutor element) {
+        this.release(element);
+    }
+
     protected CompletionQueueExecutor newElement() throws HBqlException {
         return this.getThreadsReadResults()
                ? ResultExecutor.newPooledResultExecutor(this,

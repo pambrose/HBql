@@ -49,13 +49,14 @@ public abstract class HResultSetImpl<T, R> implements HResultSet<T> {
 
     private final Query<T> query;
     private final ExpressionTree clientExpressionTree;
-    private final CompletionQueueExecutor<R> executorWithQueue;
+    private final CompletionQueueExecutor<R> completionQueueExecutor;
 
     private volatile boolean closed = false;
 
-    protected HResultSetImpl(final Query<T> query, final CompletionQueueExecutor<R> executor) throws HBqlException {
+    protected HResultSetImpl(final Query<T> query,
+                             final CompletionQueueExecutor<R> completionQueueExecutor) throws HBqlException {
         this.query = query;
-        this.executorWithQueue = executor;
+        this.completionQueueExecutor = completionQueueExecutor;
         this.clientExpressionTree = this.getWithArgs().getClientExpressionTree();
         this.returnedRecordLimit = this.getWithArgs().getLimit();
 
@@ -71,14 +72,14 @@ public abstract class HResultSetImpl<T, R> implements HResultSet<T> {
                 listener.onQueryInit();
         }
 
-        if (this.getExecutorWithQueue() != null) {
+        if (this.getCompletionQueueExecutor() != null) {
             // Submit work to executor
             final List<RowRequest> rowRequestList = this.getQuery().getRowRequestList();
-            this.getExecutorWithQueue().submitWorkToSubmitterThread(
+            this.getCompletionQueueExecutor().submitWorkToSubmitterThread(
                     new Runnable() {
                         public void run() {
                             submitWork(rowRequestList);
-                            getExecutorWithQueue().putCompletion();
+                            getCompletionQueueExecutor().putCompletion();
                         }
                     }
             );
@@ -89,8 +90,8 @@ public abstract class HResultSetImpl<T, R> implements HResultSet<T> {
 
     public abstract Iterator<T> iterator();
 
-    protected CompletionQueueExecutor<R> getExecutorWithQueue() {
-        return this.executorWithQueue;
+    protected CompletionQueueExecutor<R> getCompletionQueueExecutor() {
+        return this.completionQueueExecutor;
     }
 
     protected void setAggregateRecord(final AggregateRecord aggregateRecord) {
@@ -140,8 +141,8 @@ public abstract class HResultSetImpl<T, R> implements HResultSet<T> {
                     for (final ResultScanner scanner : this.getResultScannerList())
                         closeResultScanner(scanner, false);
                     this.getResultScannerList().clear();
-                    if (this.getExecutorWithQueue() != null)
-                        this.getExecutorWithQueue().release();
+                    if (this.getCompletionQueueExecutor() != null)
+                        this.getCompletionQueueExecutor().release();
                     this.closed = true;
                 }
             }

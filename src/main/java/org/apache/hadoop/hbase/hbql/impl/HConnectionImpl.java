@@ -482,7 +482,7 @@ public class HConnectionImpl implements HConnection, PoolableElement {
     private CompletionQueueExecutor takeExecutorFromPool() throws HBqlException {
         this.validateExecutorPoolNameExists(this.getQueryExecutorPoolName());
         final QueryExecutorPool pool = QueryExecutorPoolManager.getExecutorPool(this.getQueryExecutorPoolName());
-        return pool.take();
+        return pool.takeQueryExecutor();
     }
 
     public boolean usesQueryExecutor() {

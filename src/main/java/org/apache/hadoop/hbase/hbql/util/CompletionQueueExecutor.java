@@ -83,8 +83,8 @@ public abstract class CompletionQueueExecutor<T> implements PoolableElement {
 
     private static class LocalThreadFactory implements ThreadFactory {
 
-        final String name;
-        final AtomicInteger threadCounter = new AtomicInteger(0);
+        private final AtomicInteger threadCounter = new AtomicInteger(0);
+        private final String name;
 
         private LocalThreadFactory(final String name) {
             this.name = name;
@@ -174,7 +174,7 @@ public abstract class CompletionQueueExecutor<T> implements PoolableElement {
         this.getSubmitterThread().submit(job);
     }
 
-    public void submitWorkToThreadPoolExecutor(final Runnable job) {
+    public void submitWorkToThreadPool(final Runnable job) {
         this.getWorkSubmittedCounter().incrementAndGet();
         this.getThreadPoolExecutor().execute(job);
     }

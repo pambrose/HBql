@@ -47,17 +47,17 @@ public class ResultScannerExecutorResultSet<T> extends HResultSetImpl<T, ResultS
                         final ResultScanner resultScanner = rowRequest.getResultScanner(getSelectStmt().getMapping(),
                                                                                         getWithArgs(),
                                                                                         getHTableWrapper().getHTable());
-                        getExecutorWithQueue().putElement(resultScanner);
+                        getCompletionQueueExecutor().putElement(resultScanner);
                     }
                     catch (HBqlException e) {
                         e.printStackTrace();
                     }
                     finally {
-                        getExecutorWithQueue().putCompletion();
+                        getCompletionQueueExecutor().putCompletion();
                     }
                 }
             };
-            this.getExecutorWithQueue().submitWorkToThreadPoolExecutor(job);
+            this.getCompletionQueueExecutor().submitWorkToThreadPool(job);
         }
     }
 
@@ -67,13 +67,13 @@ public class ResultScannerExecutorResultSet<T> extends HResultSetImpl<T, ResultS
             return new ResultSetIterator<T, ResultScanner>(this) {
 
                 protected boolean moreResultsPending() {
-                    return getExecutorWithQueue().moreResultsPending();
+                    return getCompletionQueueExecutor().moreResultsPending();
                 }
 
                 protected Iterator<Result> getNextResultIterator() throws HBqlException {
                     final ResultScanner resultScanner;
                     while (true) {
-                        final QueueElement<ResultScanner> queueElement = getExecutorWithQueue().takeElement();
+                        final QueueElement<ResultScanner> queueElement = getCompletionQueueExecutor().takeElement();
                         if (queueElement.isCompletionToken()) {
                             if (!moreResultsPending()) {
                                 resultScanner = null;

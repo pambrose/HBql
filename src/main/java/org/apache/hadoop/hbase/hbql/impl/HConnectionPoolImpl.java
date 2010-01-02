@@ -57,10 +57,10 @@ public class HConnectionPoolImpl extends ElementPool<HConnectionImpl> implements
     }
 
     public HConnection takeConnection() throws HBqlException {
-        return super.take();
+        return this.take();
     }
 
     protected void releaseConnection(final HConnectionImpl element) {
-        super.release(element);
+        this.release(element);
     }
 }

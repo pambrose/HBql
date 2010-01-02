@@ -318,13 +318,14 @@ public class ServerFilterTest extends TestSupport {
                                                           Utils.getRandomPositiveInt(10));
         }
 
+        final int poolSize = Utils.getRandomPositiveInt(10);
+        final ExecutorService threadPool = Executors.newFixedThreadPool(poolSize);
+
         final int repeats = 10;
 
         for (int i = 0; i < repeats; i++) {
-            final int totalJobs = Utils.getRandomPositiveInt(50);
+            final int totalJobs = Utils.getRandomPositiveInt(100);
             final int maxKeyRangeCount = Utils.getRandomPositiveInt(100);
-            final int poolSize = Utils.getRandomPositiveInt(10);
-            final ExecutorService threadPool = Executors.newFixedThreadPool(poolSize);
             final CountDownLatch latch = new CountDownLatch(totalJobs);
 
             for (int tj = 0; tj < totalJobs; tj++) {

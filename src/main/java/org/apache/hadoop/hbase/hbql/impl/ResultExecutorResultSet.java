@@ -64,7 +64,7 @@ public class ResultExecutorResultSet<T> extends HResultSetImpl<T, Result> {
                                 continue;
                             }
 
-                            getExecutorWithQueue().putElement(result);
+                            getCompletionQueueExecutor().putElement(result);
                         }
 
                         scanner.close();
@@ -74,12 +74,12 @@ public class ResultExecutorResultSet<T> extends HResultSetImpl<T, Result> {
                         e.printStackTrace();
                     }
                     finally {
-                        getExecutorWithQueue().putCompletion();
+                        getCompletionQueueExecutor().putCompletion();
                     }
                 }
             };
 
-            this.getExecutorWithQueue().submitWorkToThreadPoolExecutor(job);
+            this.getCompletionQueueExecutor().submitWorkToThreadPool(job);
         }
     }
 
@@ -120,7 +120,7 @@ public class ResultExecutorResultSet<T> extends HResultSetImpl<T, Result> {
                 }
 
                 protected boolean moreResultsPending() {
-                    return getExecutorWithQueue().moreResultsPending();
+                    return getCompletionQueueExecutor().moreResultsPending();
                 }
 
                 @SuppressWarnings("unchecked")
@@ -131,7 +131,7 @@ public class ResultExecutorResultSet<T> extends HResultSetImpl<T, Result> {
                     // Read data until all jobs have sent DONE tokens
                     while (true) {
                         final Result result;
-                        final QueueElement<Result> queueElement = getExecutorWithQueue().takeElement();
+                        final QueueElement<Result> queueElement = getCompletionQueueExecutor().takeElement();
                         if (queueElement.isCompletionToken()) {
                             if (!moreResultsPending())
                                 break;
