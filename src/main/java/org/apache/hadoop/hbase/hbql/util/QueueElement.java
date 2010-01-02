@@ -21,19 +21,20 @@
 package org.apache.hadoop.hbase.hbql.util;
 
 public class QueueElement<T> {
-    private final T element;
-    private final boolean completeToken;
 
-    QueueElement(final T element, boolean completeToken) {
+    private final T element;
+    private final boolean completionToken;
+
+    private QueueElement(final T element, boolean completionToken) {
         this.element = element;
-        this.completeToken = completeToken;
+        this.completionToken = completionToken;
     }
 
     public static <T> QueueElement<T> newElement(final T element) {
         return new QueueElement<T>(element, false);
     }
 
-    public static <T> QueueElement<T> newComplete() {
+    public static <T> QueueElement<T> newCompletionToken() {
         return new QueueElement<T>(null, true);
     }
 
@@ -41,7 +42,7 @@ public class QueueElement<T> {
         return this.element;
     }
 
-    public boolean isCompleteToken() {
-        return this.completeToken;
+    public boolean isCompletionToken() {
+        return this.completionToken;
     }
 }

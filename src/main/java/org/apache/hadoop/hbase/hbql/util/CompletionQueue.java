@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009.  The Apache Software Foundation
+ * Copyright (c) 2010.  The Apache Software Foundation
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -28,8 +28,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class CompletionQueue<T> {
 
-    private final BlockingQueue<QueueElement<T>> blockingQueue;
     private final AtomicInteger completionCounter = new AtomicInteger(0);
+    private final QueueElement<T> completionToken = QueueElement.newCompletionToken();
+    private final BlockingQueue<QueueElement<T>> blockingQueue;
 
     public CompletionQueue(final int size) {
         this.blockingQueue = new ArrayBlockingQueue<QueueElement<T>>(size, true);
@@ -41,6 +42,10 @@ public class CompletionQueue<T> {
 
     private AtomicInteger getCompletionCounter() {
         return this.completionCounter;
+    }
+
+    private QueueElement<T> getCompletionToken() {
+        return this.completionToken;
     }
 
     public int getCompletionCount() {
@@ -57,10 +62,9 @@ public class CompletionQueue<T> {
         }
     }
 
-    public void putCompletion() {
-        final QueueElement<T> element = QueueElement.newComplete();
+    public void putCompletionToken() {
         try {
-            this.getBlockingQueue().put(element);
+            this.getBlockingQueue().put(this.getCompletionToken());
         }
         catch (InterruptedException e) {
             e.printStackTrace();
@@ -70,7 +74,7 @@ public class CompletionQueue<T> {
     public QueueElement<T> takeElement() throws HBqlException {
         try {
             final QueueElement<T> queueElement = this.getBlockingQueue().take();
-            if (queueElement.isCompleteToken())
+            if (queueElement.isCompletionToken())
                 this.getCompletionCounter().incrementAndGet();
             return queueElement;
         }

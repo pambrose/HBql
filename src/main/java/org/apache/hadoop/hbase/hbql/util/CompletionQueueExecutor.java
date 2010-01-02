@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009.  The Apache Software Foundation
+ * Copyright (c) 2010.  The Apache Software Foundation
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -28,6 +28,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.RejectedExecutionHandler;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -56,8 +57,9 @@ public abstract class CompletionQueueExecutor<T> implements PoolableElement {
                                         final long keepAliveTime,
                                         final TimeUnit timeUnit,
                                         final BlockingQueue<Runnable> workQueue,
+                                        final ThreadFactory threadFactory,
                                         final RejectedExecutionHandler handler) {
-            super(minPoolSize, maxPoolSize, keepAliveTime, timeUnit, workQueue, handler);
+            super(minPoolSize, maxPoolSize, keepAliveTime, timeUnit, workQueue, threadFactory, handler);
         }
 
         private final AtomicInteger rejectionCounter = new AtomicInteger(0);
@@ -79,6 +81,21 @@ public abstract class CompletionQueueExecutor<T> implements PoolableElement {
         }
     }
 
+    private static class LocalThreadFactory implements ThreadFactory {
+
+        final String name;
+        final AtomicInteger threadCounter = new AtomicInteger(0);
+
+        private LocalThreadFactory(final String name) {
+            this.name = name;
+        }
+
+        public Thread newThread(Runnable r) {
+            final Thread thread = new Thread(r);
+            thread.setName(this.name + " thread: " + this.threadCounter.incrementAndGet());
+            return thread;
+        }
+    }
 
     protected CompletionQueueExecutor(final QueryExecutorPool executorPool,
                                       final int minThreadCount,
@@ -87,11 +104,13 @@ public abstract class CompletionQueueExecutor<T> implements PoolableElement {
                                       final int completionQueueSize) {
         this.executorPool = executorPool;
         final BlockingQueue<Runnable> backingQueue = new ArrayBlockingQueue<Runnable>(maxThreadCount * 5);
+        final String name = executorPool == null ? "Non pool" : "Executor pool " + executorPool.getName();
         this.threadPoolExecutor = new LocalThreadPoolExecutor(minThreadCount,
                                                               maxThreadCount,
                                                               keepAliveSecs,
                                                               TimeUnit.SECONDS,
                                                               backingQueue,
+                                                              new LocalThreadFactory(name),
                                                               new LocalCallerRunsPolicy());
         this.completionQueue = new CompletionQueue<T>(completionQueueSize);
     }
@@ -123,7 +142,7 @@ public abstract class CompletionQueueExecutor<T> implements PoolableElement {
     }
 
     public void putCompletion() {
-        this.getCompletionQueue().putCompletion();
+        this.getCompletionQueue().putCompletionToken();
     }
 
     public QueueElement<T> takeElement() throws HBqlException {

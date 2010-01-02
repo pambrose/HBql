@@ -132,7 +132,7 @@ public class ResultExecutorResultSet<T> extends HResultSetImpl<T, Result> {
                     while (true) {
                         final Result result;
                         final QueueElement<Result> queueElement = getExecutorWithQueue().takeElement();
-                        if (queueElement.isCompleteToken()) {
+                        if (queueElement.isCompletionToken()) {
                             if (!moreResultsPending())
                                 break;
                             else

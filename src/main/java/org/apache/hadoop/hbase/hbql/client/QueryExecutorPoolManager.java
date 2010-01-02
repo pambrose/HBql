@@ -50,7 +50,7 @@ public class QueryExecutorPoolManager {
                                                          final int completionQueueSize) throws HBqlException {
 
         if (Utils.isValidString(poolName) && getExecutorPoolMap().containsKey(poolName))
-            throw new HBqlException("Executor pool already exists: " + poolName);
+            throw new HBqlException("Query executor pool already exists: " + poolName);
 
         final QueryExecutorPool executorPool = new QueryExecutorPool(poolName,
                                                                      maxExecutorPoolSize,

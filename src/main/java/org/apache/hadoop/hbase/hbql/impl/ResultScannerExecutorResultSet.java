@@ -74,7 +74,7 @@ public class ResultScannerExecutorResultSet<T> extends HResultSetImpl<T, ResultS
                     final ResultScanner resultScanner;
                     while (true) {
                         final QueueElement<ResultScanner> queueElement = getExecutorWithQueue().takeElement();
-                        if (queueElement.isCompleteToken()) {
+                        if (queueElement.isCompletionToken()) {
                             if (!moreResultsPending()) {
                                 resultScanner = null;
                                 break;
