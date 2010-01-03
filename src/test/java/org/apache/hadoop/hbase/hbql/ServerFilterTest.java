@@ -179,14 +179,20 @@ public class ServerFilterTest extends TestSupport {
 
     @Test
     public void simpleSelect6() throws HBqlException {
-        final String q1 = "select * from tab3 WITH SERVER FILTER where val1 BETWEEN '12' AND '14' ";
-        showValues(q1, 3, true);
+        for (int i = 0; i < 100; i++) {
+            final String q1 = "select * from tab3 WITH SERVER FILTER where val1 BETWEEN '12' AND '14' ";
+            System.out.println("Vals: " + i);
+            showValues(q1, 3, false);
+        }
     }
 
     @Test
     public void simpleSelect6b() throws HBqlException {
-        final String q1 = "select * from tab3 WITH SERVER FILTER where val1 IN ('12', '13', '14') ";
-        showValues(q1, 3, true);
+        for (int i = 0; i < 100; i++) {
+            final String q1 = "select * from tab3 WITH SERVER FILTER where val1 IN ('12', '13', '14') ";
+            System.out.println("Vals: " + i);
+            showValues(q1, 3, false);
+        }
     }
 
     @Test
@@ -327,11 +333,11 @@ public class ServerFilterTest extends TestSupport {
         final int poolSize = Utils.getRandomPositiveInt(10);
         final ExecutorService threadPool = Executors.newFixedThreadPool(poolSize);
 
-        final int repeats = 10;
+        final int repeats = 1000;
 
         for (int i = 0; i < repeats; i++) {
-            final int totalJobs = Utils.getRandomPositiveInt(25);
-            final int maxKeyRangeCount = Utils.getRandomPositiveInt(50);
+            final int totalJobs = Utils.getRandomPositiveInt(250);
+            final int maxKeyRangeCount = Utils.getRandomPositiveInt(500);
             final CountDownLatch latch = new CountDownLatch(totalJobs);
 
             for (int tj = 0; tj < totalJobs; tj++) {

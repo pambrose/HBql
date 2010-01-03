@@ -79,10 +79,10 @@ public class StringInStmt extends GenericInStmt {
         this.validateArgsForInFilter();
 
         final GenericColumn<? extends GenericValue> column = ((DelegateColumn)this.getExprArg(0)).getTypedColumn();
-        final List<String> inValues = Lists.newArrayList();
+        final List<byte[]> inValues = Lists.newArrayList();
         try {
             for (final GenericValue obj : this.getInList()) {
-                final String val = (String)obj.getValue(null, null);
+                final byte[] val = Bytes.toBytes((String)obj.getValue(null, null));
                 inValues.add(val);
             }
         }
@@ -98,31 +98,21 @@ public class StringInStmt extends GenericInStmt {
                                                new StringInComparable(inValues));
     }
 
-    private static class StringInComparable extends GenericInComparable<String> {
+    private static class StringInComparable extends GenericInComparable<byte[]> {
 
         public StringInComparable() {
         }
 
-        public StringInComparable(final List<String> inValues) {
+        public StringInComparable(final List<byte[]> inValues) {
             this.setInValue(inValues);
         }
 
-        public int compareTo(final byte[] bytes) {
-
-            try {
-                final String val = IO.getSerialization().getStringFromBytes(bytes);
-
-                for (final String str : this.getInValues()) {
-                    if (str.equals(val))
-                        return 0;
-                }
-                return 1;
+        public int compareTo(final byte[] val) {
+            for (final byte[] inVal : this.getInValues()) {
+                if (Bytes.equals(val, inVal))
+                    return 0;
             }
-            catch (HBqlException e) {
-                e.printStackTrace();
-                Utils.logException(LOG, e);
-                return 1;
-            }
+            return 1;
         }
 
         public void write(final DataOutput dataOutput) throws IOException {
@@ -140,7 +130,7 @@ public class StringInStmt extends GenericInStmt {
         public void readFields(final DataInput dataInput) throws IOException {
             try {
                 final byte[] b = Bytes.readByteArray(dataInput);
-                final List<String> inValues = (List<String>)IO.getSerialization().getObjectFromBytes(b);
+                final List<byte[]> inValues = (List<byte[]>)IO.getSerialization().getObjectFromBytes(b);
                 this.setInValue(inValues);
             }
             catch (HBqlException e) {
