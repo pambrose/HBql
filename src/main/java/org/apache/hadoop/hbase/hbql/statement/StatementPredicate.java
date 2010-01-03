@@ -32,7 +32,7 @@ import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 
 public class StatementPredicate extends MultipleExpressionContext {
 
-    private final static ArgumentListTypeSignature typesig = new ArgumentListTypeSignature(BooleanValue.class);
+    private static final ArgumentListTypeSignature typesig = new ArgumentListTypeSignature(BooleanValue.class);
 
     public StatementPredicate(final GenericValue... exprs) {
         super(typesig, exprs);

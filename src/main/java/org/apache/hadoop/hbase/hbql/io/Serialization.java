@@ -29,8 +29,8 @@ public abstract class Serialization {
         JAVA, HADOOP
     }
 
-    private final static Serialization java = new JavaSerialization();
-    private final static Serialization hadoop = new HadoopSerialization();
+    private static final Serialization java = new JavaSerialization();
+    private static final Serialization hadoop = new HadoopSerialization();
 
     public static Serialization getSerializationStrategy(final TYPE type) {
 

@@ -77,7 +77,7 @@ public class ParserSupport extends Parser {
     }
     */
 
-    public final static boolean attemptRecovery = false;
+    public static final boolean attemptRecovery = false;
 
     protected void handleRecognitionException(final RecognitionException re) throws RecognitionException {
 
@@ -126,7 +126,7 @@ public class ParserSupport extends Parser {
         return root;
     }
 
-    public final static String EMBEDDED = "embedded";
+    public static final String EMBEDDED = "embedded";
 
     // This keeps antlr code out of TableMapping, which is accessed server-side in HBase
     public static TableMapping newTableMapping(final TokenStream input,

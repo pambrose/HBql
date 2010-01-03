@@ -44,8 +44,8 @@ public class ConnectionPoolTest extends TestSupport {
 
     static int count = 10;
     static int workerCount = 10;
-    final static int clients = 50;
-    final static int iterations = 50;
+    static final int clients = 50;
+    static final int iterations = 50;
 
     static HConnection connection = null;
 

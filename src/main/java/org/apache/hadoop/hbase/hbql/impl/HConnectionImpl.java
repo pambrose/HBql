@@ -63,8 +63,8 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class HConnectionImpl implements HConnection, PoolableElement {
 
-    public final static String MAXTABLEREFS = "maxtablerefs";
-    public final static String MASTER = "hbase.master";
+    public static final String MAXTABLEREFS = "maxtablerefs";
+    public static final String MASTER = "hbase.master";
 
     private final AtomicBoolean atomicClosed = new AtomicBoolean(false);
     private final HBaseConfiguration hbaseConfig;

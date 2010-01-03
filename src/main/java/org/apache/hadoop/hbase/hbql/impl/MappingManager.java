@@ -36,7 +36,7 @@ import java.util.Set;
 
 public class MappingManager {
 
-    private final static String SYSTEM_MAPPINGS = "system_mappings";
+    private static final String SYSTEM_MAPPINGS = "system_mappings";
 
     private final HConnectionImpl connection;
     private final Map<String, TableMapping> userMappingsMap = Maps.newConcurrentHashMap();

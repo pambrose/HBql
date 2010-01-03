@@ -32,7 +32,7 @@ import java.util.Map;
 
 public class ReflectionMapping extends Mapping {
 
-    private final static Map<Class<?>, ReflectionMapping> reflectionMappingMap = Maps.newHashMap();
+    private static final Map<Class<?>, ReflectionMapping> reflectionMappingMap = Maps.newHashMap();
 
     private ReflectionMapping(final Class clazz) {
         super(clazz.getName(), null);

@@ -43,7 +43,7 @@ import java.util.List;
 
 public abstract class TestSupport {
 
-    public final static int keywidth = 10;
+    public static final int keywidth = 10;
 
     public static void assertTrue(final boolean val) {
         org.junit.Assert.assertTrue(val);
