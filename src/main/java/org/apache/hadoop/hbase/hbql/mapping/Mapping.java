@@ -22,6 +22,7 @@ package org.apache.hadoop.hbase.hbql.mapping;
 
 import org.apache.expreval.expr.ExpressionTree;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.util.AtomicReferences;
 import org.apache.hadoop.hbase.hbql.util.Lists;
 import org.apache.hadoop.hbase.hbql.util.Maps;
 import org.apache.hadoop.hbase.hbql.util.Sets;
@@ -31,6 +32,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
 
 public abstract class Mapping implements Serializable {
 
@@ -45,7 +47,7 @@ public abstract class Mapping implements Serializable {
     private List<String> evalList = null;
     private int expressionTreeCacheSize = 25;
 
-    private transient volatile Map<String, ExpressionTree> evalMap = null;
+    private transient AtomicReference<Map<String, ExpressionTree>> atomicEvalMap = AtomicReferences.newAtomicReference();
 
     // For serialization
     public Mapping() {
@@ -93,17 +95,22 @@ public abstract class Mapping implements Serializable {
         }
     }
 
+    private AtomicReference<Map<String, ExpressionTree>> getAtomicEvalMap() {
+        return this.atomicEvalMap;
+    }
+
     public Map<String, ExpressionTree> getEvalMap() {
 
-        if (this.evalMap == null) {
+        if (this.getAtomicEvalMap().get() == null) {
             synchronized (this) {
-                if (this.evalMap == null) {
-                    this.evalMap = Maps.newHashMap();
+                if (this.getAtomicEvalMap().get() == null) {
+                    final Map<String, ExpressionTree> val = Maps.newHashMap();
+                    this.getAtomicEvalMap().set(val);
                     this.evalList = Lists.newArrayList();
                 }
             }
         }
-        return this.evalMap;
+        return this.getAtomicEvalMap().get();
     }
 
     public String getMappingName() {

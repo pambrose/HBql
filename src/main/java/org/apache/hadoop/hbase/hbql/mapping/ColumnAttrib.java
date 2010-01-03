@@ -29,12 +29,14 @@ import org.apache.hadoop.hbase.hbql.io.IO;
 import org.apache.hadoop.hbase.hbql.parser.ParserSupport;
 import org.apache.hadoop.hbase.hbql.statement.args.ColumnWidth;
 import org.apache.hadoop.hbase.hbql.statement.args.DefaultArg;
+import org.apache.hadoop.hbase.hbql.util.AtomicReferences;
 
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.NavigableMap;
+import java.util.concurrent.atomic.AtomicReference;
 
 public abstract class ColumnAttrib implements Serializable {
 
@@ -42,9 +44,9 @@ public abstract class ColumnAttrib implements Serializable {
 
     private ColumnDefinition columnDefinition;
 
-    private volatile byte[] familyQualifiedBytes = null;
-    private volatile byte[] familyBytes = null;
-    private volatile byte[] columnBytes = null;
+    private AtomicReference<byte[]> atomicFamilyQualifiedBytes = AtomicReferences.newAtomicReference();
+    private AtomicReference<byte[]> atomicFamilyBytes = AtomicReferences.newAtomicReference();
+    private AtomicReference<byte[]> atomicColumnBytes = AtomicReferences.newAtomicReference();
     private transient Method getterMethod = null;
     private transient Method setterMethod = null;
     private boolean embedded;
@@ -121,31 +123,49 @@ public abstract class ColumnAttrib implements Serializable {
             return this.getColumnName();
     }
 
+    private AtomicReference<byte[]> getAtomicFamilyQualifiedBytes() {
+        return this.atomicFamilyQualifiedBytes;
+    }
+
     public byte[] getFamilyQualifiedNameAsBytes() throws HBqlException {
-        if (this.familyQualifiedBytes == null)
+        if (this.getAtomicFamilyQualifiedBytes().get() == null)
             synchronized (this) {
-                if (this.familyQualifiedBytes == null)
-                    this.familyQualifiedBytes = IO.getSerialization().getStringAsBytes(this.getFamilyQualifiedName());
+                if (this.getAtomicFamilyQualifiedBytes().get() == null) {
+                    final byte[] b = IO.getSerialization().getStringAsBytes(this.getFamilyQualifiedName());
+                    this.getAtomicFamilyQualifiedBytes().set(b);
+                }
             }
-        return this.familyQualifiedBytes;
+        return this.getAtomicFamilyQualifiedBytes().get();
+    }
+
+    private AtomicReference<byte[]> getAtomicFamilyBytes() {
+        return this.atomicFamilyBytes;
     }
 
     public byte[] getFamilyNameAsBytes() throws HBqlException {
-        if (this.familyBytes == null)
+        if (this.getAtomicFamilyBytes().get() == null)
             synchronized (this) {
-                if (this.familyBytes == null)
-                    this.familyBytes = IO.getSerialization().getStringAsBytes(this.getFamilyName());
+                if (this.getAtomicFamilyBytes().get() == null) {
+                    final byte[] b = IO.getSerialization().getStringAsBytes(this.getFamilyName());
+                    this.getAtomicFamilyBytes().set(b);
+                }
             }
-        return this.familyBytes;
+        return this.getAtomicFamilyBytes().get();
+    }
+
+    private AtomicReference<byte[]> getAtomicColumnBytes() {
+        return this.atomicColumnBytes;
     }
 
     public byte[] getColumnNameAsBytes() throws HBqlException {
-        if (this.columnBytes == null)
+        if (this.getAtomicColumnBytes().get() == null)
             synchronized (this) {
-                if (this.columnBytes == null)
-                    this.columnBytes = IO.getSerialization().getStringAsBytes(this.getColumnName());
+                if (this.getAtomicColumnBytes().get() == null) {
+                    final byte[] b = IO.getSerialization().getStringAsBytes(this.getColumnName());
+                    this.getAtomicColumnBytes().set(b);
+                }
             }
-        return this.columnBytes;
+        return this.getAtomicColumnBytes().get();
     }
 
     public boolean equals(final Object o) {

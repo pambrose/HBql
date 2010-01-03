@@ -20,15 +20,18 @@
 
 package org.apache.hadoop.hbase.hbql.impl;
 
+import org.apache.hadoop.hbase.hbql.util.AtomicReferences;
+
 import java.util.NavigableMap;
 import java.util.TreeMap;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class CurrentAndVersionValue<T> extends Value {
 
+    private final AtomicReference<NavigableMap<Long, T>> atomicVersionMap = AtomicReferences.newAtomicReference();
     private boolean currentValueSet = false;
     private T currentValue = null;
     private long currentValueTimestamp = -1;
-    private volatile NavigableMap<Long, T> versionMap = null;
 
     public CurrentAndVersionValue(final String name) {
         super(name);
@@ -46,19 +49,23 @@ public class CurrentAndVersionValue<T> extends Value {
         }
     }
 
+    private AtomicReference<NavigableMap<Long, T>> getAtomicVersionMap() {
+        return this.atomicVersionMap;
+    }
+
     public NavigableMap<Long, T> getVersionMap() {
-        if (this.versionMap == null) {
+        if (this.getAtomicVersionMap().get() == null) {
             synchronized (this) {
-                if (this.versionMap == null)
-                    this.versionMap = new TreeMap<Long, T>();
+                if (this.getAtomicVersionMap().get() == null)
+                    this.setVersionMap(new TreeMap<Long, T>());
             }
         }
 
-        return this.versionMap;
+        return this.getAtomicVersionMap().get();
     }
 
     public void setVersionMap(final NavigableMap<Long, T> versionMap) {
-        this.versionMap = versionMap;
+        this.getAtomicVersionMap().set(versionMap);
     }
 
     public boolean isValueSet() {

@@ -22,6 +22,7 @@ package org.apache.hadoop.hbase.hbql.statement;
 
 import org.apache.expreval.expr.var.NamedParameter;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.util.AtomicReferences;
 import org.apache.hadoop.hbase.hbql.util.Lists;
 
 import java.io.Serializable;
@@ -29,18 +30,14 @@ import java.util.Collection;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class NamedParameters implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     private final SortedSet<NamedParameter> paramSet = new TreeSet<NamedParameter>(NamedParameter.getComparator());
-
-    private volatile List<NamedParameter> paramList = null;
-
-    private List<NamedParameter> getParamList() {
-        return this.paramList;
-    }
+    private final AtomicReference<List<NamedParameter>> atomicParamList = AtomicReferences.newAtomicReference();
 
     private SortedSet<NamedParameter> getParamSet() {
         return this.paramSet;
@@ -51,18 +48,23 @@ public class NamedParameters implements Serializable {
             this.getParamSet().addAll(params);
     }
 
+    public AtomicReference<List<NamedParameter>> getAtomicParamList() {
+        return atomicParamList;
+    }
+
     public List<NamedParameter> getParameterList() {
-        if (this.getParamList() == null) {
+        if (this.getAtomicParamList().get() == null) {
             synchronized (this) {
-                if (this.getParamList() == null) {
+                if (this.getAtomicParamList().get() == null) {
                     // This takes the ordered set and converts to a list
                     // The order is determined by when the param was created.
                     final int size = this.getParamSet().size();
-                    this.paramList = Lists.newArrayList(this.getParamSet().toArray(new NamedParameter[size]));
+                    final List<NamedParameter> val = Lists.newArrayList(this.getParamSet().toArray(new NamedParameter[size]));
+                    this.getAtomicParamList().set(val);
                 }
             }
         }
-        return this.getParamList();
+        return this.getAtomicParamList().get();
     }
 
     public NamedParameter getParameter(final int i) throws HBqlException {

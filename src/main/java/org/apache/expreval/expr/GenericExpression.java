@@ -210,10 +210,14 @@ public abstract class GenericExpression implements GenericValue {
     }
 
     protected void optimizeAllArgs() throws HBqlException {
-        if (this.getAllArgsOptimized().compareAndSet(false, true)) {
-            for (int i = 0; i < this.getGenericValueList().size(); i++)
-                this.setArg(i, this.getExprArg(i).getOptimizedValue());
-        }
+        if (!this.getAllArgsOptimized().get())
+            synchronized (this) {
+                if (!this.getAllArgsOptimized().get()) {
+                    for (int i = 0; i < this.getGenericValueList().size(); i++)
+                        this.setArg(i, this.getExprArg(i).getOptimizedValue());
+                    this.getAllArgsOptimized().set(true);
+                }
+            }
     }
 
     protected Filter newSingleColumnValueFilter(final ColumnAttrib attrib,

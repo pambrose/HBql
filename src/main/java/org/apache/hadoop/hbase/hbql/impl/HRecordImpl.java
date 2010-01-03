@@ -28,6 +28,7 @@ import org.apache.hadoop.hbase.hbql.mapping.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.mapping.ResultAccessor;
 import org.apache.hadoop.hbase.hbql.mapping.TableMapping;
 import org.apache.hadoop.hbase.hbql.statement.StatementContext;
+import org.apache.hadoop.hbase.hbql.util.AtomicReferences;
 import org.apache.hadoop.hbase.hbql.util.Lists;
 import org.apache.hadoop.hbase.hbql.util.Maps;
 
@@ -36,6 +37,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.NavigableMap;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class HRecordImpl implements HRecord, Serializable {
 
@@ -46,8 +48,8 @@ public class HRecordImpl implements HRecord, Serializable {
 
     private List<String> namePositionList = Lists.newArrayList();
 
-    private volatile ElementMap<ColumnValue> columnValuesMap = null;
-    private volatile ElementMap<UnMappedValueMap> unMappedValuesMap = null;
+    private AtomicReference<ElementMap<ColumnValue>> atomicColumnValuesMap = AtomicReferences.newAtomicReference();
+    private AtomicReference<ElementMap<UnMappedValueMap>> atomicUnMappedValuesMap = AtomicReferences.newAtomicReference();
 
     public HRecordImpl() {
     }
@@ -89,22 +91,30 @@ public class HRecordImpl implements HRecord, Serializable {
         return this.getStatementContext().getResultAccessor();
     }
 
+    private AtomicReference<ElementMap<ColumnValue>> getAtomicColumnValuesMap() {
+        return this.atomicColumnValuesMap;
+    }
+
     protected ElementMap<ColumnValue> getColumnValuesMap() {
-        if (this.columnValuesMap == null)
+        if (this.getAtomicColumnValuesMap().get() == null)
             synchronized (this) {
-                if (this.columnValuesMap == null)
-                    this.columnValuesMap = new ElementMap<ColumnValue>(this);
+                if (this.getAtomicColumnValuesMap().get() == null)
+                    this.getAtomicColumnValuesMap().set(new ElementMap<ColumnValue>(this));
             }
-        return this.columnValuesMap;
+        return this.getAtomicColumnValuesMap().get();
+    }
+
+    private AtomicReference<ElementMap<UnMappedValueMap>> getAtomicUnMappedValuesMap() {
+        return this.atomicUnMappedValuesMap;
     }
 
     private ElementMap<UnMappedValueMap> getUnMappedValuesMap() {
-        if (this.unMappedValuesMap == null)
+        if (this.getAtomicUnMappedValuesMap().get() == null)
             synchronized (this) {
-                if (this.unMappedValuesMap == null)
-                    this.unMappedValuesMap = new ElementMap<UnMappedValueMap>(this);
+                if (this.getAtomicUnMappedValuesMap().get() == null)
+                    this.getAtomicUnMappedValuesMap().set(new ElementMap<UnMappedValueMap>(this));
             }
-        return this.unMappedValuesMap;
+        return this.getAtomicUnMappedValuesMap().get();
     }
 
     public void addElement(final Value value) throws HBqlException {
@@ -210,8 +220,8 @@ public class HRecordImpl implements HRecord, Serializable {
     }
 
     public void reset() {
-        this.columnValuesMap = null;
-        this.unMappedValuesMap = null;
+        this.atomicColumnValuesMap = null;
+        this.atomicUnMappedValuesMap = null;
     }
 
     public void setTimestamp(final long timestamp) {

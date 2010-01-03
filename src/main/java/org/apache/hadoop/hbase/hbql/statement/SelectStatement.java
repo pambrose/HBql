@@ -31,15 +31,16 @@ import org.apache.hadoop.hbase.hbql.util.Sets;
 
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class SelectStatement extends StatementContext implements ParameterStatement, HBqlStatement {
 
-    private final List<SelectElement> selectElementList;
     private final List<ColumnAttrib> selectColumnAttribList = Lists.newArrayList();
-    private final WithArgs withArgs;
     private final NamedParameters namedParameters = new NamedParameters();
+    private final AtomicInteger expressionCounter = new AtomicInteger(-1);
+    private final List<SelectElement> selectElementList;
+    private final WithArgs withArgs;
 
-    private volatile int expressionCounter = 0;
     private boolean validated = false;
     private boolean aggregateQuery = false;
 
@@ -52,7 +53,7 @@ public class SelectStatement extends StatementContext implements ParameterStatem
     }
 
     public synchronized String getNextExpressionName() {
-        return "expr-" + this.expressionCounter++;
+        return "expr-" + this.expressionCounter.incrementAndGet();
     }
 
     public NamedParameters getNamedParameters() {

@@ -110,14 +110,6 @@ public abstract class HResultSetImpl<T, R> implements HResultSet<T> {
         return this.currentResultScanner;
     }
 
-    private AtomicBoolean getAtomicClosed() {
-        return this.atomicClosed;
-    }
-
-    public boolean isClosed() {
-        return this.getAtomicClosed().get();
-    }
-
     protected void setCurrentResultScanner(final ResultScanner currentResultScanner) {
         // First close previous ResultScanner before reassigning
         closeResultScanner(getCurrentResultScanner(), true);
@@ -138,13 +130,29 @@ public abstract class HResultSetImpl<T, R> implements HResultSet<T> {
         }
     }
 
+    private AtomicBoolean getAtomicClosed() {
+        return this.atomicClosed;
+    }
+
+    public boolean isClosed() {
+        return this.getAtomicClosed().get();
+    }
+
     public void close() {
-        if (this.getAtomicClosed().compareAndSet(false, true)) {
-            for (final ResultScanner scanner : this.getResultScannerList())
-                closeResultScanner(scanner, false);
-            this.getResultScannerList().clear();
-            if (this.getCompletionQueueExecutor() != null)
-                this.getCompletionQueueExecutor().release();
+        if (!this.isClosed()) {
+            synchronized (this) {
+                if (!this.isClosed()) {
+                    for (final ResultScanner scanner : this.getResultScannerList())
+                        closeResultScanner(scanner, false);
+
+                    this.getResultScannerList().clear();
+
+                    if (this.getCompletionQueueExecutor() != null)
+                        this.getCompletionQueueExecutor().release();
+
+                    this.getAtomicClosed().set(true);
+                }
+            }
         }
     }
 

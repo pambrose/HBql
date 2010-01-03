@@ -56,11 +56,16 @@ public class DefaultArg extends ExpressionProperty implements Serializable {
     }
 
     public Object getDefaultValue() throws HBqlException {
-        if (this.getAtomicComputed().compareAndSet(false, true)) {
-            // Type checking happens in this call, so we force it above in the constructor
-            this.value = this.evaluateConstant(0, false);
-        }
+        if (!this.getAtomicComputed().get()) {
+            synchronized (this) {
+                if (!this.getAtomicComputed().get()) {
+                    // Type checking happens in this call, so we force it above in the constructor
+                    this.value = this.evaluateConstant(0, false);
 
+                    this.getAtomicComputed().set(true);
+                }
+            }
+        }
         return this.value;
     }
 

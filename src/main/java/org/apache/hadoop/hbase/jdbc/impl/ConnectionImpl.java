@@ -24,6 +24,7 @@ import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
+import org.apache.hadoop.hbase.hbql.util.AtomicReferences;
 import org.apache.hadoop.hbase.hbql.util.Lists;
 
 import javax.sql.ConnectionEvent;
@@ -50,13 +51,14 @@ import java.sql.Struct;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class ConnectionImpl implements Connection, PooledConnection {
 
     private final HConnectionImpl hconnectionImpl;
 
-    private volatile List<ConnectionEventListener> connectionEventListenerList = null;
-    private volatile List<StatementEventListener> statementEventListenerList = null;
+    private AtomicReference<List<ConnectionEventListener>> connectionEventListenerList = AtomicReferences.newAtomicReference();
+    private AtomicReference<List<StatementEventListener>> statementEventListenerList = AtomicReferences.newAtomicReference();
 
     public ConnectionImpl(final HBaseConfiguration config, final int maxPoolReferencesPerTable) throws HBqlException {
         this.hconnectionImpl = new HConnectionImpl(config, null, maxPoolReferencesPerTable);
@@ -279,46 +281,48 @@ public class ConnectionImpl implements Connection, PooledConnection {
         return false;
     }
 
+    private AtomicReference<List<ConnectionEventListener>> getAtomicConnectionEventListenerList() {
+        return this.connectionEventListenerList;
+    }
+
+    private List<ConnectionEventListener> getConnectionEventListenerList() {
+        if (this.getAtomicConnectionEventListenerList().get() == null)
+            synchronized (this) {
+                if (this.getAtomicConnectionEventListenerList().get() == null) {
+                    final List<ConnectionEventListener> val = Lists.newArrayList();
+                    this.getAtomicConnectionEventListenerList().set(val);
+                }
+            }
+        return this.getAtomicConnectionEventListenerList().get();
+    }
+
     private void fireConnectionClosed() {
-        if (this.getRawConnectionEventListenerList() != null) {
+        if (this.getAtomicConnectionEventListenerList().get() != null) {
             for (final ConnectionEventListener listener : this.getConnectionEventListenerList())
                 listener.connectionClosed(new ConnectionEvent(this));
         }
     }
 
-    void fireStatementClosed(final PreparedStatement pstmt) {
-        if (this.getRawStatementEventListenerList() != null) {
-            for (final StatementEventListener listener : this.getStatementEventListenerList())
-                listener.statementClosed(new StatementEvent(this, pstmt));
-        }
-    }
-
-    private List<ConnectionEventListener> getRawConnectionEventListenerList() {
-        return this.connectionEventListenerList;
-    }
-
-    private List<ConnectionEventListener> getConnectionEventListenerList() {
-        if (this.getRawConnectionEventListenerList() == null)
-            synchronized (this) {
-                if (this.getRawConnectionEventListenerList() == null)
-                    this.connectionEventListenerList = Lists.newArrayList();
-            }
-
-        return this.getRawConnectionEventListenerList();
-    }
-
-    private List<StatementEventListener> getRawStatementEventListenerList() {
+    private AtomicReference<List<StatementEventListener>> getAtomicStatementEventListenerList() {
         return this.statementEventListenerList;
     }
 
     private List<StatementEventListener> getStatementEventListenerList() {
-        if (this.getRawStatementEventListenerList() == null)
+        if (this.getAtomicStatementEventListenerList().get() == null)
             synchronized (this) {
-                if (this.getRawStatementEventListenerList() == null)
-                    this.statementEventListenerList = Lists.newArrayList();
+                if (this.getAtomicStatementEventListenerList().get() == null) {
+                    final List<StatementEventListener> val = Lists.newArrayList();
+                    this.getAtomicStatementEventListenerList().set(val);
+                }
             }
+        return this.getAtomicStatementEventListenerList().get();
+    }
 
-        return this.getRawStatementEventListenerList();
+    void fireStatementClosed(final PreparedStatement pstmt) {
+        if (this.getAtomicStatementEventListenerList().get() != null) {
+            for (final StatementEventListener listener : this.getStatementEventListenerList())
+                listener.statementClosed(new StatementEvent(this, pstmt));
+        }
     }
 
     public void addConnectionEventListener(final ConnectionEventListener connectionEventListener) {

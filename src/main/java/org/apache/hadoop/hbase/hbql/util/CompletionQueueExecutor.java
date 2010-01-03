@@ -154,14 +154,6 @@ public abstract class CompletionQueueExecutor<T> implements PoolableElement {
         return this.getThreadPoolExecutor().getRejectionCount();
     }
 
-    private AtomicBoolean getAtomicClosed() {
-        return this.atomicClosed;
-    }
-
-    public boolean isClosed() {
-        return this.getAtomicClosed().get();
-    }
-
     public boolean moreResultsPending() {
         final int completionCount = this.getCompletionQueue().getCompletionCount();
         final int submittedCount = this.getWorkSubmittedCounter().get();
@@ -194,10 +186,25 @@ public abstract class CompletionQueueExecutor<T> implements PoolableElement {
             this.getExecutorPool().release(this);
     }
 
+    private AtomicBoolean getAtomicClosed() {
+        return this.atomicClosed;
+    }
+
+    public boolean isClosed() {
+        return this.getAtomicClosed().get();
+    }
+
     public void close() {
-        if (this.getAtomicClosed().compareAndSet(false, true)) {
-            this.release();
-            this.getThreadPoolExecutor().shutdown();
+        if (!this.isClosed()) {
+            synchronized (this) {
+                if (!this.isClosed()) {
+                    this.release();
+
+                    this.getThreadPoolExecutor().shutdown();
+
+                    this.getAtomicClosed().set(true);
+                }
+            }
         }
     }
 }

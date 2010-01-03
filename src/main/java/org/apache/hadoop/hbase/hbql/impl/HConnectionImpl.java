@@ -47,6 +47,7 @@ import org.apache.hadoop.hbase.hbql.mapping.FamilyMapping;
 import org.apache.hadoop.hbase.hbql.mapping.TableMapping;
 import org.apache.hadoop.hbase.hbql.statement.args.KeyInfo;
 import org.apache.hadoop.hbase.hbql.statement.args.WithArgs;
+import org.apache.hadoop.hbase.hbql.util.AtomicReferences;
 import org.apache.hadoop.hbase.hbql.util.CompletionQueueExecutor;
 import org.apache.hadoop.hbase.hbql.util.Maps;
 import org.apache.hadoop.hbase.hbql.util.PoolableElement;
@@ -58,6 +59,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class HConnectionImpl implements HConnection, PoolableElement {
 
@@ -71,9 +73,9 @@ public class HConnectionImpl implements HConnection, PoolableElement {
     private final int maxTablePoolReferencesPerTable;
     private final MappingManager mappingManager;
 
-    private volatile Map<Class, AnnotationResultAccessor> annotationMappingMap = null;
-    private volatile HBaseAdmin hbaseAdmin = null;
-    private volatile IndexedTableAdmin indexTableAdmin = null;
+    private final AtomicReference<Map<Class, AnnotationResultAccessor>> atomicAnnoMapping = AtomicReferences.newAtomicReference();
+    private final AtomicReference<HBaseAdmin> atomicHbaseAdmin = AtomicReferences.newAtomicReference();
+    private final AtomicReference<IndexedTableAdmin> atomicIndexTableAdmin = AtomicReferences.newAtomicReference();
 
     private String executorPoolName = null;
     private QueryExecutor queryExecutor = null;
@@ -96,6 +98,10 @@ public class HConnectionImpl implements HConnection, PoolableElement {
         return new HBaseConfiguration(configuration);
     }
 
+    private AtomicReference<Map<Class, AnnotationResultAccessor>> getAtomicAnnoMapping() {
+        return this.atomicAnnoMapping;
+    }
+
     public void reset() {
 
         try {
@@ -105,8 +111,8 @@ public class HConnectionImpl implements HConnection, PoolableElement {
             e.printStackTrace();
         }
 
-        if (this.annotationMappingMap != null)
-            this.annotationMappingMap.clear();
+        if (this.getAtomicAnnoMapping().get() != null)
+            this.getAtomicAnnoMapping().get().clear();
 
         this.setQueryExecutorPoolName(null);
         this.setQueryExecutor(null);
@@ -138,13 +144,15 @@ public class HConnectionImpl implements HConnection, PoolableElement {
     }
 
     private Map<Class, AnnotationResultAccessor> getAnnotationMappingMap() {
-        if (this.annotationMappingMap == null) {
+        if (this.getAtomicAnnoMapping().get() == null) {
             synchronized (this) {
-                if (this.annotationMappingMap == null)
-                    this.annotationMappingMap = Maps.newConcurrentHashMap();
+                if (this.getAtomicAnnoMapping().get() == null) {
+                    final Map<Class, AnnotationResultAccessor> newmap = Maps.newConcurrentHashMap();
+                    this.getAtomicAnnoMapping().set(newmap);
+                }
             }
         }
-        return this.annotationMappingMap;
+        return this.getAtomicAnnoMapping().get();
     }
 
     public AnnotationResultAccessor getAnnotationMapping(final Object obj) throws HBqlException {
@@ -165,13 +173,17 @@ public class HConnectionImpl implements HConnection, PoolableElement {
         }
     }
 
+    private AtomicReference<HBaseAdmin> getAtomicHbaseAdmin() {
+        return this.atomicHbaseAdmin;
+    }
+
     public HBaseAdmin getHBaseAdmin() throws HBqlException {
         this.checkIfClosed();
-        if (this.hbaseAdmin == null) {
+        if (this.getAtomicHbaseAdmin().get() == null) {
             synchronized (this) {
-                if (this.hbaseAdmin == null) {
+                if (this.getAtomicHbaseAdmin().get() == null) {
                     try {
-                        this.hbaseAdmin = new HBaseAdmin(this.getHBaseConfiguration());
+                        this.getAtomicHbaseAdmin().set(new HBaseAdmin(this.getHBaseConfiguration()));
                     }
                     catch (MasterNotRunningException e) {
                         throw new HBqlException(e);
@@ -179,23 +191,28 @@ public class HConnectionImpl implements HConnection, PoolableElement {
                 }
             }
         }
-        return this.hbaseAdmin;
+        return this.getAtomicHbaseAdmin().get();
+    }
+
+    private AtomicReference<IndexedTableAdmin> getAtomicIndexTableAdmin() {
+        return this.atomicIndexTableAdmin;
     }
 
     public IndexedTableAdmin getIndexTableAdmin() throws HBqlException {
         this.checkIfClosed();
-        if (this.indexTableAdmin == null) {
+        if (this.getAtomicIndexTableAdmin().get() == null) {
             synchronized (this) {
-                if (this.indexTableAdmin == null)
+                if (this.getAtomicIndexTableAdmin().get() == null) {
                     try {
-                        this.indexTableAdmin = new IndexedTableAdmin(this.getHBaseConfiguration());
+                        this.getAtomicIndexTableAdmin().set(new IndexedTableAdmin(this.getHBaseConfiguration()));
                     }
                     catch (MasterNotRunningException e) {
                         throw new HBqlException(e);
                     }
+                }
             }
         }
-        return this.indexTableAdmin;
+        return this.getAtomicIndexTableAdmin().get();
     }
 
     public Set<String> getFamilyNames(final String tableName) throws HBqlException {
@@ -288,8 +305,14 @@ public class HConnectionImpl implements HConnection, PoolableElement {
             this.release();
         }
         else {
-            if (!this.getAtomicClosed().getAndSet(true))
-                this.reset();
+            if (!this.isClosed()) {
+                synchronized (this) {
+                    if (!this.isClosed()) {
+                        this.reset();
+                        this.getAtomicClosed().set(true);
+                    }
+                }
+            }
         }
     }
 

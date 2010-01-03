@@ -330,8 +330,8 @@ public class ServerFilterTest extends TestSupport {
         final int repeats = 10;
 
         for (int i = 0; i < repeats; i++) {
-            final int totalJobs = Utils.getRandomPositiveInt(100);
-            final int maxKeyRangeCount = Utils.getRandomPositiveInt(100);
+            final int totalJobs = Utils.getRandomPositiveInt(25);
+            final int maxKeyRangeCount = Utils.getRandomPositiveInt(50);
             final CountDownLatch latch = new CountDownLatch(totalJobs);
 
             for (int tj = 0; tj < totalJobs; tj++) {
