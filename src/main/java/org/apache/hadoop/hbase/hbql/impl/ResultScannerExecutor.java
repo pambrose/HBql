@@ -21,6 +21,7 @@
 package org.apache.hadoop.hbase.hbql.impl;
 
 import org.apache.hadoop.hbase.client.ResultScanner;
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.QueryExecutorPool;
 import org.apache.hadoop.hbase.hbql.util.CompletionQueueExecutor;
 
@@ -30,7 +31,7 @@ public class ResultScannerExecutor extends CompletionQueueExecutor<ResultScanner
                                  final int minThreadCount,
                                  final int maxThreadCount,
                                  final long keepAliveSecs,
-                                 final int queueSize) {
+                                 final int queueSize) throws HBqlException {
         super(executorPool, minThreadCount, maxThreadCount, keepAliveSecs, queueSize);
     }
 
@@ -38,14 +39,14 @@ public class ResultScannerExecutor extends CompletionQueueExecutor<ResultScanner
                                                                        final int minThreadCount,
                                                                        final int maxThreadCount,
                                                                        final long keepAliveSecs,
-                                                                       final int queueSize) {
+                                                                       final int queueSize) throws HBqlException {
         return new ResultScannerExecutor(executorPool, minThreadCount, maxThreadCount, keepAliveSecs, queueSize);
     }
 
     public static ResultScannerExecutor newResultScannerExecutor(final int minThreadCount,
                                                                  final int maxThreadCount,
                                                                  final long keepAliveSecs,
-                                                                 final int queueSize) {
+                                                                 final int queueSize) throws HBqlException {
         return new ResultScannerExecutor(null, minThreadCount, maxThreadCount, keepAliveSecs, queueSize);
     }
 

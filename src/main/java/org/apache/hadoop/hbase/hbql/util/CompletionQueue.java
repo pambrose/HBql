@@ -28,23 +28,76 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class CompletionQueue<T> {
 
-    private final AtomicInteger completionCounter = new AtomicInteger(0);
-    private final QueueElement<T> completionToken = QueueElement.newCompletionToken();
-    private final BlockingQueue<QueueElement<T>> blockingQueue;
+    public static class Element<R> {
 
-    public CompletionQueue(final int size) {
-        this.blockingQueue = new ArrayBlockingQueue<QueueElement<T>>(size, true);
+        private R value = null;
+        private boolean completionToken = false;
+
+        private Element(final R value, boolean completionToken) {
+            this.value = value;
+            this.completionToken = completionToken;
+        }
+
+        public static <S> Element<S> getElement(final Element<S> element, final S value) {
+            element.value = value;
+            element.completionToken = false;
+            return element;
+        }
+
+        public static <S> Element<S> newEmptyToken() {
+            return new Element<S>(null, false);
+        }
+
+        public static <S> Element<S> newCompletionToken() {
+            return new Element<S>(null, true);
+        }
+
+        public R getValue() {
+            return this.value;
+        }
+
+        public boolean isCompletionToken() {
+            return this.completionToken;
+        }
     }
 
-    private BlockingQueue<QueueElement<T>> getBlockingQueue() {
-        return this.blockingQueue;
+    private final Element<T> completionToken = Element.newCompletionToken();
+    private final AtomicInteger completionCounter = new AtomicInteger(0);
+
+    private final BlockingQueue<Element<T>> elementQueue;
+    private final BlockingQueue<Element<T>> reusablesQueue;
+
+    public CompletionQueue(final int size) throws HBqlException {
+
+        this.elementQueue = new ArrayBlockingQueue<Element<T>>(size, true);
+
+        // Reusable queue avoids creating objects for every item put in queue.
+        this.reusablesQueue = new ArrayBlockingQueue<Element<T>>(size);
+
+        try {
+            for (int i = 0; i < size + 1; i++) {
+                final Element<T> emptyItem = Element.newEmptyToken();
+                this.getReusablesQueue().put(emptyItem);
+            }
+        }
+        catch (InterruptedException e) {
+            throw new HBqlException(e);
+        }
+    }
+
+    private BlockingQueue<Element<T>> getElementQueue() {
+        return this.elementQueue;
+    }
+
+    private BlockingQueue<Element<T>> getReusablesQueue() {
+        return this.reusablesQueue;
     }
 
     private AtomicInteger getCompletionCounter() {
         return this.completionCounter;
     }
 
-    private QueueElement<T> getCompletionToken() {
+    private Element<T> getCompletionToken() {
         return this.completionToken;
     }
 
@@ -52,31 +105,36 @@ public class CompletionQueue<T> {
         return this.getCompletionCounter().get();
     }
 
-    public void putElement(final T val) throws HBqlException {
-        final QueueElement<T> element = QueueElement.newElement(val);
-        try {
-            this.getBlockingQueue().put(element);
-        }
-        catch (InterruptedException e) {
-            throw new HBqlException(e);
-        }
-    }
-
     public void putCompletionToken() {
         try {
-            this.getBlockingQueue().put(this.getCompletionToken());
+            this.getElementQueue().put(this.getCompletionToken());
         }
         catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
 
-    public QueueElement<T> takeElement() throws HBqlException {
+    public void putElement(final T val) throws HBqlException {
         try {
-            final QueueElement<T> queueElement = this.getBlockingQueue().take();
-            if (queueElement.isCompletionToken())
+            final Element<T> element = Element.getElement(this.getReusablesQueue().take(), val);
+            this.getElementQueue().put(element);
+        }
+        catch (InterruptedException e) {
+            throw new HBqlException(e);
+        }
+    }
+
+    public Element<T> takeElement() throws HBqlException {
+        try {
+            final Element<T> element = this.getElementQueue().take();
+
+            // Completion tokens do not go back to reusable queue
+            if (element.isCompletionToken())
                 this.getCompletionCounter().incrementAndGet();
-            return queueElement;
+            else
+                this.getReusablesQueue().put(element);
+
+            return element;
         }
         catch (InterruptedException e) {
             throw new HBqlException(e);
@@ -85,6 +143,6 @@ public class CompletionQueue<T> {
 
     public void reset() {
         this.getCompletionCounter().set(0);
-        this.getBlockingQueue().clear();
+        this.getElementQueue().clear();
     }
 }

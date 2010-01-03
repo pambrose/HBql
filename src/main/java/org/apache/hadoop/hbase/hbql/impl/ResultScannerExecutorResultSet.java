@@ -25,8 +25,8 @@ import org.apache.hadoop.hbase.client.ResultScanner;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.QueryListener;
 import org.apache.hadoop.hbase.hbql.statement.select.RowRequest;
+import org.apache.hadoop.hbase.hbql.util.CompletionQueue;
 import org.apache.hadoop.hbase.hbql.util.NullIterator;
-import org.apache.hadoop.hbase.hbql.util.QueueElement;
 
 import java.io.IOException;
 import java.util.Iterator;
@@ -73,15 +73,15 @@ public class ResultScannerExecutorResultSet<T> extends HResultSetImpl<T, ResultS
                 protected Iterator<Result> getNextResultIterator() throws HBqlException {
                     final ResultScanner resultScanner;
                     while (true) {
-                        final QueueElement<ResultScanner> queueElement = getCompletionQueueExecutor().takeElement();
-                        if (queueElement.isCompletionToken()) {
+                        final CompletionQueue.Element<ResultScanner> element = getCompletionQueueExecutor().takeElement();
+                        if (element.isCompletionToken()) {
                             if (!moreResultsPending()) {
                                 resultScanner = null;
                                 break;
                             }
                         }
                         else {
-                            resultScanner = queueElement.getElement();
+                            resultScanner = element.getValue();
                             break;
                         }
                     }

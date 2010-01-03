@@ -102,7 +102,7 @@ public abstract class CompletionQueueExecutor<T> implements PoolableElement {
                                       final int minThreadCount,
                                       final int maxThreadCount,
                                       final long keepAliveSecs,
-                                      final int completionQueueSize) {
+                                      final int completionQueueSize) throws HBqlException {
         this.executorPool = executorPool;
         final BlockingQueue<Runnable> backingQueue = new ArrayBlockingQueue<Runnable>(maxThreadCount * 5);
         final String name = executorPool == null ? "Non pool" : "Executor pool " + executorPool.getName();
@@ -146,7 +146,7 @@ public abstract class CompletionQueueExecutor<T> implements PoolableElement {
         this.getCompletionQueue().putCompletionToken();
     }
 
-    public QueueElement<T> takeElement() throws HBqlException {
+    public CompletionQueue.Element<T> takeElement() throws HBqlException {
         return this.getCompletionQueue().takeElement();
     }
 

@@ -21,6 +21,7 @@
 package org.apache.hadoop.hbase.hbql.impl;
 
 import org.apache.hadoop.hbase.client.Result;
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.QueryExecutorPool;
 import org.apache.hadoop.hbase.hbql.util.CompletionQueueExecutor;
 
@@ -30,7 +31,7 @@ public class ResultExecutor extends CompletionQueueExecutor<Result> {
                            final int minThreadCount,
                            final int maxThreadCount,
                            final long keepAliveSecs,
-                           final int completionQueueSize) {
+                           final int completionQueueSize) throws HBqlException {
         super(executorPool, minThreadCount, maxThreadCount, keepAliveSecs, completionQueueSize);
     }
 
@@ -38,14 +39,14 @@ public class ResultExecutor extends CompletionQueueExecutor<Result> {
                                                          final int minThreadCount,
                                                          final int maxThreadCount,
                                                          final long keepAliveSecs,
-                                                         final int completionQueueSize) {
+                                                         final int completionQueueSize) throws HBqlException {
         return new ResultExecutor(executorPool, minThreadCount, maxThreadCount, keepAliveSecs, completionQueueSize);
     }
 
     public static ResultExecutor newResultExecutor(final int minThreadCount,
                                                    final int maxThreadCount,
                                                    final long keepAliveSecs,
-                                                   final int completionQueueSize) {
+                                                   final int completionQueueSize) throws HBqlException {
         return new ResultExecutor(null, minThreadCount, maxThreadCount, keepAliveSecs, completionQueueSize);
     }
 

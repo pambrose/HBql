@@ -28,8 +28,8 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.QueryListener;
 import org.apache.hadoop.hbase.hbql.mapping.ResultAccessor;
 import org.apache.hadoop.hbase.hbql.statement.select.RowRequest;
+import org.apache.hadoop.hbase.hbql.util.CompletionQueue;
 import org.apache.hadoop.hbase.hbql.util.NullIterator;
-import org.apache.hadoop.hbase.hbql.util.QueueElement;
 
 import java.io.IOException;
 import java.util.Iterator;
@@ -131,15 +131,15 @@ public class ResultExecutorResultSet<T> extends HResultSetImpl<T, Result> {
                     // Read data until all jobs have sent DONE tokens
                     while (true) {
                         final Result result;
-                        final QueueElement<Result> queueElement = getCompletionQueueExecutor().takeElement();
-                        if (queueElement.isCompletionToken()) {
+                        final CompletionQueue.Element<Result> element = getCompletionQueueExecutor().takeElement();
+                        if (element.isCompletionToken()) {
                             if (!moreResultsPending())
                                 break;
                             else
                                 continue;
                         }
                         else {
-                            result = queueElement.getElement();
+                            result = element.getValue();
                         }
 
                         incrementReturnedRecordCount();

@@ -30,7 +30,7 @@ public class QueryExecutor {
                                                  final int maxThreadCount,
                                                  final long keepAliveSecs,
                                                  final boolean threadsReadResults,
-                                                 final int queueSize) {
+                                                 final int queueSize) throws HBqlException {
         return new QueryExecutorImpl(threadsReadResults
                                      ? ResultExecutor.newResultExecutor(minThreadCount,
                                                                         maxThreadCount,
