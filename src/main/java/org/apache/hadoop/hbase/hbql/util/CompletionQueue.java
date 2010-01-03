@@ -65,19 +65,19 @@ public class CompletionQueue<T> {
     private final AtomicInteger completionCounter = new AtomicInteger(0);
 
     private final BlockingQueue<Element<T>> elementQueue;
-    private final BlockingQueue<Element<T>> reusablesQueue;
+    private final BlockingQueue<Element<T>> reusableElementQueue;
 
     public CompletionQueue(final int size) throws HBqlException {
 
         this.elementQueue = new ArrayBlockingQueue<Element<T>>(size, true);
 
-        // Reusable queue avoids creating objects for every item put in queue.
-        this.reusablesQueue = new ArrayBlockingQueue<Element<T>>(size);
+        // Reusable element queue avoids creating objects for every item put in queue.
+        this.reusableElementQueue = new ArrayBlockingQueue<Element<T>>(size);
 
         try {
             for (int i = 0; i < size + 1; i++) {
                 final Element<T> emptyItem = Element.newEmptyToken();
-                this.getReusablesQueue().put(emptyItem);
+                this.getReusableElementQueue().put(emptyItem);
             }
         }
         catch (InterruptedException e) {
@@ -89,8 +89,8 @@ public class CompletionQueue<T> {
         return this.elementQueue;
     }
 
-    private BlockingQueue<Element<T>> getReusablesQueue() {
-        return this.reusablesQueue;
+    private BlockingQueue<Element<T>> getReusableElementQueue() {
+        return this.reusableElementQueue;
     }
 
     private AtomicInteger getCompletionCounter() {
@@ -116,7 +116,7 @@ public class CompletionQueue<T> {
 
     public void putElement(final T val) throws HBqlException {
         try {
-            final Element<T> element = Element.getElement(this.getReusablesQueue().take(), val);
+            final Element<T> element = Element.getElement(this.getReusableElementQueue().take(), val);
             this.getElementQueue().put(element);
         }
         catch (InterruptedException e) {
@@ -132,7 +132,7 @@ public class CompletionQueue<T> {
             if (element.isCompletionToken())
                 this.getCompletionCounter().incrementAndGet();
             else
-                this.getReusablesQueue().put(element);
+                this.getReusableElementQueue().put(element);
 
             return element;
         }
