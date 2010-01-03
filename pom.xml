@@ -26,7 +26,7 @@
     <groupId>com.hbql</groupId>
     <artifactId>HBql</artifactId>
     <name>HBql</name>
-    <version>0.9.16-alpha</version>
+    <version>0.9.17-alpha</version>
 
     <scm>
         <connection>scm:git:git://github.com/pambrose/HBql.git/</connection>

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009.  The Apache Software Foundation
+ * Copyright (c) 2010.  The Apache Software Foundation
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,8 +18,8 @@
  * limitations under the License.
  */
 
-@VersionAnnotation(version = "0.9.16-alpha",
-                   date = "12/31/09",
+@VersionAnnotation(version = "0.9.17-alpha",
+                   date = "01/03/10",
                    user = "pambrose",
                    revision = "",
                    url = "http://www.hbql.com") package org.apache.hadoop.hbase.hbql.util;
