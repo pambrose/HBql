@@ -20,6 +20,7 @@
 
 package org.apache.hadoop.hbase.hbql.impl;
 
+import org.apache.commons.logging.Log;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.ParseException;
 import org.apache.hadoop.hbase.hbql.mapping.HRecordResultAccessor;
@@ -34,6 +35,8 @@ import org.apache.hadoop.hbase.hbql.statement.SelectStatement;
 import org.apache.hadoop.hbase.hbql.statement.StatementContext;
 import org.apache.hadoop.hbase.hbql.util.Lists;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintWriter;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.List;
@@ -154,5 +157,17 @@ public class Utils {
             if (val != Integer.MIN_VALUE)
                 return (Math.abs(val) % upper) + 1;
         }
+    }
+
+    public static void logException(final Log log, final Exception e) {
+
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        final PrintWriter oos = new PrintWriter(baos);
+
+        e.printStackTrace(oos);
+        oos.flush();
+        oos.close();
+
+        log.debug(baos.toString());
     }
 }

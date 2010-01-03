@@ -20,6 +20,8 @@
 
 package org.apache.expreval.expr.betweenstmt;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.expreval.client.NullColumnValueException;
 import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.ExpressionType;
@@ -30,6 +32,7 @@ import org.apache.hadoop.hbase.filter.CompareFilter;
 import org.apache.hadoop.hbase.filter.Filter;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
+import org.apache.hadoop.hbase.hbql.impl.Utils;
 import org.apache.hadoop.hbase.hbql.io.IO;
 
 import java.io.DataInput;
@@ -37,6 +40,8 @@ import java.io.DataOutput;
 import java.io.IOException;
 
 public class StringBetweenStmt extends GenericBetweenStmt {
+
+    private static final Log LOG = LogFactory.getLog(StringBetweenStmt.class);
 
     public StringBetweenStmt(final GenericValue arg0,
                              final boolean not,
@@ -59,7 +64,7 @@ public class StringBetweenStmt extends GenericBetweenStmt {
 
     public Filter getFilter() throws HBqlException {
 
-        this.validateArgsForBetween();
+        this.validateArgsForBetweenFilter();
 
         final GenericColumn<? extends GenericValue> column = ((DelegateColumn)this.getExprArg(0)).getTypedColumn();
         final String lowerVal = (String)this.getConstantValue(1);
@@ -67,15 +72,15 @@ public class StringBetweenStmt extends GenericBetweenStmt {
 
         return this.newSingleColumnValueFilter(column.getColumnAttrib(),
                                                CompareFilter.CompareOp.EQUAL,
-                                               new StringComparable(lowerVal, upperVal));
+                                               new StringBetweenComparable(lowerVal, upperVal));
     }
 
-    private static class StringComparable extends GenericComparable<String> {
+    private static class StringBetweenComparable extends GenericBetweenComparable<String> {
 
-        public StringComparable() {
+        public StringBetweenComparable() {
         }
 
-        public StringComparable(final String lowerValue, final String upperValue) {
+        public StringBetweenComparable(final String lowerValue, final String upperValue) {
             this.setLowerValue(lowerValue);
             this.setUpperValue(upperValue);
         }
@@ -90,7 +95,8 @@ public class StringBetweenStmt extends GenericBetweenStmt {
             }
             catch (HBqlException e) {
                 e.printStackTrace();
-                return 0;
+                Utils.logException(LOG, e);
+                return 1;
             }
         }
 

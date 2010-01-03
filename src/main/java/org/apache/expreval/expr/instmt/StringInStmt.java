@@ -20,16 +20,32 @@
 
 package org.apache.expreval.expr.instmt;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.expreval.client.NullColumnValueException;
 import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.TypeSupport;
 import org.apache.expreval.expr.node.GenericValue;
+import org.apache.expreval.expr.var.DelegateColumn;
+import org.apache.expreval.expr.var.GenericColumn;
+import org.apache.hadoop.hbase.filter.CompareFilter;
+import org.apache.hadoop.hbase.filter.Filter;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.impl.InvalidServerFilterExpressionException;
+import org.apache.hadoop.hbase.hbql.impl.Utils;
+import org.apache.hadoop.hbase.hbql.io.IO;
+import org.apache.hadoop.hbase.hbql.util.Lists;
+import org.apache.hadoop.hbase.util.Bytes;
 
+import java.io.DataInput;
+import java.io.DataOutput;
+import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 
 public class StringInStmt extends GenericInStmt {
+
+    private static final Log LOG = LogFactory.getLog(StringInStmt.class);
 
     public StringInStmt(final GenericValue arg0, final boolean not, final List<GenericValue> inList) {
         super(arg0, not, inList);
@@ -56,5 +72,82 @@ public class StringInStmt extends GenericInStmt {
             }
         }
         return false;
+    }
+
+    public Filter getFilter() throws HBqlException {
+
+        this.validateArgsForInFilter();
+
+        final GenericColumn<? extends GenericValue> column = ((DelegateColumn)this.getExprArg(0)).getTypedColumn();
+        final List<String> inValues = Lists.newArrayList();
+        try {
+            for (final GenericValue obj : this.getInList()) {
+                final String val = (String)obj.getValue(null, null);
+                inValues.add(val);
+            }
+        }
+        catch (ResultMissingColumnException e) {
+            throw new InvalidServerFilterExpressionException();
+        }
+        catch (NullColumnValueException e) {
+            throw new InvalidServerFilterExpressionException();
+        }
+
+        return this.newSingleColumnValueFilter(column.getColumnAttrib(),
+                                               CompareFilter.CompareOp.EQUAL,
+                                               new StringInComparable(inValues));
+    }
+
+    private static class StringInComparable extends GenericInComparable<String> {
+
+        public StringInComparable() {
+        }
+
+        public StringInComparable(final List<String> inValues) {
+            this.setInValue(inValues);
+        }
+
+        public int compareTo(final byte[] bytes) {
+
+            try {
+                final String val = IO.getSerialization().getStringFromBytes(bytes);
+
+                for (final String str : this.getInValues()) {
+                    if (str.equals(val))
+                        return 0;
+                }
+                return 1;
+            }
+            catch (HBqlException e) {
+                e.printStackTrace();
+                Utils.logException(LOG, e);
+                return 1;
+            }
+        }
+
+        public void write(final DataOutput dataOutput) throws IOException {
+            try {
+                final byte[] b = IO.getSerialization().getObjectAsBytes(this.getInValues());
+                Bytes.writeByteArray(dataOutput, b);
+            }
+            catch (HBqlException e) {
+                e.printStackTrace();
+                Utils.logException(LOG, e);
+                throw new IOException("HBqlException: " + e.getCause());
+            }
+        }
+
+        public void readFields(final DataInput dataInput) throws IOException {
+            try {
+                final byte[] b = Bytes.readByteArray(dataInput);
+                final List<String> inValues = (List<String>)IO.getSerialization().getObjectFromBytes(b);
+                this.setInValue(inValues);
+            }
+            catch (HBqlException e) {
+                e.printStackTrace();
+                Utils.logException(LOG, e);
+                throw new IOException("HBqlException: " + e.getCause());
+            }
+        }
     }
 }

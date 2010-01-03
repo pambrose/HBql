@@ -29,6 +29,7 @@ import org.apache.expreval.expr.node.DateValue;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.expreval.expr.node.NumberValue;
 import org.apache.expreval.expr.node.StringValue;
+import org.apache.hadoop.hbase.filter.Filter;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 
@@ -78,5 +79,9 @@ public class DelegateInStmt extends GenericInStmt {
                                                                                     ResultMissingColumnException,
                                                                                     NullColumnValueException {
         return this.getTypedExpr().getValue(conn, object);
+    }
+
+    public Filter getFilter() throws HBqlException {
+        return this.getTypedExpr().getFilter();
     }
 }

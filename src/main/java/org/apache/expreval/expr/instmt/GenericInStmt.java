@@ -26,8 +26,10 @@ import org.apache.expreval.expr.ExpressionType;
 import org.apache.expreval.expr.NotValue;
 import org.apache.expreval.expr.node.BooleanValue;
 import org.apache.expreval.expr.node.GenericValue;
+import org.apache.hadoop.hbase.filter.WritableByteArrayComparable;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
+import org.apache.hadoop.hbase.hbql.impl.InvalidServerFilterExpressionException;
 
 import java.util.List;
 
@@ -37,7 +39,9 @@ public abstract class GenericInStmt extends NotValue<GenericInStmt> implements B
         super(ExpressionType.INSTMT, not, arg0, inList);
     }
 
-    protected abstract boolean evaluateInList(final Object object) throws HBqlException, ResultMissingColumnException, NullColumnValueException;
+    protected abstract boolean evaluateInList(final Object object) throws HBqlException,
+                                                                          ResultMissingColumnException,
+                                                                          NullColumnValueException;
 
     protected List<GenericValue> getInList() {
         return this.getSubArgs(1);
@@ -67,5 +71,33 @@ public abstract class GenericInStmt extends NotValue<GenericInStmt> implements B
         }
         sbuf.append(")");
         return sbuf.toString();
+    }
+
+    private boolean inListIsConstant() {
+        for (final GenericValue valueExpr : this.getInList()) {
+            if (!valueExpr.isAConstant())
+                return false;
+        }
+        return true;
+    }
+
+    protected abstract static class GenericInComparable<T> implements WritableByteArrayComparable {
+
+        private List<T> inValues;
+
+        protected List<T> getInValues() {
+            return this.inValues;
+        }
+
+        protected void setInValue(final List<T> inValues) {
+            this.inValues = inValues;
+        }
+    }
+
+    protected void validateArgsForInFilter() throws InvalidServerFilterExpressionException {
+        if (this.getExprArg(0).isAColumnReference() && this.inListIsConstant())
+            return;
+
+        throw new InvalidServerFilterExpressionException("Filter requires a column reference and list of constants");
     }
 }

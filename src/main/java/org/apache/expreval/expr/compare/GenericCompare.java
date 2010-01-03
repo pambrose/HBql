@@ -20,6 +20,8 @@
 
 package org.apache.expreval.expr.compare;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.expreval.client.InternalErrorException;
 import org.apache.expreval.client.NullColumnValueException;
 import org.apache.expreval.client.ResultMissingColumnException;
@@ -33,6 +35,7 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.InvalidTypeException;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 import org.apache.hadoop.hbase.hbql.impl.InvalidServerFilterExpressionException;
+import org.apache.hadoop.hbase.hbql.impl.Utils;
 import org.apache.hadoop.hbase.hbql.io.IO;
 import org.apache.hadoop.hbase.hbql.mapping.FieldType;
 import org.apache.hadoop.hbase.util.Bytes;
@@ -40,6 +43,8 @@ import org.apache.hadoop.hbase.util.Bytes;
 import java.io.IOException;
 
 public abstract class GenericCompare extends GenericExpression implements BooleanValue {
+
+    private static final Log LOG = LogFactory.getLog(GenericCompare.class);
 
     private final Operator operator;
 
@@ -58,13 +63,13 @@ public abstract class GenericCompare extends GenericExpression implements Boolea
         return this.getExprArg(pos).getValue(conn, object);
     }
 
-    protected void validateArgsForCompare() throws InvalidServerFilterExpressionException {
+    protected void validateArgsForCompareFilter() throws InvalidServerFilterExpressionException {
         // One of the values must be a single column reference and the other a constant
         if ((this.getExprArg(0).isAColumnReference() && this.getExprArg(1).isAConstant())
             || this.getExprArg(1).isAColumnReference() && (this.getExprArg(0).isAConstant()))
             return;
 
-        throw new InvalidServerFilterExpressionException("Filter comparisons require a column reference and a constant expression");
+        throw new InvalidServerFilterExpressionException("Filter require a column reference and a constant");
     }
 
     public GenericValue getOptimizedValue() throws HBqlException {
@@ -130,7 +135,9 @@ public abstract class GenericCompare extends GenericExpression implements Boolea
                 this.setValueInBytes(IO.getSerialization().getScalarAsBytes(fieldType, val));
             }
             catch (HBqlException e) {
-                throw new IOException(e.getMessage());
+                e.printStackTrace();
+                Utils.logException(LOG, e);
+                throw new IOException("HBqlException: " + e.getCause());
             }
         }
 

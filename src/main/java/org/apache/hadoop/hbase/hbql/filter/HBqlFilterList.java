@@ -45,7 +45,7 @@ import java.util.List;
  */
 public class HBqlFilterList implements Filter {
 
-    static final Log LOG = LogFactory.getLog(HBqlFilterList.class);
+    private static final Log LOG = LogFactory.getLog(HBqlFilterList.class);
 
     /**
      * set operator

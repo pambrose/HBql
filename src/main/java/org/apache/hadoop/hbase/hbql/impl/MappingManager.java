@@ -54,12 +54,9 @@ public class MappingManager {
 
     public void validatePersistentMetadata() throws HBqlException {
 
-        if (!this.getConnection().mappingExists(SYSTEM_MAPPINGS)) {
-            final String sql1 = "CREATE TEMP SYSTEM MAPPING "
-                                + SYSTEM_MAPPINGS
-                                + " (mapping_name KEY, f1(mapping_obj object alias mapping_obj))";
-            this.getConnection().execute(sql1);
-        }
+        final String sql1 = "CREATE TEMP SYSTEM MAPPING " + SYSTEM_MAPPINGS
+                            + " (mapping_name KEY, f1(mapping_obj object alias mapping_obj))";
+        this.getConnection().execute(sql1);
 
         if (!this.getConnection().tableExists(SYSTEM_MAPPINGS)) {
             final String sql2 = "CREATE TABLE " + SYSTEM_MAPPINGS + " (f1(MAX_VERSIONS: 1))";

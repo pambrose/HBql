@@ -97,6 +97,14 @@ public abstract class Serialization {
         }
     }
 
+    public Object getObjectFromBytes(final byte[] b) throws HBqlException {
+        return this.getScalarFromBytes(FieldType.ObjectType, b);
+    }
+
+    public byte[] getObjectAsBytes(final Object obj) throws HBqlException {
+        return this.getScalarAsBytes(FieldType.getFieldType(obj), obj);
+    }
+
     abstract public Object getScalarFromBytes(FieldType fieldType, byte[] b) throws HBqlException;
 
     abstract public byte[] getScalarAsBytes(FieldType fieldType, Object obj) throws HBqlException;
@@ -105,14 +113,10 @@ public abstract class Serialization {
 
     abstract public byte[] getArrayAsBytes(FieldType fieldType, Object obj) throws HBqlException;
 
-    public byte[] getScalarAsBytes(final Object obj) throws HBqlException {
-        return this.getScalarAsBytes(FieldType.getFieldType(obj), obj);
-    }
-
     public boolean isSerializable(final Object obj) {
 
         try {
-            final byte[] b = getScalarAsBytes(obj);
+            final byte[] b = getObjectAsBytes(obj);
             final Object newobj = getScalarFromBytes(FieldType.getFieldType(obj), b);
         }
         catch (HBqlException e) {

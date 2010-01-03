@@ -184,6 +184,12 @@ public class ServerFilterTest extends TestSupport {
     }
 
     @Test
+    public void simpleSelect6b() throws HBqlException {
+        final String q1 = "select * from tab3 WITH SERVER FILTER where val1 IN ('12', '13', '14') ";
+        showValues(q1, 3, true);
+    }
+
+    @Test
     public void simpleSelect7() throws HBqlException {
         final String q1 = "select * from tab3 WITH SERVER FILTER where val1+'ss' BETWEEN '12ss' AND '14ss' ";
         showValues(q1, 3, true);
@@ -249,10 +255,10 @@ public class ServerFilterTest extends TestSupport {
 
         HStatement stmt = connection.createStatement();
 
-        System.out
-                .println(stmt.execute("CREATE EXECUTOR POOL threadPool1 (max_executor_pool_size: 5, max_thread_count: 4, " +
-                                      "threads_read_results: true, completion_queue_size: 100) " +
-                                      "if not queryExecutorPoolExists('threadPool1')"));
+        System.out.println(stmt.execute("CREATE EXECUTOR POOL threadPool1 " +
+                                        "(max_executor_pool_size: 5, max_thread_count: 4, " +
+                                        "threads_read_results: true, completion_queue_size: 100) " +
+                                        "if not queryExecutorPoolExists('threadPool1')"));
         System.out.println(stmt.execute("DROP EXECUTOR POOL threadPool1 if queryExecutorPoolExists('threadPool1')"));
         System.out
                 .println(stmt.execute("CREATE EXECUTOR POOL threadPool1 (max_executor_pool_size: 5, max_thread_count: 4, " +

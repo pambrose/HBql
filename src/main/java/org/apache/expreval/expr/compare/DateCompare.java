@@ -20,6 +20,8 @@
 
 package org.apache.expreval.expr.compare;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.expreval.client.NullColumnValueException;
 import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.Operator;
@@ -31,6 +33,7 @@ import org.apache.hadoop.hbase.filter.CompareFilter;
 import org.apache.hadoop.hbase.filter.Filter;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
+import org.apache.hadoop.hbase.hbql.impl.Utils;
 import org.apache.hadoop.hbase.hbql.io.IO;
 import org.apache.hadoop.hbase.hbql.mapping.FieldType;
 
@@ -40,6 +43,8 @@ import java.io.IOException;
 import java.util.Date;
 
 public class DateCompare extends GenericCompare {
+
+    private static final Log LOG = LogFactory.getLog(DateCompare.class);
 
     public DateCompare(final GenericValue arg0, final Operator operator, final GenericValue arg1) {
         super(arg0, operator, arg1);
@@ -77,7 +82,7 @@ public class DateCompare extends GenericCompare {
 
     public Filter getFilter() throws HBqlException {
 
-        this.validateArgsForCompare();
+        this.validateArgsForCompareFilter();
 
         final GenericColumn<? extends GenericValue> column;
         final Object constant;
@@ -120,7 +125,8 @@ public class DateCompare extends GenericCompare {
             }
             catch (HBqlException e) {
                 e.printStackTrace();
-                return 0;
+                Utils.logException(LOG, e);
+                return 1;
             }
         }
 

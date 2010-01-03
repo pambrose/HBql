@@ -42,7 +42,7 @@ public abstract class GenericBetweenStmt extends NotValue<GenericBetweenStmt> im
                + this.getExprArg(1).asString() + " AND " + this.getExprArg(2).asString();
     }
 
-    protected abstract static class GenericComparable<T> implements WritableByteArrayComparable {
+    protected abstract static class GenericBetweenComparable<T> implements WritableByteArrayComparable {
 
         private T lowerValue;
         private T upperValue;
@@ -64,13 +64,13 @@ public abstract class GenericBetweenStmt extends NotValue<GenericBetweenStmt> im
         }
     }
 
-    protected void validateArgsForBetween() throws InvalidServerFilterExpressionException {
+    protected void validateArgsForBetweenFilter() throws InvalidServerFilterExpressionException {
 
         if (this.getExprArg(0).isAColumnReference()
             && this.getExprArg(1).isAConstant()
             && this.getExprArg(2).isAConstant())
             return;
 
-        throw new InvalidServerFilterExpressionException("Filter comparisons require a column reference and a constant expression");
+        throw new InvalidServerFilterExpressionException("Filter requires a column reference and two constants");
     }
 }

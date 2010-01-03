@@ -20,6 +20,8 @@
 
 package org.apache.expreval.expr.betweenstmt;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.expreval.client.NullColumnValueException;
 import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.ExpressionType;
@@ -31,6 +33,7 @@ import org.apache.hadoop.hbase.filter.Filter;
 import org.apache.hadoop.hbase.filter.WritableByteArrayComparable;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
+import org.apache.hadoop.hbase.hbql.impl.Utils;
 import org.apache.hadoop.hbase.hbql.io.IO;
 import org.apache.hadoop.hbase.hbql.mapping.FieldType;
 
@@ -39,6 +42,8 @@ import java.io.DataOutput;
 import java.io.IOException;
 
 public class NumberBetweenStmt extends GenericBetweenStmt {
+
+    private static final Log LOG = LogFactory.getLog(NumberBetweenStmt.class);
 
     public NumberBetweenStmt(final GenericValue arg0,
                              final boolean not,
@@ -50,7 +55,6 @@ public class NumberBetweenStmt extends GenericBetweenStmt {
     public Boolean getValue(final HConnectionImpl conn, final Object object) throws HBqlException,
                                                                                     ResultMissingColumnException,
                                                                                     NullColumnValueException {
-
         final Object obj0 = this.getExprArg(0).getValue(conn, object);
         final Object obj1 = this.getExprArg(1).getValue(conn, object);
         final Object obj2 = this.getExprArg(2).getValue(conn, object);
@@ -79,7 +83,7 @@ public class NumberBetweenStmt extends GenericBetweenStmt {
 
     public Filter getFilter() throws HBqlException {
 
-        this.validateArgsForBetween();
+        this.validateArgsForBetweenFilter();
 
         final GenericColumn<? extends GenericValue> column = ((DelegateColumn)this.getExprArg(0)).getTypedColumn();
         final Object lowerConstant = this.getConstantValue(1);
@@ -91,18 +95,18 @@ public class NumberBetweenStmt extends GenericBetweenStmt {
         if (!this.useDecimal()) {
             final long lowerVal = ((Number)lowerConstant).longValue();
             final long upperVal = ((Number)upperConstant).longValue();
-            comparator = new LongComparable(column.getColumnAttrib().getFieldType(), lowerVal, upperVal);
+            comparator = new LongBetweenComparable(column.getColumnAttrib().getFieldType(), lowerVal, upperVal);
         }
         else {
             final double lowerVal = ((Number)lowerConstant).doubleValue();
             final double upperVal = ((Number)upperConstant).doubleValue();
-            comparator = new DoubleComparable(column.getColumnAttrib().getFieldType(), lowerVal, upperVal);
+            comparator = new DoubleBetweenComparable(column.getColumnAttrib().getFieldType(), lowerVal, upperVal);
         }
 
         return this.newSingleColumnValueFilter(column.getColumnAttrib(), CompareFilter.CompareOp.EQUAL, comparator);
     }
 
-    private static abstract class NumberComparable<T> extends GenericComparable<T> {
+    private static abstract class NumberBetweenComparable<T> extends GenericBetweenComparable<T> {
 
         private FieldType fieldType;
 
@@ -115,12 +119,12 @@ public class NumberBetweenStmt extends GenericBetweenStmt {
         }
     }
 
-    private static class LongComparable extends NumberComparable<Long> {
+    private static class LongBetweenComparable extends NumberBetweenComparable<Long> {
 
-        public LongComparable() {
+        public LongBetweenComparable() {
         }
 
-        public LongComparable(final FieldType fieldType, final long lowerValue, final long upperValue) {
+        public LongBetweenComparable(final FieldType fieldType, final long lowerValue, final long upperValue) {
             this.setFieldType(fieldType);
             this.setLowerValue(lowerValue);
             this.setUpperValue(upperValue);
@@ -136,7 +140,8 @@ public class NumberBetweenStmt extends GenericBetweenStmt {
             }
             catch (HBqlException e) {
                 e.printStackTrace();
-                return 0;
+                Utils.logException(LOG, e);
+                return 1;
             }
         }
 
@@ -153,12 +158,12 @@ public class NumberBetweenStmt extends GenericBetweenStmt {
         }
     }
 
-    private static class DoubleComparable extends NumberComparable<Double> {
+    private static class DoubleBetweenComparable extends NumberBetweenComparable<Double> {
 
-        public DoubleComparable() {
+        public DoubleBetweenComparable() {
         }
 
-        public DoubleComparable(final FieldType fieldType, final double lowerValue, final double upperValue) {
+        public DoubleBetweenComparable(final FieldType fieldType, final double lowerValue, final double upperValue) {
             this.setFieldType(fieldType);
             this.setLowerValue(lowerValue);
             this.setUpperValue(upperValue);
@@ -174,7 +179,8 @@ public class NumberBetweenStmt extends GenericBetweenStmt {
             }
             catch (HBqlException e) {
                 e.printStackTrace();
-                return 0;
+                Utils.logException(LOG, e);
+                return 1;
             }
         }
 

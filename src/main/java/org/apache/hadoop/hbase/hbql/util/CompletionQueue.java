@@ -75,7 +75,7 @@ public class CompletionQueue<T> {
         this.reusableElementQueue = new ArrayBlockingQueue<Element<T>>(size);
 
         try {
-            for (int i = 0; i < size + 1; i++) {
+            for (int i = 0; i < size; i++) {
                 final Element<T> emptyItem = Element.newEmptyToken();
                 this.getReusableElementQueue().put(emptyItem);
             }
