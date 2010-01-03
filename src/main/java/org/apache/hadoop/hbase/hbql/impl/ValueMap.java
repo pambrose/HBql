@@ -52,10 +52,11 @@ public abstract class ValueMap<T> extends Value {
         this.getMapValue(mapKey).setCurrentValue(timestamp, val);
     }
 
+    /*
     public Map<Long, T> getVersionMap(final String name, final boolean createIfNull) throws HBqlException {
         return this.getMapValue(name).getVersionMap(createIfNull);
     }
-
+    */
     public void setVersionMap(final String name, final NavigableMap<Long, T> val) throws HBqlException {
         this.getMapValue(name).setVersionMap(val);
     }

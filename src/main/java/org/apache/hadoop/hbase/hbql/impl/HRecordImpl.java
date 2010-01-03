@@ -193,7 +193,7 @@ public class HRecordImpl implements HRecord, Serializable {
         if (attrib == null)
             throw new HBqlException("Invalid column name " + familyName + ":" + columnName);
 
-        this.getColumnValue(attrib.getColumnName(), inMapping).getVersionMap(true).put(timestamp, val);
+        this.getColumnValue(attrib.getColumnName(), inMapping).getVersionMap().put(timestamp, val);
     }
 
     public void setUnMappedCurrentValue(final String familyName,
@@ -241,7 +241,7 @@ public class HRecordImpl implements HRecord, Serializable {
 
     public Map<Long, Object> getVersionMap(final String name) throws HBqlException {
         final ColumnValue value = this.getColumnValuesMap().findElement(name);
-        return (value != null) ? value.getVersionMap(true) : null;
+        return (value != null) ? value.getVersionMap() : null;
     }
 
     public Map<String, byte[]> getUnMappedValueMap(final String name) throws HBqlException {
@@ -264,7 +264,7 @@ public class HRecordImpl implements HRecord, Serializable {
 
         final Map<String, NavigableMap<Long, byte[]>> retval = Maps.newHashMap();
         for (final String key : value.getCurrentAndVersionMap().keySet())
-            retval.put(key, value.getCurrentAndVersionMap().get(key).getVersionMap(true));
+            retval.put(key, value.getCurrentAndVersionMap().get(key).getVersionMap());
         return retval;
     }
 }

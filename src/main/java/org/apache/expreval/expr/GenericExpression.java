@@ -63,8 +63,9 @@ public abstract class GenericExpression implements GenericValue {
 
     private final ExpressionType type;
     private final List<GenericValue> genericValueList = Lists.newArrayList();
-    private MultipleExpressionContext expressionContext = null;
     private final AtomicBoolean allArgsOptimized = new AtomicBoolean(false);
+
+    private MultipleExpressionContext expressionContext = null;
 
     protected GenericExpression(final ExpressionType type, final GenericValue... exprs) {
         this(type, Arrays.asList(exprs));
@@ -209,7 +210,7 @@ public abstract class GenericExpression implements GenericValue {
     }
 
     protected void optimizeAllArgs() throws HBqlException {
-        if (!this.getAllArgsOptimized().getAndSet(true)) {
+        if (this.getAllArgsOptimized().compareAndSet(false, true)) {
             for (int i = 0; i < this.getGenericValueList().size(); i++)
                 this.setArg(i, this.getExprArg(i).getOptimizedValue());
         }

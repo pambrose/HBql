@@ -149,7 +149,7 @@ public class HStatementImpl implements HStatement {
     }
 
     public void close() throws HBqlException {
-        if (!this.getAtomicClosed().getAndSet(true)) {
+        if (this.getAtomicClosed().compareAndSet(false, true)) {
             if (this.getResultSet() != null)
                 this.getResultSet().close();
         }

@@ -37,11 +37,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 public abstract class CompletionQueueExecutor<T> implements PoolableElement {
 
     private final AtomicBoolean atomicClosed = new AtomicBoolean(false);
-    private final QueryExecutorPool executorPool;
+    private final AtomicInteger workSubmittedCounter = new AtomicInteger(0);
     private final ExecutorService submitterThread = Executors.newSingleThreadExecutor();
+    private final QueryExecutorPool executorPool;
     private final LocalThreadPoolExecutor threadPoolExecutor;
     private final CompletionQueue<T> completionQueue;
-    private final AtomicInteger workSubmittedCounter = new AtomicInteger(0);
 
     private static class LocalCallerRunsPolicy extends ThreadPoolExecutor.CallerRunsPolicy {
 
@@ -53,6 +53,8 @@ public abstract class CompletionQueueExecutor<T> implements PoolableElement {
 
     private static class LocalThreadPoolExecutor extends ThreadPoolExecutor {
 
+        private final AtomicInteger rejectionCounter = new AtomicInteger(0);
+
         private LocalThreadPoolExecutor(final int minPoolSize,
                                         final int maxPoolSize,
                                         final long keepAliveTime,
@@ -62,8 +64,6 @@ public abstract class CompletionQueueExecutor<T> implements PoolableElement {
                                         final RejectedExecutionHandler handler) {
             super(minPoolSize, maxPoolSize, keepAliveTime, timeUnit, workQueue, threadFactory, handler);
         }
-
-        private final AtomicInteger rejectionCounter = new AtomicInteger(0);
 
         private AtomicInteger getRejectionCounter() {
             return this.rejectionCounter;
@@ -195,7 +195,7 @@ public abstract class CompletionQueueExecutor<T> implements PoolableElement {
     }
 
     public void close() {
-        if (!this.getAtomicClosed().getAndSet(true)) {
+        if (this.getAtomicClosed().compareAndSet(false, true)) {
             this.release();
             this.getThreadPoolExecutor().shutdown();
         }

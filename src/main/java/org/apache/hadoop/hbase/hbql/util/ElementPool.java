@@ -28,11 +28,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public abstract class ElementPool<T extends PoolableElement> {
 
-    private final String name;
-    private final int maxPoolSize;
-    private final BlockingQueue<T> elementPool;
     private final AtomicInteger createdElementCount = new AtomicInteger(0);
     private final AtomicInteger takenElementCount = new AtomicInteger(0);
+    private final BlockingQueue<T> elementPool;
+    private final String name;
+    private final int maxPoolSize;
 
     public ElementPool(final String name, final int maxPoolSize) {
         this.name = name;

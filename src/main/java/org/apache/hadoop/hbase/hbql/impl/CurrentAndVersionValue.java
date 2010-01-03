@@ -46,14 +46,11 @@ public class CurrentAndVersionValue<T> extends Value {
         }
     }
 
-    public NavigableMap<Long, T> getVersionMap(final boolean createIfNull) {
+    public NavigableMap<Long, T> getVersionMap() {
         if (this.versionMap == null) {
             synchronized (this) {
                 if (this.versionMap == null)
-                    if (!createIfNull)
-                        return null;
-
-                this.versionMap = new TreeMap<Long, T>();
+                    this.versionMap = new TreeMap<Long, T>();
             }
         }
 

@@ -43,7 +43,7 @@ public class HBatch<T> {
 
     private final HConnection connection;
 
-    private final Map<String, List<BatchAction>> actionMap = Maps.newHashMap();
+    private final Map<String, List<BatchAction>> actionMap = Maps.newConcurrentHashMap();
 
     public HBatch(final HConnection connection) {
         this.connection = connection;

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009.  The Apache Software Foundation
+ * Copyright (c) 2010.  The Apache Software Foundation
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,24 +18,13 @@
  * limitations under the License.
  */
 
-package org.apache.yaoql.util;
+package org.apache.hadoop.hbase.hbql.util;
 
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 
-public class Counter {
+public class AtomicReferences {
 
-    private final AtomicInteger count = new AtomicInteger(0);
-
-    public void increment() {
-        count.incrementAndGet();
-    }
-
-    public int getCount() {
-        return this.count.get();
-    }
-
-    public void reset() {
-        this.count.set(0);
+    public static <E> AtomicReference<E> newAtomicReference() {
+        return new AtomicReference<E>();
     }
 }
-

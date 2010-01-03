@@ -92,7 +92,7 @@ public class HRecordAttrib extends ColumnAttrib {
     }
 
     public Map<Long, Object> getVersionMap(final Object record) throws HBqlException {
-        return ((HRecordImpl)record).getColumnValue(this.getAliasName(), true).getVersionMap(true);
+        return ((HRecordImpl)record).getColumnValue(this.getAliasName(), true).getVersionMap();
     }
 
     public void setUnMappedCurrentValue(final Object record,

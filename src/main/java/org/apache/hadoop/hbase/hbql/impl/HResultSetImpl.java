@@ -139,7 +139,7 @@ public abstract class HResultSetImpl<T, R> implements HResultSet<T> {
     }
 
     public void close() {
-        if (!this.getAtomicClosed().getAndSet(true)) {
+        if (this.getAtomicClosed().compareAndSet(false, true)) {
             for (final ResultScanner scanner : this.getResultScannerList())
                 closeResultScanner(scanner, false);
             this.getResultScannerList().clear();
