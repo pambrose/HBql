@@ -333,11 +333,11 @@ public class ServerFilterTest extends TestSupport {
         final int poolSize = Utils.getRandomPositiveInt(10);
         final ExecutorService threadPool = Executors.newFixedThreadPool(poolSize);
 
-        final int repeats = 1000;
+        final int repeats = 10;
 
         for (int i = 0; i < repeats; i++) {
-            final int totalJobs = Utils.getRandomPositiveInt(250);
-            final int maxKeyRangeCount = Utils.getRandomPositiveInt(500);
+            final int totalJobs = Utils.getRandomPositiveInt(50);
+            final int maxKeyRangeCount = Utils.getRandomPositiveInt(50);
             final CountDownLatch latch = new CountDownLatch(totalJobs);
 
             for (int tj = 0; tj < totalJobs; tj++) {
