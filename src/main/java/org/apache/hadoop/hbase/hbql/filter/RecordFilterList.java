@@ -43,9 +43,9 @@ import java.util.List;
  * Defaults to {@link Operator#MUST_PASS_ALL}.
  * <p>TODO: Fix creation of Configuration on serialization and deserialization.
  */
-public class HBqlFilterList implements Filter {
+public class RecordFilterList implements Filter {
 
-    private static final Log LOG = LogFactory.getLog(HBqlFilterList.class);
+    private static final Log LOG = LogFactory.getLog(RecordFilterList.class);
 
     /**
      * set operator
@@ -68,7 +68,7 @@ public class HBqlFilterList implements Filter {
      * Default constructor, filters nothing. Required though for RPC
      * deserialization.
      */
-    public HBqlFilterList() {
+    public RecordFilterList() {
         super();
     }
 
@@ -78,7 +78,7 @@ public class HBqlFilterList implements Filter {
      *
      * @param rowFilters
      */
-    public HBqlFilterList(final List<Filter> rowFilters) {
+    public RecordFilterList(final List<Filter> rowFilters) {
         this.filters = rowFilters;
     }
 
@@ -87,7 +87,7 @@ public class HBqlFilterList implements Filter {
      *
      * @param operator Operator to process filter set with.
      */
-    public HBqlFilterList(final Operator operator) {
+    public RecordFilterList(final Operator operator) {
         this.operator = operator;
     }
 
@@ -97,7 +97,7 @@ public class HBqlFilterList implements Filter {
      * @param operator   Operator to process filter set with.
      * @param rowFilters Set of row filters.
      */
-    public HBqlFilterList(final Operator operator, final List<Filter> rowFilters) {
+    public RecordFilterList(final Operator operator, final List<Filter> rowFilters) {
         this.filters = rowFilters;
         this.operator = operator;
     }

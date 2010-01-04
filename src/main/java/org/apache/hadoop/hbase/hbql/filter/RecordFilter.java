@@ -46,24 +46,24 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Arrays;
 
-public class HBqlFilter implements Filter {
+public class RecordFilter implements Filter {
 
-    private static final Log LOG = LogFactory.getLog(HBqlFilter.class);
+    private static final Log LOG = LogFactory.getLog(RecordFilter.class);
 
     private ExpressionTree expressionTree;
 
     public transient HRecordImpl record = new HRecordImpl((StatementContext)null);
 
-    public HBqlFilter() {
+    public RecordFilter() {
     }
 
-    private HBqlFilter(final ExpressionTree expressionTree) {
+    private RecordFilter(final ExpressionTree expressionTree) {
         this.expressionTree = expressionTree;
         this.getHRecord().setStatementContext(this.getExpressionTree().getStatementContext());
     }
 
-    public static HBqlFilter newHBqlFilter(final ExpressionTree expressionTree) throws HBqlException {
-        return (expressionTree == null) ? null : new HBqlFilter(expressionTree);
+    public static RecordFilter newRecordFilter(final ExpressionTree expressionTree) throws HBqlException {
+        return (expressionTree == null) ? null : new RecordFilter(expressionTree);
     }
 
     private HRecordImpl getHRecord() {
@@ -126,7 +126,7 @@ public class HBqlFilter implements Filter {
             }
             catch (Exception e) {
                 Utils.logException(LOG, e);
-                LOG.debug("Had exception in filterKeyValue(): " + e.getClass().getName() + " - " + e.getMessage());
+                LOG.debug("Exception in filterKeyValue(): " + e.getClass().getName() + " - " + e.getMessage());
             }
         }
 
@@ -175,7 +175,7 @@ public class HBqlFilter implements Filter {
         catch (HBqlException e) {
             e.printStackTrace();
             Utils.logException(LOG, e);
-            throw new IOException("HBqlException: " + e.getCause());
+            throw new IOException(e.getCause());
         }
     }
 
@@ -190,11 +190,11 @@ public class HBqlFilter implements Filter {
         catch (HBqlException e) {
             e.printStackTrace();
             Utils.logException(LOG, e);
-            throw new IOException("HBqlException: " + e.getCause());
+            throw new IOException(e.getCause());
         }
     }
 
-    public static void testFilter(final HBqlFilter origFilter) throws HBqlException, IOException {
+    public static void testFilter(final RecordFilter origFilter) throws HBqlException, IOException {
 
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         final ObjectOutputStream oos = new ObjectOutputStream(baos);
@@ -206,7 +206,7 @@ public class HBqlFilter implements Filter {
         final ByteArrayInputStream bais = new ByteArrayInputStream(b);
         final ObjectInputStream ois = new ObjectInputStream(bais);
 
-        HBqlFilter filter = new HBqlFilter();
+        RecordFilter filter = new RecordFilter();
         filter.readFields(ois);
 
         filter.reset();

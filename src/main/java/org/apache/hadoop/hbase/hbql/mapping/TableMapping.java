@@ -24,7 +24,7 @@ import org.apache.expreval.expr.ExpressionTree;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HMapping;
 import org.apache.hadoop.hbase.hbql.client.HRecord;
-import org.apache.hadoop.hbase.hbql.filter.HBqlFilter;
+import org.apache.hadoop.hbase.hbql.filter.RecordFilter;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 import org.apache.hadoop.hbase.hbql.impl.HRecordImpl;
 import org.apache.hadoop.hbase.hbql.io.IO;
@@ -274,11 +274,11 @@ public class TableMapping extends Mapping implements HMapping {
                : this.getConnection().getFamilyNames(this.getTableName());
     }
 
-    public HBqlFilter newHBqlFilter(final String query) throws HBqlException {
+    public RecordFilter newRecordFilter(final String query) throws HBqlException {
         final StatementContext statementContext = new NonStatement(this, null);
         statementContext.setResultAccessor(new HRecordResultAccessor(statementContext));
         final ExpressionTree expressionTree = ParserUtil.parseWhereExpression(query, statementContext);
-        return HBqlFilter.newHBqlFilter(expressionTree);
+        return RecordFilter.newRecordFilter(expressionTree);
     }
 
     public boolean isTempMapping() {

@@ -28,7 +28,7 @@ import org.apache.hadoop.hbase.client.tableindexed.IndexSpecification;
 import org.apache.hadoop.hbase.filter.Filter;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.Util;
-import org.apache.hadoop.hbase.hbql.filter.HBqlFilter;
+import org.apache.hadoop.hbase.hbql.filter.RecordFilter;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 import org.apache.hadoop.hbase.hbql.impl.Utils;
 import org.apache.hadoop.hbase.hbql.mapping.ColumnAttrib;
@@ -469,10 +469,10 @@ public class WithArgs implements Serializable {
             return this.getServerExpressionTree().getFilter();
         }
         catch (HBqlException e) {
-            // Try HBqlFilter instead
+            // Try RecordFilter instead
             if (this.getServerExpressionTree() != null)
                 this.getServerExpressionTree().setStatementContext(this.getStatementContext());
-            return HBqlFilter.newHBqlFilter(this.getServerExpressionTree());
+            return RecordFilter.newRecordFilter(this.getServerExpressionTree());
         }
     }
 

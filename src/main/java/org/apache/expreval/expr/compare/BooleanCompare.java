@@ -27,7 +27,7 @@ import org.apache.expreval.expr.node.BooleanValue;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.hadoop.hbase.filter.Filter;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.filter.HBqlFilterList;
+import org.apache.hadoop.hbase.hbql.filter.RecordFilterList;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 import org.apache.hadoop.hbase.hbql.impl.InvalidServerFilterExpressionException;
 import org.apache.hadoop.hbase.hbql.util.Lists;
@@ -77,26 +77,26 @@ public class BooleanCompare extends GenericCompare implements BooleanValue {
 
         switch (this.getOperator()) {
             case OR: {
-                if (filter0 instanceof HBqlFilterList) {
-                    if (((HBqlFilterList)filter0).getOperator() == HBqlFilterList.Operator.MUST_PASS_ONE) {
-                        ((HBqlFilterList)filter0).addFilter(filter1);
+                if (filter0 instanceof RecordFilterList) {
+                    if (((RecordFilterList)filter0).getOperator() == RecordFilterList.Operator.MUST_PASS_ONE) {
+                        ((RecordFilterList)filter0).addFilter(filter1);
                         return filter0;
                     }
                 }
 
                 final List<Filter> filterList = Lists.newArrayList(filter0, filter1);
-                return new HBqlFilterList(HBqlFilterList.Operator.MUST_PASS_ONE, filterList);
+                return new RecordFilterList(RecordFilterList.Operator.MUST_PASS_ONE, filterList);
             }
             case AND: {
-                if (filter0 instanceof HBqlFilterList) {
-                    if (((HBqlFilterList)filter0).getOperator() == HBqlFilterList.Operator.MUST_PASS_ALL) {
-                        ((HBqlFilterList)filter0).addFilter(filter1);
+                if (filter0 instanceof RecordFilterList) {
+                    if (((RecordFilterList)filter0).getOperator() == RecordFilterList.Operator.MUST_PASS_ALL) {
+                        ((RecordFilterList)filter0).addFilter(filter1);
                         return filter0;
                     }
                 }
 
                 final List<Filter> filterList = Lists.newArrayList(filter0, filter1);
-                return new HBqlFilterList(HBqlFilterList.Operator.MUST_PASS_ALL, filterList);
+                return new RecordFilterList(RecordFilterList.Operator.MUST_PASS_ALL, filterList);
             }
             case EQ: {
                 throw new InvalidServerFilterExpressionException();
