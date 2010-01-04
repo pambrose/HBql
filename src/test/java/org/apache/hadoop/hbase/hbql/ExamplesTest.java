@@ -58,11 +58,11 @@ public class ExamplesTest extends TestSupport {
 
         // START SNIPPET: show-tables
 
-        HConnection connection = HConnectionManager.newConnection();
-        System.out.println(connection.execute("SHOW TABLES"));
+        HConnection conn = HConnectionManager.newConnection();
+        System.out.println(conn.execute("SHOW TABLES"));
 
         // Or using the API
-        Set<String> tableNames = connection.getTableNames();
+        Set<String> tableNames = conn.getTableNames();
 
         // END SNIPPET: show-tables
     }
@@ -71,12 +71,12 @@ public class ExamplesTest extends TestSupport {
 
         // START SNIPPET: show-mappings
 
-        HConnection connection = HConnectionManager.newConnection();
+        HConnection conn = HConnectionManager.newConnection();
 
-        System.out.println(connection.execute("SHOW MAPPINGS"));
+        System.out.println(conn.execute("SHOW MAPPINGS"));
 
         // Or using the API
-        Set<HMapping> mappings = connection.getAllMappings();
+        Set<HMapping> mappings = conn.getAllMappings();
         for (HMapping mapping : mappings)
             System.out.println(mapping.getMappingName());
 
@@ -87,8 +87,8 @@ public class ExamplesTest extends TestSupport {
 
         // START SNIPPET: describe-table
 
-        HConnection connection = HConnectionManager.newConnection();
-        System.out.println(connection.execute("DESCRIBE TABLE foo"));
+        HConnection conn = HConnectionManager.newConnection();
+        System.out.println(conn.execute("DESCRIBE TABLE foo"));
 
         // END SNIPPET: describe-table
 
@@ -98,8 +98,8 @@ public class ExamplesTest extends TestSupport {
 
         // START SNIPPET: describe-mapping
 
-        HConnection connection = HConnectionManager.newConnection();
-        System.out.println(connection.execute("DESCRIBE MAPPING fooMapping"));
+        HConnection conn = HConnectionManager.newConnection();
+        System.out.println(conn.execute("DESCRIBE MAPPING fooMapping"));
 
         // END SNIPPET: describe-mapping
 
@@ -109,11 +109,11 @@ public class ExamplesTest extends TestSupport {
 
         // START SNIPPET: enable-table
 
-        HConnection connection = HConnectionManager.newConnection();
-        System.out.println(connection.execute("ENABLE TABLE foo"));
+        HConnection conn = HConnectionManager.newConnection();
+        System.out.println(conn.execute("ENABLE TABLE foo"));
 
         // Or using the API
-        connection.enableTable("foo");
+        conn.enableTable("foo");
 
         // END SNIPPET: enable-table
 
@@ -123,11 +123,11 @@ public class ExamplesTest extends TestSupport {
 
         // START SNIPPET: disable-table
 
-        HConnection connection = HConnectionManager.newConnection();
-        connection.execute("DISABLE TABLE foo");
+        HConnection conn = HConnectionManager.newConnection();
+        conn.execute("DISABLE TABLE foo");
 
         // Or using the API
-        connection.disableTable("foo");
+        conn.disableTable("foo");
 
         // END SNIPPET: disable-table
 
@@ -137,12 +137,12 @@ public class ExamplesTest extends TestSupport {
 
         // START SNIPPET: drop-mapping
 
-        HConnection connection = HConnectionManager.newConnection();
+        HConnection conn = HConnectionManager.newConnection();
 
-        connection.execute("DROP MAPPING fooMapping");
+        conn.execute("DROP MAPPING fooMapping");
 
         // Or using the API
-        connection.dropMapping("fooMapping");
+        conn.dropMapping("fooMapping");
 
         // END SNIPPET: drop-mapping
 
@@ -152,8 +152,8 @@ public class ExamplesTest extends TestSupport {
 
         // START SNIPPET: create-table
 
-        HConnection connection = HConnectionManager.newConnection();
-        connection.execute("CREATE TABLE foo (family1 (MAX_VERSIONS: 10), family2(), family3 (MAX_VERSIONS: 15))");
+        HConnection conn = HConnectionManager.newConnection();
+        conn.execute("CREATE TABLE foo (family1 (MAX_VERSIONS: 10), family2(), family3 (MAX_VERSIONS: 15))");
 
         // END SNIPPET: create-table
 
@@ -163,8 +163,8 @@ public class ExamplesTest extends TestSupport {
 
         // START SNIPPET: create-index
 
-        HConnection connection = HConnectionManager.newConnection();
-        connection.execute("CREATE INDEX fooidx ON fooMapping (family1:col1) INCLUDE (family1:col2, family1:col3)");
+        HConnection conn = HConnectionManager.newConnection();
+        conn.execute("CREATE INDEX fooidx ON fooMapping (family1:col1) INCLUDE (family1:col2, family1:col3)");
 
         // END SNIPPET: create-index
 
@@ -174,16 +174,16 @@ public class ExamplesTest extends TestSupport {
 
         // START SNIPPET: alter-table
 
-        HConnection connection = HConnectionManager.newConnection();
+        HConnection conn = HConnectionManager.newConnection();
 
         // Drop family family1
-        connection.execute("ALTER TABLE foo DROP FAMILY family1, DROP FAMILY family2");
+        conn.execute("ALTER TABLE foo DROP FAMILY family1, DROP FAMILY family2");
 
         // Add family family4
-        connection.execute("ALTER TABLE foo ADD FAMILY family4 (MAX_VERSIONS: 10), ADD FAMILY family6()");
+        conn.execute("ALTER TABLE foo ADD FAMILY family4 (MAX_VERSIONS: 10), ADD FAMILY family6()");
 
         // Rename family family4 to family5
-        connection.execute("ALTER TABLE foo ALTER FAMILY family4 TO family5 (MAX_VERSIONS: 10)");
+        conn.execute("ALTER TABLE foo ALTER FAMILY family4 TO family5 (MAX_VERSIONS: 10)");
 
         // END SNIPPET: alter-table
 
@@ -193,11 +193,11 @@ public class ExamplesTest extends TestSupport {
 
         // START SNIPPET: drop-table
 
-        HConnection conection = HConnectionManager.newConnection();
-        conection.execute("DROP TABLE foo");
+        HConnection conn = HConnectionManager.newConnection();
+        conn.execute("DROP TABLE foo");
 
         // Or using the API
-        conection.dropTable("foo");
+        conn.dropTable("foo");
 
         // END SNIPPET: drop-table
 
@@ -207,15 +207,15 @@ public class ExamplesTest extends TestSupport {
 
         // START SNIPPET: drop-index
 
-        HConnection conection = HConnectionManager.newConnection();
-        conection.execute("DROP INDEX fooidx ON MAPPING fooMapping");
+        HConnection conn = HConnectionManager.newConnection();
+        conn.execute("DROP INDEX fooidx ON MAPPING fooMapping");
         // OR
-        conection.execute("DROP INDEX fooidx ON TABLE foo");
+        conn.execute("DROP INDEX fooidx ON TABLE foo");
 
         // Or using the API
-        conection.dropIndexForMapping("fooidx", "fooMapping");
+        conn.dropIndexForMapping("fooidx", "fooMapping");
         // or
-        conection.dropIndexForTable("fooidx", "foo");
+        conn.dropIndexForTable("fooidx", "foo");
 
         // END SNIPPET: drop-index
     }
@@ -224,26 +224,26 @@ public class ExamplesTest extends TestSupport {
 
         // START SNIPPET: insert1
 
-        HConnection connection = HConnectionManager.newConnection();
+        HConnection conn = HConnectionManager.newConnection();
 
-        connection.execute("CREATE TEMP MAPPING fooMapping FOR TABLE foo "
-                           + "("
-                           + "keyval KEY, "
-                           + "family1 ("
-                           + "  val1 INT ALIAS val1, "
-                           + "  val2 STRING ALIAS val2"
-                           + "))");
+        conn.execute("CREATE TEMP MAPPING fooMapping FOR TABLE foo "
+                     + "("
+                     + "keyval KEY, "
+                     + "family1 ("
+                     + "  val1 INT ALIAS val1, "
+                     + "  val2 STRING ALIAS val2"
+                     + "))");
 
-        connection.execute("INSERT INTO fooMapping (keyval, val1, val2) "
-                           + "VALUES (ZEROPAD(2, 10), 123, 'test val')");
+        conn.execute("INSERT INTO fooMapping (keyval, val1, val2) "
+                     + "VALUES (ZEROPAD(2, 10), 123, 'test val')");
 
         // Or using the Record interface
-        HRecord rec = connection.getMapping("fooMapping").newHRecord();
+        HRecord rec = conn.getMapping("fooMapping").newHRecord();
         rec.setCurrentValue("keyval", Util.getZeroPaddedNonNegativeNumber(2, 10));
         rec.setCurrentValue("val1", 123);
         rec.setCurrentValue("al2", "testval");
 
-        HBatch<HRecord> batch = HBatch.newHBatch(connection);
+        HBatch<HRecord> batch = HBatch.newHBatch(conn);
         batch.insert(rec);
         batch.apply();
 
@@ -255,24 +255,24 @@ public class ExamplesTest extends TestSupport {
 
         // START SNIPPET: delete1
 
-        HConnection connection = HConnectionManager.newConnection();
+        HConnection conn = HConnectionManager.newConnection();
 
-        connection.execute("CREATE TEMP MAPPING fooMapping FOR TABLE foo "
-                           + "("
-                           + "keyval KEY, "
-                           + "family1 ("
-                           + "  val1 INT ALIAS val11, "
-                           + "  val2 INT ALIAS val12, "
-                           + "  val3 INT ALIAS val13, "
-                           + "  val4 INT ALIAS val14, "
-                           + "  val5 STRING ALIAS val15"
-                           + "))");
+        conn.execute("CREATE TEMP MAPPING fooMapping FOR TABLE foo "
+                     + "("
+                     + "keyval KEY, "
+                     + "family1 ("
+                     + "  val1 INT ALIAS val11, "
+                     + "  val2 INT ALIAS val12, "
+                     + "  val3 INT ALIAS val13, "
+                     + "  val4 INT ALIAS val14, "
+                     + "  val5 STRING ALIAS val15"
+                     + "))");
 
-        connection.execute("DELETE FROM fooMapping WITH CLIENT FILTER WHERE val1 > 4");
+        conn.execute("DELETE FROM fooMapping WITH CLIENT FILTER WHERE val1 > 4");
 
-        connection.execute("DELETE family1:val1, val12 FROM fooMapping WITH CLIENT FILTER WHERE val1 > 5");
+        conn.execute("DELETE family1:val1, val12 FROM fooMapping WITH CLIENT FILTER WHERE val1 > 5");
 
-        connection.execute("DELETE family1:* FROM fooMapping WITH CLIENT FILTER WHERE val1 > 7");
+        conn.execute("DELETE family1:* FROM fooMapping WITH CLIENT FILTER WHERE val1 > 7");
 
         // END SNIPPET: delete1
 
@@ -282,19 +282,19 @@ public class ExamplesTest extends TestSupport {
 
         // START SNIPPET: insert2
 
-        HConnection connection = HConnectionManager.newConnection();
+        HConnection conn = HConnectionManager.newConnection();
 
         // A column with a default value.
-        connection.execute("CREATE TEMP MAPPING fooMapping FOR TABLE foo "
-                           + "("
-                           + "keyval KEY, "
-                           + "family1 ("
-                           + "  val1 INT ALIAS val1, "
-                           + "  val2 STRING ALIAS val2 DEFAULT 'this is a default value'"
-                           + "))");
+        conn.execute("CREATE TEMP MAPPING fooMapping FOR TABLE foo "
+                     + "("
+                     + "keyval KEY, "
+                     + "family1 ("
+                     + "  val1 INT ALIAS val1, "
+                     + "  val2 STRING ALIAS val2 DEFAULT 'this is a default value'"
+                     + "))");
 
-        HPreparedStatement ps = connection.prepareStatement("INSERT INTO fooMapping (keyval, val1, val2) "
-                                                            + "VALUES (:key, :val1, DEFAULT)");
+        HPreparedStatement ps = conn.prepareStatement("INSERT INTO fooMapping (keyval, val1, val2) "
+                                                      + "VALUES (:key, :val1, DEFAULT)");
 
         ps.setParameter("key", Util.getZeroPaddedNonNegativeNumber(2, 10));
         ps.setParameter("val1", 123);
@@ -306,20 +306,20 @@ public class ExamplesTest extends TestSupport {
 
     public void insert3() throws HBqlException {
 
-        HConnection connection = HConnectionManager.newConnection();
+        HConnection conn = HConnectionManager.newConnection();
 
         // START SNIPPET: insert3
-        connection.execute("CREATE MAPPING fooMapping FOR TABLE foo_table "
-                           + "("
-                           + "keyval KEY, "
-                           + "family1 ("
-                           + "  val1 STRING ALIAS val1, "
-                           + "  val2 STRING ALIAS val2, "
-                           + "  val3 STRING ALIAS val3, "
-                           + "  val4 STRING ALIAS val4 "
-                           + "))");
-        connection.execute("INSERT INTO fooMapping (keyval, val1, val2) "
-                           + "SELECT keyval, val3, val4 FROM foo2");
+        conn.execute("CREATE MAPPING fooMapping FOR TABLE foo_table "
+                     + "("
+                     + "keyval KEY, "
+                     + "family1 ("
+                     + "  val1 STRING ALIAS val1, "
+                     + "  val2 STRING ALIAS val2, "
+                     + "  val3 STRING ALIAS val3, "
+                     + "  val4 STRING ALIAS val4 "
+                     + "))");
+        conn.execute("INSERT INTO fooMapping (keyval, val1, val2) "
+                     + "SELECT keyval, val3, val4 FROM foo2");
 
         // END SNIPPET: insert3
 
@@ -327,20 +327,20 @@ public class ExamplesTest extends TestSupport {
 
     public void insert4() throws HBqlException {
 
-        HConnection connection = HConnectionManager.newConnection();
+        HConnection conn = HConnectionManager.newConnection();
 
         // START SNIPPET: insert4
-        connection.execute("CREATE MAPPING fooMapping FOR TABLE foo_table "
-                           + "("
-                           + "keyval KEY, "
-                           + "family1 ("
-                           + "  val1 STRING, "
-                           + "  val2 STRING, "
-                           + "  val3 STRING ALIAS val3, "
-                           + "  val4 STRING ALIAS val4 "
-                           + "))");
-        connection.execute("INSERT INTO fooMapping (keyval, family1(val1, val2)) "
-                           + "SELECT keyval, val3, val4 FROM foo2");
+        conn.execute("CREATE MAPPING fooMapping FOR TABLE foo_table "
+                     + "("
+                     + "keyval KEY, "
+                     + "family1 ("
+                     + "  val1 STRING, "
+                     + "  val2 STRING, "
+                     + "  val3 STRING ALIAS val3, "
+                     + "  val4 STRING ALIAS val4 "
+                     + "))");
+        conn.execute("INSERT INTO fooMapping (keyval, family1(val1, val2)) "
+                     + "SELECT keyval, val3, val4 FROM foo2");
 
         // END SNIPPET: insert4
 
@@ -351,38 +351,38 @@ public class ExamplesTest extends TestSupport {
 
         // START SNIPPET: create-mapping1
 
-        HConnection connection = HConnectionManager.newConnection();
+        HConnection conn = HConnectionManager.newConnection();
 
         // Mapping named foo that corresponds to table foo.
-        connection.execute("CREATE TEMP MAPPING foo (keyval key, family1 (val1 STRING))");
+        conn.execute("CREATE TEMP MAPPING foo (keyval key, family1 (val1 STRING))");
         // END SNIPPET: create-mapping1
 
         // START SNIPPET: create-mapping2
 
         // Mapping named mapping1 that corresponds to table foo.
-        connection.execute("CREATE MAPPING mapping1 FOR TABLE foo (keyval key, family1 (val1 STRING ALIAS val2))");
+        conn.execute("CREATE MAPPING mapping1 FOR TABLE foo (keyval key, family1 (val1 STRING ALIAS val2))");
         // END SNIPPET: create-mapping2
 
         // START SNIPPET: create-mapping3
 
         // A column with a default value.
-        connection.execute("CREATE MAPPING mapping1 FOR TABLE foo "
-                           + "("
-                           + "keyval key, "
-                           + "family1 (val1 STRING ALIAS val1 DEFAULT 'this is a default value')"
-                           + ")");
+        conn.execute("CREATE MAPPING mapping1 FOR TABLE foo "
+                     + "("
+                     + "keyval key, "
+                     + "family1 (val1 STRING ALIAS val1 DEFAULT 'this is a default value')"
+                     + ")");
         // END SNIPPET: create-mapping3
 
         // START SNIPPET: create-mapping4
 
         // A Mapping with a with an INCLUDE UNMAPPED clause.
-        connection.execute("CREATE TEMP MAPPING mapping1 FOR TABLE foo "
-                           + "("
-                           + "keyval key, "
-                           + "family1 INCLUDE UNMAPPED ("
-                           + "  val1 STRING ALIAS val1, "
-                           + "  val2 STRING ALIAS val3 "
-                           + "))");
+        conn.execute("CREATE TEMP MAPPING mapping1 FOR TABLE foo "
+                     + "("
+                     + "keyval key, "
+                     + "family1 INCLUDE UNMAPPED ("
+                     + "  val1 STRING ALIAS val1, "
+                     + "  val2 STRING ALIAS val3 "
+                     + "))");
 
         // END SNIPPET: create-mapping4
 
@@ -392,21 +392,21 @@ public class ExamplesTest extends TestSupport {
 
         // START SNIPPET: create-executor-pool
 
-        HConnection connection = HConnectionManager.newConnection();
+        HConnection conn = HConnectionManager.newConnection();
 
         // Create Query Executor Pool named execPool if it doesn't already exist.
-        connection.execute("CREATE QUERY EXECUTOR POOL execPool (MAX_EXECUTOR_POOL_SIZE: 5, MAX_THREAD_COUNT: 10) IF NOT queryExecutorPoolExists('execPool')");
+        conn.execute("CREATE QUERY EXECUTOR POOL execPool (MAX_EXECUTOR_POOL_SIZE: 5, MAX_THREAD_COUNT: 10) IF NOT queryExecutorPoolExists('execPool')");
 
         // Or, using the API
         if (!QueryExecutorPoolManager.queryExecutorPoolExists("execPool"))
             QueryExecutorPoolManager.newQueryExecutorPool("execPool", 5, 5, 10, Long.MAX_VALUE, true, 100);
 
         // Then assign the connection a query executor pool name to use for queries
-        connection.setQueryExecutorPoolName("execPool");
+        conn.setQueryExecutorPoolName("execPool");
 
         // Or could use a dedicated QueryExecutor, rather than one from a pool:
         QueryExecutor executor = QueryExecutor.newQueryExecutor(5, 10, Long.MAX_VALUE, true, 100);
-        connection.setQueryExecutor(executor);
+        conn.setQueryExecutor(executor);
 
         // Now use connection in a query.
 
@@ -417,10 +417,10 @@ public class ExamplesTest extends TestSupport {
 
         // START SNIPPET: drop-executor-pool
 
-        HConnection connection = HConnectionManager.newConnection();
+        HConnection conn = HConnectionManager.newConnection();
 
         // Mapping named foo that corresponds to table foo.
-        connection.execute("DROP QUERY EXECUTOR POOL execPool IF queryExecutorPoolExists('execPool')");
+        conn.execute("DROP QUERY EXECUTOR POOL execPool IF queryExecutorPoolExists('execPool')");
 
         // Or, using the API
         if (QueryExecutorPoolManager.queryExecutorPoolExists("execPool"))
@@ -433,27 +433,27 @@ public class ExamplesTest extends TestSupport {
 
         // START SNIPPET: index1
 
-        HConnection connection = HConnectionManager.newConnection();
+        HConnection conn = HConnectionManager.newConnection();
 
-        connection.execute("CREATE TEMP MAPPING tab1 FOR TABLE table1"
-                           + "("
-                           + "keyval KEY WIDTH 15, "
-                           + "f1 INCLUDE UNMAPPED ("
-                           + "  val1 STRING WIDTH 10 ALIAS val1, "
-                           + "  val2 INT ALIAS val5"
-                           + "),  "
-                           + "f2 INCLUDE UNMAPPED, "
-                           + "f3 INCLUDE UNMAPPED ("
-                           + "  val2 INT ALIAS val6, "
-                           + "  val3 INT ALIAS val7 "
-                           + "))");
+        conn.execute("CREATE TEMP MAPPING tab1 FOR TABLE table1"
+                     + "("
+                     + "keyval KEY WIDTH 15, "
+                     + "f1 INCLUDE UNMAPPED ("
+                     + "  val1 STRING WIDTH 10 ALIAS val1, "
+                     + "  val2 INT ALIAS val5"
+                     + "),  "
+                     + "f2 INCLUDE UNMAPPED, "
+                     + "f3 INCLUDE UNMAPPED ("
+                     + "  val2 INT ALIAS val6, "
+                     + "  val3 INT ALIAS val7 "
+                     + "))");
 
-        connection.execute("CREATE INDEX val1idx ON tab1 (val1) INCLUDE (val5, val6) IF NOT indexExistsForTable('val1idx', 'tab1')");
+        conn.execute("CREATE INDEX val1idx ON tab1 (val1) INCLUDE (val5, val6) IF NOT indexExistsForTable('val1idx', 'tab1')");
 
-        HPreparedStatement pstmt = connection.prepareStatement("SELECT keyval, f1:val1, val5 FROM tab1 "
-                                                               + "WITH INDEX val1idx KEYS FIRST TO :endkey "
-                                                               + "INDEX FILTER WHERE val5 < 8 "
-                                                               + "CLIENT FILTER WHERE val6 > 4");
+        HPreparedStatement pstmt = conn.prepareStatement("SELECT keyval, f1:val1, val5 FROM tab1 "
+                                                         + "WITH INDEX val1idx KEYS FIRST TO :endkey "
+                                                         + "INDEX FILTER WHERE val5 < 8 "
+                                                         + "CLIENT FILTER WHERE val6 > 4");
 
         pstmt.setParameter("endkey", Util.getZeroPaddedNonNegativeNumber(34, 10));
 
@@ -472,25 +472,25 @@ public class ExamplesTest extends TestSupport {
 
         // START SNIPPET: select1
 
-        HConnection connection = HConnectionManager.newConnection();
+        HConnection conn = HConnectionManager.newConnection();
 
-        connection.execute("CREATE TEMP MAPPING tab1 FOR TABLE table1"
-                           + "("
-                           + "keyval KEY, "
-                           + "f1 INCLUDE UNMAPPED ("
-                           + "  val1 STRING ALIAS val1, "
-                           + "  val2 INT ALIAS val5"
-                           + "),  "
-                           + "f2 INCLUDE UNMAPPED, "
-                           + "f3 INCLUDE UNMAPPED ("
-                           + "  val2 INT ALIAS val6, "
-                           + "  val3 INT ALIAS val7 "
-                           + "))");
+        conn.execute("CREATE TEMP MAPPING tab1 FOR TABLE table1"
+                     + "("
+                     + "keyval KEY, "
+                     + "f1 INCLUDE UNMAPPED ("
+                     + "  val1 STRING ALIAS val1, "
+                     + "  val2 INT ALIAS val5"
+                     + "),  "
+                     + "f2 INCLUDE UNMAPPED, "
+                     + "f3 INCLUDE UNMAPPED ("
+                     + "  val2 INT ALIAS val6, "
+                     + "  val3 INT ALIAS val7 "
+                     + "))");
 
-        HPreparedStatement pstmt = connection.prepareStatement("SELECT keyval, f1:val1, val5 FROM tab1 "
-                                                               + "WITH KEYS FIRST TO :endkey "
-                                                               + "VERSIONS 4 "
-                                                               + "CLIENT FILTER WHERE val6 > 4");
+        HPreparedStatement pstmt = conn.prepareStatement("SELECT keyval, f1:val1, val5 FROM tab1 "
+                                                         + "WITH KEYS FIRST TO :endkey "
+                                                         + "VERSIONS 4 "
+                                                         + "CLIENT FILTER WHERE val6 > 4");
 
         pstmt.setParameter("endkey", Util.getZeroPaddedNonNegativeNumber(34, 10));
 
@@ -511,28 +511,28 @@ public class ExamplesTest extends TestSupport {
         // START SNIPPET: definedExample1
 
         // Get a connection to HBase
-        HConnection connection = HConnectionManager.newConnection();
+        HConnection conn = HConnectionManager.newConnection();
 
         // CREATE TEMP MAPPING
-        connection.execute("CREATE TEMP MAPPING demo1 FOR TABLE example1"
-                           + "("
-                           + "keyval KEY, "
-                           + "f1 ("
-                           + "  val1 STRING ALIAS val1, "
-                           + "  val2 INT ALIAS val2, "
-                           + "  val3 STRING DEFAULT 'This is a default value' "
-                           + "))");
+        conn.execute("CREATE TEMP MAPPING demo1 FOR TABLE example1"
+                     + "("
+                     + "keyval KEY, "
+                     + "f1 ("
+                     + "  val1 STRING ALIAS val1, "
+                     + "  val2 INT ALIAS val2, "
+                     + "  val3 STRING DEFAULT 'This is a default value' "
+                     + "))");
 
         // Clean up table
-        if (!connection.tableExists("example1"))
-            connection.execute("CREATE TABLE example1 (f1()) ");
+        if (!conn.tableExists("example1"))
+            conn.execute("CREATE TABLE example1 (f1()) ");
         else
-            connection.execute("DELETE FROM demo1");
+            conn.execute("DELETE FROM demo1");
 
         // Add some records using an INSERT stmt
-        HPreparedStatement stmt = connection.prepareStatement("INSERT INTO demo1 " +
-                                                              "(keyval, val1, val2, f1:val3) VALUES " +
-                                                              "(ZEROPAD(:key, 10), :val1, :val2, DEFAULT)");
+        HPreparedStatement stmt = conn.prepareStatement("INSERT INTO demo1 " +
+                                                        "(keyval, val1, val2, f1:val3) VALUES " +
+                                                        "(ZEROPAD(:key, 10), :val1, :val2, DEFAULT)");
 
         for (int i = 0; i < 5; i++) {
             stmt.setParameter("key", i);
@@ -542,9 +542,9 @@ public class ExamplesTest extends TestSupport {
         }
 
         // Add some other records using the Record interface
-        final HBatch<HRecord> batch = HBatch.newHBatch(connection);
+        final HBatch<HRecord> batch = HBatch.newHBatch(conn);
         for (int i = 5; i < 10; i++) {
-            HRecord rec = connection.getMapping("demo1").newHRecord();
+            HRecord rec = conn.getMapping("demo1").newHRecord();
             rec.setCurrentValue("keyval", Util.getZeroPaddedNonNegativeNumber(i, 10));
             rec.setCurrentValue("val1", "Value: " + i);
             rec.setCurrentValue("f1:val2", i);
@@ -553,7 +553,7 @@ public class ExamplesTest extends TestSupport {
         batch.apply();
 
         // Query the records just added
-        HResultSet<HRecord> records = connection.executeQuery("SELECT * FROM demo1");
+        HResultSet<HRecord> records = conn.executeQuery("SELECT * FROM demo1");
 
         for (HRecord rec : records) {
             System.out.println("Key = " + rec.getCurrentValue("keyval"));
@@ -574,9 +574,9 @@ public class ExamplesTest extends TestSupport {
 
         // Get a connection with an HTablePool size of 10
         HConnectionManager.setMaxPoolReferencesPerTablePerConnection(10);
-        HConnection connection = HConnectionManager.newConnection();
+        HConnection conn = HConnectionManager.newConnection();
 
-        HStatement stmt = connection.createStatement();
+        HStatement stmt = conn.createStatement();
         stmt.execute("CREATE TABLE table12 (f1(), f3()) IF NOT tableexists('table12')");
 
         stmt.execute("CREATE TEMP MAPPING sch9 FOR TABLE table12"
@@ -611,7 +611,7 @@ public class ExamplesTest extends TestSupport {
         stmt.execute("DROP TABLE table12");
         stmt.close();
 
-        connection.close();
+        conn.close();
 
         // END SNIPPET: hbqlapi1
     }
@@ -631,15 +631,15 @@ public class ExamplesTest extends TestSupport {
             QueryExecutorPoolManager.newQueryExecutorPool("execPool", 5, 5, 10, Long.MAX_VALUE, true, 100);
 
         // Take a connection from the connection pool
-        HConnection connection = connectionPool.takeConnection();
+        HConnection conn = connectionPool.takeConnection();
 
         // Assign the connection a query executor pool name to use for queries
-        connection.setQueryExecutorPoolName("execPool");
+        conn.setQueryExecutorPoolName("execPool");
 
         // Do something with the connection
 
         // Close the connection to release it back to the connection pool
-        connection.close();
+        conn.close();
 
         // END SNIPPET: hbqlapi2
     }
@@ -651,16 +651,16 @@ public class ExamplesTest extends TestSupport {
         Class.forName("org.apache.hadoop.hbase.jdbc.Driver");
 
         // Get a connection with an HTablePool size of 10
-        Connection connection = DriverManager.getConnection("jdbc:hbql;maxtablerefs=10");
+        Connection conn = DriverManager.getConnection("jdbc:hbql;maxtablerefs=10");
 
         // or
-        Connection connection2 = DriverManager.getConnection("jdbc:hbql;maxtablerefs=10;hbase.master=192.168.1.90:60000");
+        Connection conn2 = DriverManager.getConnection("jdbc:hbql;maxtablerefs=10;hbase.master=192.168.1.90:60000");
 
         // or if you want to connect with a HBaseConfiguration object, then you would call:
         HBaseConfiguration config = new HBaseConfiguration();
-        Connection connection3 = org.apache.hadoop.hbase.jdbc.Driver.getConnection("jdbc:hbql;maxtablerefs=10", config);
+        Connection conn3 = org.apache.hadoop.hbase.jdbc.Driver.getConnection("jdbc:hbql;maxtablerefs=10", config);
 
-        Statement stmt = connection.createStatement();
+        Statement stmt = conn.createStatement();
         stmt.execute("CREATE TABLE table12 (f1(), f3()) IF NOT tableexists('table12')");
 
         stmt.execute("CREATE TEMP MAPPING sch9 FOR TABLE table12"
@@ -695,7 +695,7 @@ public class ExamplesTest extends TestSupport {
         stmt.execute("DROP TABLE table12");
         stmt.close();
 
-        connection.close();
+        conn.close();
 
         // END SNIPPET: jdbc1
     }
@@ -711,12 +711,12 @@ public class ExamplesTest extends TestSupport {
         ConnectionPool pool = new ConnectionPool(5, 25);
 
         PooledConnection pooledConnection = pool.getPooledConnection();
-        Connection connection = pooledConnection.getConnection();
+        Connection conn = pooledConnection.getConnection();
 
         // Do some work with connection
 
         // Release connection back to pool
-        connection.close();
+        conn.close();
 
         // END SNIPPET: jdbc2
     }
@@ -726,27 +726,27 @@ public class ExamplesTest extends TestSupport {
         // START SNIPPET: annotatedExample2
 
         // Get a connection to HBase
-        HConnection connection = HConnectionManager.newConnection();
+        HConnection conn = HConnectionManager.newConnection();
 
-        connection.execute("CREATE TEMP MAPPING demo2 FOR TABLE example2"
-                           + "("
-                           + "keyval KEY, "
-                           + "f1 ("
-                           + "  val1 STRING ALIAS val1, "
-                           + "  val2 INT ALIAS val2, "
-                           + "  val3 STRING ALIAS val3 DEFAULT 'This is a default value' "
-                           + "))");
+        conn.execute("CREATE TEMP MAPPING demo2 FOR TABLE example2"
+                     + "("
+                     + "keyval KEY, "
+                     + "f1 ("
+                     + "  val1 STRING ALIAS val1, "
+                     + "  val2 INT ALIAS val2, "
+                     + "  val3 STRING ALIAS val3 DEFAULT 'This is a default value' "
+                     + "))");
 
         // Clean up table
-        if (!connection.tableExists("example2"))
-            connection.execute("CREATE TABLE example2 (f1())");
+        if (!conn.tableExists("example2"))
+            conn.execute("CREATE TABLE example2 (f1())");
         else
-            connection.execute("DELETE FROM demo2");
+            conn.execute("DELETE FROM demo2");
 
         // Add some records using an INSERT stmt
-        HPreparedStatement stmt = connection.prepareStatement("INSERT INTO demo2 " +
-                                                              "(keyval, val1, val2, val3) VALUES " +
-                                                              "(ZEROPAD(:key, 10), :val1, :val2, DEFAULT)");
+        HPreparedStatement stmt = conn.prepareStatement("INSERT INTO demo2 " +
+                                                        "(keyval, val1, val2, val3) VALUES " +
+                                                        "(ZEROPAD(:key, 10), :val1, :val2, DEFAULT)");
 
         for (int i = 0; i < 5; i++) {
             stmt.setParameter("key", i);
@@ -756,7 +756,7 @@ public class ExamplesTest extends TestSupport {
         }
 
         // Add some other records using an AnnotatedExample object
-        final HBatch<AnnotatedExample> batch = HBatch.newHBatch(connection);
+        final HBatch<AnnotatedExample> batch = HBatch.newHBatch(conn);
         for (int i = 5; i < 10; i++) {
             AnnotatedExample obj = new AnnotatedExample();
             obj.keyval = Util.getZeroPaddedNonNegativeNumber(i, 10);
@@ -767,7 +767,7 @@ public class ExamplesTest extends TestSupport {
         batch.apply();
 
         // Query the records just added
-        HResultSet<AnnotatedExample> records = connection.executeQuery("SELECT * FROM demo2", AnnotatedExample.class);
+        HResultSet<AnnotatedExample> records = conn.executeQuery("SELECT * FROM demo2", AnnotatedExample.class);
 
         for (AnnotatedExample rec : records) {
             System.out.println("Key = " + rec.keyval);
