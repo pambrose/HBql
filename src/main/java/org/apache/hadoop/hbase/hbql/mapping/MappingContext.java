@@ -44,11 +44,11 @@ public class MappingContext implements Serializable {
         this.setMappingName(mappingName);
     }
 
-    protected String getMappingName() {
+    public String getMappingName() {
         return mappingName;
     }
 
-    protected void setMappingName(final String mappingName) {
+    private void setMappingName(final String mappingName) {
         this.mappingName = mappingName;
     }
 
