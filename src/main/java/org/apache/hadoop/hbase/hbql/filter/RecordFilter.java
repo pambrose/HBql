@@ -33,8 +33,8 @@ import org.apache.hadoop.hbase.hbql.impl.Utils;
 import org.apache.hadoop.hbase.hbql.io.IO;
 import org.apache.hadoop.hbase.hbql.mapping.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.mapping.FieldType;
+import org.apache.hadoop.hbase.hbql.mapping.MappingContext;
 import org.apache.hadoop.hbase.hbql.mapping.TableMapping;
-import org.apache.hadoop.hbase.hbql.statement.MappingContext;
 import org.apache.hadoop.hbase.util.Bytes;
 
 import java.io.ByteArrayInputStream;

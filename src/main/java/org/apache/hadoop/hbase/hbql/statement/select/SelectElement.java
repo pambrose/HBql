@@ -27,7 +27,7 @@ import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.impl.AggregateValue;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 import org.apache.hadoop.hbase.hbql.mapping.ColumnAttrib;
-import org.apache.hadoop.hbase.hbql.statement.MappingContext;
+import org.apache.hadoop.hbase.hbql.mapping.MappingContext;
 import org.apache.hadoop.hbase.hbql.statement.SelectStatement;
 
 import java.io.Serializable;

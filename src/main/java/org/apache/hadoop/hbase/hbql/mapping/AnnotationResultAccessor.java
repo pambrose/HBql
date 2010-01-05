@@ -26,7 +26,6 @@ import org.apache.hadoop.hbase.hbql.client.ColumnVersionMap;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.Mapping;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
-import org.apache.hadoop.hbase.hbql.statement.MappingContext;
 import org.apache.hadoop.hbase.hbql.statement.select.SelectElement;
 import org.apache.hadoop.hbase.hbql.util.Maps;
 

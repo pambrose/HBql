@@ -20,6 +20,8 @@
 
 package org.apache.hadoop.hbase.hbql.statement;
 
+import org.apache.hadoop.hbase.hbql.mapping.MappingContext;
+
 public abstract class StatementWithMapping extends GenericStatement implements ConnectionStatement {
 
     private MappingContext mappingContext = null;

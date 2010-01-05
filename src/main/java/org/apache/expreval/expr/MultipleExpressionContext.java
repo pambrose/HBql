@@ -34,9 +34,9 @@ import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 import org.apache.hadoop.hbase.hbql.mapping.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.mapping.HRecordResultAccessor;
 import org.apache.hadoop.hbase.hbql.mapping.Mapping;
+import org.apache.hadoop.hbase.hbql.mapping.MappingContext;
 import org.apache.hadoop.hbase.hbql.mapping.ResultAccessor;
 import org.apache.hadoop.hbase.hbql.mapping.TableMapping;
-import org.apache.hadoop.hbase.hbql.statement.MappingContext;
 import org.apache.hadoop.hbase.hbql.util.Lists;
 import org.apache.hadoop.hbase.hbql.util.Maps;
 

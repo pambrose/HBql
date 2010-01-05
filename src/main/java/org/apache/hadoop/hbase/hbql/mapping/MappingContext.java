@@ -18,14 +18,10 @@
  * limitations under the License.
  */
 
-package org.apache.hadoop.hbase.hbql.statement;
+package org.apache.hadoop.hbase.hbql.mapping;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
-import org.apache.hadoop.hbase.hbql.mapping.AnnotationResultAccessor;
-import org.apache.hadoop.hbase.hbql.mapping.Mapping;
-import org.apache.hadoop.hbase.hbql.mapping.ResultAccessor;
-import org.apache.hadoop.hbase.hbql.mapping.TableMapping;
 
 import java.io.Serializable;
 

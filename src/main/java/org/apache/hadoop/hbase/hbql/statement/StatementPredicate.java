@@ -29,6 +29,7 @@ import org.apache.expreval.expr.node.BooleanValue;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
+import org.apache.hadoop.hbase.hbql.mapping.MappingContext;
 
 public class StatementPredicate extends MultipleExpressionContext {
 

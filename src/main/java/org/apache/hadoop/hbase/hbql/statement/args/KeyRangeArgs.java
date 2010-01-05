@@ -22,7 +22,7 @@ package org.apache.hadoop.hbase.hbql.statement.args;
 
 import org.apache.expreval.expr.var.NamedParameter;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.statement.MappingContext;
+import org.apache.hadoop.hbase.hbql.mapping.MappingContext;
 import org.apache.hadoop.hbase.hbql.util.Lists;
 
 import java.util.List;

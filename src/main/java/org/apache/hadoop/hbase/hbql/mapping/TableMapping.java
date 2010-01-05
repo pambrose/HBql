@@ -29,7 +29,6 @@ import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 import org.apache.hadoop.hbase.hbql.impl.HRecordImpl;
 import org.apache.hadoop.hbase.hbql.io.IO;
 import org.apache.hadoop.hbase.hbql.parser.ParserUtil;
-import org.apache.hadoop.hbase.hbql.statement.MappingContext;
 import org.apache.hadoop.hbase.hbql.statement.args.KeyInfo;
 import org.apache.hadoop.hbase.hbql.util.Lists;
 import org.apache.hadoop.hbase.hbql.util.Maps;

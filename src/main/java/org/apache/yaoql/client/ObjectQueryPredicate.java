@@ -25,8 +25,8 @@ import org.apache.expreval.client.NullColumnValueException;
 import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.ExpressionTree;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.mapping.MappingContext;
 import org.apache.hadoop.hbase.hbql.parser.ParserUtil;
-import org.apache.hadoop.hbase.hbql.statement.MappingContext;
 import org.apache.yaoql.impl.ParameterBinding;
 import org.apache.yaoql.impl.ReflectionMapping;
 
