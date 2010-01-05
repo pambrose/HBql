@@ -27,7 +27,7 @@ import org.apache.hadoop.hbase.hbql.client.UnMappedValueMap;
 import org.apache.hadoop.hbase.hbql.mapping.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.mapping.ResultAccessor;
 import org.apache.hadoop.hbase.hbql.mapping.TableMapping;
-import org.apache.hadoop.hbase.hbql.statement.StatementContext;
+import org.apache.hadoop.hbase.hbql.statement.MappingContext;
 import org.apache.hadoop.hbase.hbql.util.AtomicReferences;
 import org.apache.hadoop.hbase.hbql.util.Lists;
 import org.apache.hadoop.hbase.hbql.util.Maps;
@@ -40,7 +40,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class HRecordImpl implements HRecord {
 
-    private StatementContext statementContext;
+    private MappingContext mappingContext;
     private long timestamp = System.currentTimeMillis();
 
     private List<String> namePositionList = Lists.newArrayList();
@@ -51,16 +51,16 @@ public class HRecordImpl implements HRecord {
     public HRecordImpl() {
     }
 
-    public HRecordImpl(final StatementContext statementContext) {
-        this.setStatementContext(statementContext);
+    public HRecordImpl(final MappingContext mappingContext) {
+        this.setMappingContext(mappingContext);
     }
 
-    public StatementContext getStatementContext() {
-        return statementContext;
+    public MappingContext getMappingContext() {
+        return mappingContext;
     }
 
-    public void setStatementContext(final StatementContext statementContext) {
-        this.statementContext = statementContext;
+    public void setMappingContext(final MappingContext mappingContext) {
+        this.mappingContext = mappingContext;
     }
 
     public String getAttribName(final int i) throws HBqlException {
@@ -81,11 +81,11 @@ public class HRecordImpl implements HRecord {
     }
 
     public TableMapping getTableMapping() throws HBqlException {
-        return this.getStatementContext().getTableMapping();
+        return this.getMappingContext().getTableMapping();
     }
 
     public ResultAccessor getResultAccessor() throws HBqlException {
-        return this.getStatementContext().getResultAccessor();
+        return this.getMappingContext().getResultAccessor();
     }
 
     private AtomicReference<ElementMap<ColumnValue>> getAtomicColumnValuesMap() {
@@ -238,7 +238,7 @@ public class HRecordImpl implements HRecord {
         }
 
         // Return default value if it exists
-        final ColumnAttrib attrib = this.getStatementContext().getResultAccessor().getColumnAttribByName(name);
+        final ColumnAttrib attrib = this.getMappingContext().getResultAccessor().getColumnAttribByName(name);
         return (attrib != null) ? attrib.getDefaultValue() : null;
     }
 

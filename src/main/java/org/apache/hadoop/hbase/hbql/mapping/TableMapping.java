@@ -29,7 +29,7 @@ import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 import org.apache.hadoop.hbase.hbql.impl.HRecordImpl;
 import org.apache.hadoop.hbase.hbql.io.IO;
 import org.apache.hadoop.hbase.hbql.parser.ParserUtil;
-import org.apache.hadoop.hbase.hbql.statement.StatementContext;
+import org.apache.hadoop.hbase.hbql.statement.MappingContext;
 import org.apache.hadoop.hbase.hbql.statement.args.KeyInfo;
 import org.apache.hadoop.hbase.hbql.util.Lists;
 import org.apache.hadoop.hbase.hbql.util.Maps;
@@ -109,9 +109,9 @@ public class TableMapping extends Mapping implements HMapping {
     }
 
     public HRecord newHRecord() throws HBqlException {
-        final StatementContext statementContext = new StatementContext(this);
-        statementContext.setResultAccessor(new HRecordResultAccessor(statementContext));
-        return new HRecordImpl(statementContext);
+        final MappingContext mappingContext = new MappingContext(this);
+        mappingContext.setResultAccessor(new HRecordResultAccessor(mappingContext));
+        return new HRecordImpl(mappingContext);
     }
 
     public HRecord newHRecord(final Map<String, Object> initMap) throws HBqlException {
@@ -274,9 +274,9 @@ public class TableMapping extends Mapping implements HMapping {
     }
 
     public RecordFilter newRecordFilter(final String query) throws HBqlException {
-        final StatementContext statementContext = new StatementContext(this);
-        statementContext.setResultAccessor(new HRecordResultAccessor(statementContext));
-        final ExpressionTree expressionTree = ParserUtil.parseWhereExpression(query, statementContext);
+        final MappingContext mappingContext = new MappingContext(this);
+        mappingContext.setResultAccessor(new HRecordResultAccessor(mappingContext));
+        final ExpressionTree expressionTree = ParserUtil.parseWhereExpression(query, mappingContext);
         return RecordFilter.newRecordFilter(expressionTree);
     }
 

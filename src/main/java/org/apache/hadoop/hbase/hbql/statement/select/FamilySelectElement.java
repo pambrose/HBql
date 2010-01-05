@@ -33,8 +33,8 @@ import org.apache.hadoop.hbase.hbql.mapping.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.mapping.ResultAccessor;
 import org.apache.hadoop.hbase.hbql.mapping.SelectFamilyAttrib;
 import org.apache.hadoop.hbase.hbql.mapping.TableMapping;
+import org.apache.hadoop.hbase.hbql.statement.MappingContext;
 import org.apache.hadoop.hbase.hbql.statement.SelectStatement;
-import org.apache.hadoop.hbase.hbql.statement.StatementContext;
 import org.apache.hadoop.hbase.hbql.util.Lists;
 
 import java.util.Collection;
@@ -49,7 +49,7 @@ public class FamilySelectElement implements SelectElement {
     private final String familyName;
     private final boolean useAllFamilies;
 
-    private StatementContext statementContext;
+    private MappingContext mappingContext;
 
     public FamilySelectElement(final String familyName) {
 
@@ -86,20 +86,20 @@ public class FamilySelectElement implements SelectElement {
         return this.familyNameBytesList;
     }
 
-    private StatementContext getStatementContext() {
-        return this.statementContext;
+    private MappingContext getMappingContext() {
+        return this.mappingContext;
     }
 
     protected TableMapping getTableMapping() throws HBqlException {
-        return this.getStatementContext().getTableMapping();
+        return this.getMappingContext().getTableMapping();
     }
 
     private ResultAccessor getResultAccessor() throws HBqlException {
-        return this.getStatementContext().getResultAccessor();
+        return this.getMappingContext().getResultAccessor();
     }
 
-    private void setStatementContext(final StatementContext statementContext) {
-        this.statementContext = statementContext;
+    private void setMappingContext(final MappingContext mappingContext) {
+        this.mappingContext = mappingContext;
     }
 
     public String getAsName() {
@@ -139,9 +139,9 @@ public class FamilySelectElement implements SelectElement {
         return 0;
     }
 
-    public void validate(final StatementContext statementContext, final HConnection connection) throws HBqlException {
+    public void validate(final MappingContext mappingContext, final HConnection connection) throws HBqlException {
 
-        this.setStatementContext(statementContext);
+        this.setMappingContext(mappingContext);
 
         this.getAttribsUsedInExpr().clear();
         final Collection<String> familyList = this.getTableMapping().getMappingFamilyNames();

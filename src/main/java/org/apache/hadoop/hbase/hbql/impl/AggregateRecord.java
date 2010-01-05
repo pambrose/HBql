@@ -24,8 +24,8 @@ import org.apache.expreval.client.NullColumnValueException;
 import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.statement.MappingContext;
 import org.apache.hadoop.hbase.hbql.statement.SelectStatement;
-import org.apache.hadoop.hbase.hbql.statement.StatementContext;
 import org.apache.hadoop.hbase.hbql.statement.select.SelectElement;
 
 import java.util.List;
@@ -34,9 +34,9 @@ public class AggregateRecord extends HRecordImpl {
 
     final List<SelectElement> selectElementList;
 
-    private AggregateRecord(final StatementContext statementContext,
+    private AggregateRecord(final MappingContext mappingContext,
                             final List<SelectElement> selectElementList) throws HBqlException {
-        super(statementContext);
+        super(mappingContext);
 
         this.selectElementList = selectElementList;
 
@@ -52,7 +52,7 @@ public class AggregateRecord extends HRecordImpl {
 
     public static AggregateRecord newAggregateRecord(final SelectStatement selectStmt) throws HBqlException {
         return (selectStmt.isAnAggregateQuery())
-               ? new AggregateRecord(selectStmt.getStatementContext(), selectStmt.getSelectElementList())
+               ? new AggregateRecord(selectStmt.getMappingContext(), selectStmt.getSelectElementList())
                : null;
     }
 

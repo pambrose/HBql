@@ -29,10 +29,10 @@ import org.apache.hadoop.hbase.hbql.statement.ConnectionStatement;
 import org.apache.hadoop.hbase.hbql.statement.DeleteStatement;
 import org.apache.hadoop.hbase.hbql.statement.HBqlStatement;
 import org.apache.hadoop.hbase.hbql.statement.InsertStatement;
+import org.apache.hadoop.hbase.hbql.statement.MappingContext;
 import org.apache.hadoop.hbase.hbql.statement.NonConnectionStatement;
 import org.apache.hadoop.hbase.hbql.statement.ParameterStatement;
 import org.apache.hadoop.hbase.hbql.statement.SelectStatement;
-import org.apache.hadoop.hbase.hbql.statement.StatementContext;
 import org.apache.hadoop.hbase.hbql.util.Lists;
 
 import java.io.ByteArrayOutputStream;
@@ -55,9 +55,9 @@ public class Utils {
                 && !(stmt instanceof NonConnectionStatement))
                 throw new HBqlException("Unsupported statement type: " + stmt.getClass().getSimpleName() + " - " + sql);
 
-            if (stmt instanceof StatementContext) {
-                final StatementContext statementContext = (StatementContext)stmt;
-                statementContext.setResultAccessor(new HRecordResultAccessor(statementContext));
+            if (stmt instanceof MappingContext) {
+                final MappingContext mappingContext = (MappingContext)stmt;
+                mappingContext.setResultAccessor(new HRecordResultAccessor(mappingContext));
             }
 
             return stmt;

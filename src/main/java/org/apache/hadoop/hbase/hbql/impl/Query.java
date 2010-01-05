@@ -56,7 +56,7 @@ public class Query<T> {
                                         final Class clazz) throws HBqlException {
         final ResultAccessor accessor;
         if (clazz.equals(HRecord.class)) {
-            accessor = new HRecordResultAccessor(selectStatement.getStatementContext());
+            accessor = new HRecordResultAccessor(selectStatement.getMappingContext());
         }
         else {
             accessor = conn.getAnnotationMapping(clazz);
@@ -64,7 +64,7 @@ public class Query<T> {
                 throw new HBqlException("Unknown class " + clazz.getName());
         }
 
-        selectStatement.getStatementContext().setResultAccessor(accessor);
+        selectStatement.getMappingContext().setResultAccessor(accessor);
 
         return new Query<E>(conn, selectStatement);
     }
@@ -94,7 +94,7 @@ public class Query<T> {
         allAttribs.addAll(withArgs.getColumnsUsedInAllWhereExprs());
 
         return withArgs.getRowRequestList(this.getHConnectionImpl(),
-                                          this.getSelectStmt().getStatementContext().getMapping(),
+                                          this.getSelectStmt().getMappingContext().getMapping(),
                                           allAttribs);
     }
 

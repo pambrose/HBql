@@ -26,6 +26,7 @@ import org.apache.hadoop.hbase.client.ResultScanner;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HResultSet;
 import org.apache.hadoop.hbase.hbql.client.QueryListener;
+import org.apache.hadoop.hbase.hbql.statement.MappingContext;
 import org.apache.hadoop.hbase.hbql.statement.SelectStatement;
 import org.apache.hadoop.hbase.hbql.statement.args.WithArgs;
 import org.apache.hadoop.hbase.hbql.statement.select.RowRequest;
@@ -208,8 +209,12 @@ public abstract class HResultSetImpl<T, R> implements HResultSet<T> {
         return this.getQuery().getSelectStmt();
     }
 
+    protected MappingContext getMappingContext() {
+        return this.getSelectStmt().getMappingContext();
+    }
+
     protected String getTableName() {
-        return this.getSelectStmt().getStatementContext().getMapping().getTableName();
+        return this.getMappingContext().getMapping().getTableName();
     }
 
     protected WithArgs getWithArgs() {

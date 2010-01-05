@@ -36,8 +36,8 @@ import org.apache.hadoop.hbase.hbql.impl.Utils;
 import org.apache.hadoop.hbase.hbql.io.IO;
 import org.apache.hadoop.hbase.hbql.mapping.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.mapping.TableMapping;
+import org.apache.hadoop.hbase.hbql.statement.MappingContext;
 import org.apache.hadoop.hbase.hbql.statement.SelectStatement;
-import org.apache.hadoop.hbase.hbql.statement.StatementContext;
 
 import java.util.Collection;
 import java.util.Map;
@@ -149,9 +149,9 @@ public class SelectExpressionContext extends MultipleExpressionContext implement
         return this.columnNameBytes;
     }
 
-    public void validate(final StatementContext statementContext, final HConnection connection) throws HBqlException {
+    public void validate(final MappingContext mappingContext, final HConnection connection) throws HBqlException {
 
-        this.setStatementContext(statementContext);
+        this.setMappingContext(mappingContext);
 
         // TODO this needs to be done for expressions with col refs
 

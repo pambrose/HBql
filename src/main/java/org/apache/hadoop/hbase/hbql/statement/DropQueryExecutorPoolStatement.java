@@ -25,7 +25,7 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.QueryExecutorPoolManager;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 
-public class DropQueryExecutorPoolStatement extends BasicStatement implements ConnectionStatement {
+public class DropQueryExecutorPoolStatement extends StatementWithPredicate implements ConnectionStatement {
 
     private final String poolName;
 

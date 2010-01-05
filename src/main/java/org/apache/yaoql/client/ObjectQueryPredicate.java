@@ -26,7 +26,7 @@ import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.ExpressionTree;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.parser.ParserUtil;
-import org.apache.hadoop.hbase.hbql.statement.StatementContext;
+import org.apache.hadoop.hbase.hbql.statement.MappingContext;
 import org.apache.yaoql.impl.ParameterBinding;
 import org.apache.yaoql.impl.ReflectionMapping;
 
@@ -53,8 +53,8 @@ public class ObjectQueryPredicate<T> extends ParameterBinding implements Predica
         try {
             if (!initialized) {
                 final ReflectionMapping mapping = ReflectionMapping.getReflectionMapping(obj);
-                final StatementContext statementContext = new StatementContext(mapping);
-                this.expressionTree = ParserUtil.parseWhereExpression(this.query, statementContext);
+                final MappingContext mappingContext = new MappingContext(mapping);
+                this.expressionTree = ParserUtil.parseWhereExpression(this.query, mappingContext);
                 this.applyParameters(this.expressionTree);
                 initialized = true;
             }

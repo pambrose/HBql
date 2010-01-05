@@ -34,18 +34,15 @@ import org.apache.hadoop.hbase.hbql.impl.Utils;
 import org.apache.hadoop.hbase.hbql.mapping.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.mapping.Mapping;
 import org.apache.hadoop.hbase.hbql.mapping.TableMapping;
-import org.apache.hadoop.hbase.hbql.statement.StatementContext;
+import org.apache.hadoop.hbase.hbql.statement.MappingContext;
 import org.apache.hadoop.hbase.hbql.statement.select.RowRequest;
 import org.apache.hadoop.hbase.hbql.util.Lists;
 import org.apache.hadoop.hbase.hbql.util.Sets;
 
-import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
 
-public class WithArgs implements Serializable {
-
-    private static final long serialVersionUID = 1L;
+public class WithArgs {
 
     private String indexName = null;
     private KeyRangeArgs keyRangeArgs = null;
@@ -56,38 +53,38 @@ public class WithArgs implements Serializable {
     private ExpressionTree clientExpressionTree = null;
     private ExpressionTree serverExpressionTree = null;
 
-    private StatementContext statementContext = null;
+    private MappingContext mappingContext = null;
 
     // Keep track of args set multiple times
     private final Set<String> multipleSetValues = Sets.newHashSet();
 
-    public void setStatementContext(final StatementContext statementContext) throws HBqlException {
+    public void setMappingContext(final MappingContext mappingContext) throws HBqlException {
 
-        this.statementContext = statementContext;
+        this.mappingContext = mappingContext;
 
         this.validateNoDuplicateWithArgs();
 
         if (this.getKeyRangeArgs() == null)
             this.setKeyRangeArgs(new KeyRangeArgs());    // Default to ALL records
 
-        this.getKeyRangeArgs().setStatementContext(this.getStatementContext());
+        this.getKeyRangeArgs().setMappingContext(this.getMappingContext());
 
         if (this.getTimestampArgs() != null)
-            this.getTimestampArgs().setStatementContext(this.getStatementContext());
+            this.getTimestampArgs().setMappingContext(this.getMappingContext());
 
         if (this.getVersionArgs() != null)
-            this.getVersionArgs().setStatementContext(this.getStatementContext());
+            this.getVersionArgs().setMappingContext(this.getMappingContext());
 
         if (this.getLimitArgs() != null)
-            this.getLimitArgs().setStatementContext(this.getStatementContext());
+            this.getLimitArgs().setMappingContext(this.getMappingContext());
 
         if (this.getServerExpressionTree() != null) {
-            this.getServerExpressionTree().setStatementContext(this.getStatementContext());
+            this.getServerExpressionTree().setMappingContext(this.getMappingContext());
             this.getServerExpressionTree().setUseResultData(false);
         }
 
         if (this.getClientExpressionTree() != null) {
-            this.getClientExpressionTree().setStatementContext(this.getStatementContext());
+            this.getClientExpressionTree().setMappingContext(this.getMappingContext());
             this.getClientExpressionTree().setUseResultData(true);
         }
     }
@@ -129,8 +126,8 @@ public class WithArgs implements Serializable {
         }
     }
 
-    private StatementContext getStatementContext() {
-        return this.statementContext;
+    private MappingContext getMappingContext() {
+        return this.mappingContext;
     }
 
     private void addError(final String str) {
@@ -471,7 +468,7 @@ public class WithArgs implements Serializable {
         catch (HBqlException e) {
             // Try RecordFilter instead
             if (this.getServerExpressionTree() != null)
-                this.getServerExpressionTree().setStatementContext(this.getStatementContext());
+                this.getServerExpressionTree().setMappingContext(this.getMappingContext());
             return RecordFilter.newRecordFilter(this.getServerExpressionTree());
         }
     }

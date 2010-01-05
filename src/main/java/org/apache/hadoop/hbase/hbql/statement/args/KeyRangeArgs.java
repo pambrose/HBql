@@ -22,18 +22,15 @@ package org.apache.hadoop.hbase.hbql.statement.args;
 
 import org.apache.expreval.expr.var.NamedParameter;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.statement.StatementContext;
+import org.apache.hadoop.hbase.hbql.statement.MappingContext;
 import org.apache.hadoop.hbase.hbql.util.Lists;
 
-import java.io.Serializable;
 import java.util.List;
 
-public class KeyRangeArgs implements Serializable {
-
-    private static final long serialVersionUID = 1L;
+public class KeyRangeArgs {
 
     private final List<KeyRange> keyRangeList;
-    private final transient List<NamedParameter> namedParamList = Lists.newArrayList();
+    private final List<NamedParameter> namedParamList = Lists.newArrayList();
 
     public KeyRangeArgs() {
         this(null);
@@ -47,9 +44,9 @@ public class KeyRangeArgs implements Serializable {
         return this.keyRangeList;
     }
 
-    public void setStatementContext(final StatementContext statementContext) throws HBqlException {
+    public void setMappingContext(final MappingContext mappingContext) throws HBqlException {
         for (final KeyRange keyRange : this.getKeyRangeList())
-            keyRange.setStatementContext(statementContext);
+            keyRange.setMappingContext(mappingContext);
 
         for (final KeyRange keyRange : this.getKeyRangeList())
             this.getParameterList().addAll(keyRange.getParameterList());

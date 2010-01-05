@@ -38,7 +38,7 @@ import org.apache.hadoop.hbase.hbql.util.Lists;
 
 import java.util.List;
 
-public class InsertStatement extends MappingStatement implements ParameterStatement, ConnectionStatement {
+public class InsertStatement extends StatementWithMapping implements ParameterStatement, ConnectionStatement {
 
     private final NamedParameters namedParameters = new NamedParameters();
     private final List<SelectExpressionContext> columnList = Lists.newArrayList();
@@ -101,12 +101,12 @@ public class InsertStatement extends MappingStatement implements ParameterStatem
             throw new InvalidTypeException(this.invalidInsertColumn + " is not a column reference in " + this.asString());
 
         this.connection = conn;
-        this.getStatementContext().validateMappingName(this.getConnection());
-        this.record = this.getConnection().getMapping(this.getStatementContext().getMappingName()).newHRecord();
+        this.getMappingContext().validateMappingName(this.getConnection());
+        this.record = this.getConnection().getMapping(this.getMappingContext().getMappingName()).newHRecord();
 
         for (final SelectExpressionContext element : this.getInsertColumnList()) {
 
-            element.validate(this.getStatementContext(), this.getConnection());
+            element.validate(this.getMappingContext(), this.getConnection());
 
             if (!element.isADelegateColumnReference())
                 throw new InvalidTypeException(element.asString() + " is not a column reference in " + this.asString());
@@ -136,7 +136,7 @@ public class InsertStatement extends MappingStatement implements ParameterStatem
             // Skip Default values
             if (type2 == DefaultKeyword.class) {
                 final String name = this.getInsertColumnList().get(i).asString();
-                final ColumnAttrib attrib = this.getStatementContext().getMapping().getAttribByVariableName(name);
+                final ColumnAttrib attrib = this.getMappingContext().getMapping().getAttribByVariableName(name);
                 if (!attrib.hasDefaultArg())
                     throw new HBqlException("No DEFAULT value specified for " + attrib.getNameToUseInExceptions()
                                             + " in " + this.asString());
@@ -218,7 +218,7 @@ public class InsertStatement extends MappingStatement implements ParameterStatem
                 final String name = this.getInsertColumnList().get(i).asString();
                 final Object val;
                 if (this.getInsertValuesSource().isDefaultValue(i)) {
-                    final ColumnAttrib attrib = this.getStatementContext().getMapping().getAttribByVariableName(name);
+                    final ColumnAttrib attrib = this.getMappingContext().getMapping().getAttribByVariableName(name);
                     val = attrib.getDefaultValue();
                 }
                 else {
@@ -243,7 +243,7 @@ public class InsertStatement extends MappingStatement implements ParameterStatem
         final StringBuilder sbuf = new StringBuilder();
 
         sbuf.append("INSERT INTO ");
-        sbuf.append(this.getStatementContext().getMappingName());
+        sbuf.append(this.getMappingContext().getMappingName());
         sbuf.append(" (");
 
         boolean firstTime = true;

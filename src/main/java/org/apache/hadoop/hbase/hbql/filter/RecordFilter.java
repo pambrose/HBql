@@ -34,7 +34,7 @@ import org.apache.hadoop.hbase.hbql.io.IO;
 import org.apache.hadoop.hbase.hbql.mapping.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.mapping.FieldType;
 import org.apache.hadoop.hbase.hbql.mapping.TableMapping;
-import org.apache.hadoop.hbase.hbql.statement.StatementContext;
+import org.apache.hadoop.hbase.hbql.statement.MappingContext;
 import org.apache.hadoop.hbase.util.Bytes;
 
 import java.io.ByteArrayInputStream;
@@ -52,14 +52,14 @@ public class RecordFilter implements Filter {
 
     private ExpressionTree expressionTree;
 
-    public HRecordImpl record = new HRecordImpl((StatementContext)null);
+    public HRecordImpl record = new HRecordImpl((MappingContext)null);
 
     public RecordFilter() {
     }
 
     private RecordFilter(final ExpressionTree expressionTree) {
         this.expressionTree = expressionTree;
-        this.getHRecord().setStatementContext(this.getExpressionTree().getStatementContext());
+        this.getHRecord().setMappingContext(this.getExpressionTree().getMappingContext());
     }
 
     public static RecordFilter newRecordFilter(final ExpressionTree expressionTree) {
@@ -184,7 +184,7 @@ public class RecordFilter implements Filter {
         try {
             final byte[] b = Bytes.readByteArray(in);
             this.expressionTree = (ExpressionTree)IO.getSerialization().getScalarFromBytes(FieldType.ObjectType, b);
-            this.getHRecord().setStatementContext(this.getExpressionTree().getStatementContext());
+            this.getHRecord().setMappingContext(this.getExpressionTree().getMappingContext());
             this.getMapping().resetDefaultValues();
         }
         catch (HBqlException e) {

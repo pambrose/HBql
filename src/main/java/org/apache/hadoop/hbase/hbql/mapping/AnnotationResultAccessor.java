@@ -26,7 +26,7 @@ import org.apache.hadoop.hbase.hbql.client.ColumnVersionMap;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.Mapping;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
-import org.apache.hadoop.hbase.hbql.statement.StatementContext;
+import org.apache.hadoop.hbase.hbql.statement.MappingContext;
 import org.apache.hadoop.hbase.hbql.statement.select.SelectElement;
 import org.apache.hadoop.hbase.hbql.util.Maps;
 
@@ -43,9 +43,9 @@ public class AnnotationResultAccessor extends ResultAccessor {
 
     private AnnotationResultAccessor(final TableMapping tableMapping, final Class clazz) throws HBqlException {
 
-        super(new StatementContext(tableMapping));
+        super(new MappingContext(tableMapping));
 
-        this.getStatementContext().setResultAccessor(this);
+        this.getMappingContext().setResultAccessor(this);
 
         this.clazz = clazz;
 
@@ -164,7 +164,7 @@ public class AnnotationResultAccessor extends ResultAccessor {
     }
 
     public Object newObject(final HConnectionImpl conn,
-                            final StatementContext statementContext,
+                            final MappingContext mappingContext,
                             final List<SelectElement> selectElementList,
                             final int maxVersions,
                             final Result result) throws HBqlException {

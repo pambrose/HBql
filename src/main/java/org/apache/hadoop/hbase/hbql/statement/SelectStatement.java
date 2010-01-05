@@ -33,7 +33,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class SelectStatement extends MappingStatement implements ParameterStatement, HBqlStatement {
+public class SelectStatement extends StatementWithMapping implements ParameterStatement, HBqlStatement {
 
     private final List<ColumnAttrib> selectColumnAttribList = Lists.newArrayList();
     private final NamedParameters namedParameters = new NamedParameters();
@@ -83,18 +83,18 @@ public class SelectStatement extends MappingStatement implements ParameterStatem
 
         this.validated = true;
 
-        this.getStatementContext().validateMappingName(conn);
+        this.getMappingContext().validateMappingName(conn);
 
         this.getSelectAttribList().clear();
 
         for (final SelectElement element : this.getSelectElementList()) {
-            element.validate(this.getStatementContext(), conn);
+            element.validate(this.getMappingContext(), conn);
             element.assignAsNamesForExpressions(this);
             this.getSelectAttribList().addAll(element.getAttribsUsedInExpr());
         }
 
-        this.getWithArgs().setStatementContext(this.getStatementContext());
-        this.getWithArgs().validate(conn, this.getStatementContext().getTableMapping());
+        this.getWithArgs().setMappingContext(this.getMappingContext());
+        this.getWithArgs().validate(conn, this.getMappingContext().getTableMapping());
 
         // Make sure there are no duplicate aliases in list
         this.checkForDuplicateAsNames();
@@ -192,7 +192,7 @@ public class SelectStatement extends MappingStatement implements ParameterStatem
         }
 
         sbuf.append(" FROM ");
-        sbuf.append(this.getStatementContext().getMappingName());
+        sbuf.append(this.getMappingContext().getMappingName());
         sbuf.append(" ");
         sbuf.append(this.getWithArgs().asString());
         return sbuf.toString();

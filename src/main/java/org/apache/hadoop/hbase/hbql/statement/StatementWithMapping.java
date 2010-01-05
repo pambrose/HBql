@@ -20,19 +20,19 @@
 
 package org.apache.hadoop.hbase.hbql.statement;
 
-public abstract class MappingStatement extends BasicStatement implements ConnectionStatement {
+public abstract class StatementWithMapping extends StatementWithPredicate implements ConnectionStatement {
 
-    private StatementContext statementContext = null;
+    private MappingContext mappingContext = null;
 
-    public MappingStatement() {
+    public StatementWithMapping() {
     }
 
-    protected MappingStatement(final StatementPredicate predicate, final String mappingName) {
+    protected StatementWithMapping(final StatementPredicate predicate, final String mappingName) {
         super(predicate);
-        this.statementContext = new StatementContext(mappingName);
+        this.mappingContext = new MappingContext(mappingName);
     }
 
-    public StatementContext getStatementContext() {
-        return statementContext;
+    public MappingContext getMappingContext() {
+        return mappingContext;
     }
 }

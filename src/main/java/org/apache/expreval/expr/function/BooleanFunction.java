@@ -31,7 +31,7 @@ import org.apache.hadoop.hbase.hbql.client.InvalidTypeException;
 import org.apache.hadoop.hbase.hbql.client.QueryExecutorPoolManager;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 import org.apache.hadoop.hbase.hbql.parser.ParserUtil;
-import org.apache.hadoop.hbase.hbql.statement.StatementContext;
+import org.apache.hadoop.hbase.hbql.statement.MappingContext;
 
 import java.util.List;
 
@@ -78,8 +78,8 @@ public class BooleanFunction extends GenericFunction implements BooleanValue {
 
             case EVAL:
                 final String exprStr = (String)this.getExprArg(0).getValue(conn, object);
-                final StatementContext statementContext = this.getExpressionContext().getStatementContext();
-                final ExpressionTree expressionTree = ParserUtil.parseWhereExpression(exprStr, statementContext);
+                final MappingContext mappingContext = this.getExpressionContext().getMappingContext();
+                final ExpressionTree expressionTree = ParserUtil.parseWhereExpression(exprStr, mappingContext);
                 return expressionTree.evaluate(conn, object);
 
             case MAPPINGEXISTS:

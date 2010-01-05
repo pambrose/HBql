@@ -38,7 +38,7 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.ParseException;
 import org.apache.hadoop.hbase.hbql.mapping.Mapping;
 import org.apache.hadoop.hbase.hbql.statement.HBqlStatement;
-import org.apache.hadoop.hbase.hbql.statement.StatementContext;
+import org.apache.hadoop.hbase.hbql.statement.MappingContext;
 import org.apache.hadoop.hbase.hbql.statement.args.WithArgs;
 import org.apache.hadoop.hbase.hbql.statement.select.SelectExpressionContext;
 
@@ -62,9 +62,9 @@ public class ParserUtil {
     }
 
     public static ExpressionTree parseWhereExpression(final String sql,
-                                                      final StatementContext statementContext) throws HBqlException {
+                                                      final MappingContext mappingContext) throws HBqlException {
         try {
-            return getExpressionTree(sql, statementContext);
+            return getExpressionTree(sql, mappingContext);
         }
         catch (RecognitionException e) {
             e.printStackTrace();
@@ -73,9 +73,9 @@ public class ParserUtil {
     }
 
     public static ExpressionTree getExpressionTree(final String str,
-                                                   final StatementContext statementContext) throws HBqlException,
-                                                                                                   RecognitionException {
-        final Mapping mapping = statementContext.getMapping();
+                                                   final MappingContext mappingContext) throws HBqlException,
+                                                                                               RecognitionException {
+        final Mapping mapping = mappingContext.getMapping();
 
         final Map<String, ExpressionTree> map = mapping.getEvalMap();
         ExpressionTree expressionTree = map.get(str);
@@ -83,7 +83,7 @@ public class ParserUtil {
         if (expressionTree == null) {
             final HBqlParser parser = ParserUtil.newHBqlParser(str);
             expressionTree = parser.nodescWhereExpr();
-            expressionTree.setStatementContext(statementContext);
+            expressionTree.setMappingContext(mappingContext);
             mapping.addToExpressionTreeCache(str, expressionTree);
         }
         else {
@@ -117,7 +117,7 @@ public class ParserUtil {
         try {
             final HBqlParser parser = ParserUtil.newHBqlParser(sql);
             final SelectExpressionContext elem = (SelectExpressionContext)parser.selectElem();
-            elem.setStatementContext(null);
+            elem.setMappingContext(null);
             return elem;
         }
         catch (RecognitionException e) {

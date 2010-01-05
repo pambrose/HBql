@@ -25,7 +25,7 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 import org.apache.hadoop.hbase.hbql.mapping.TableMapping;
 
-public class DescribeMappingStatement extends MappingStatement implements ConnectionStatement {
+public class DescribeMappingStatement extends StatementWithMapping implements ConnectionStatement {
 
     public DescribeMappingStatement(final String mappingName) {
         super(null, mappingName);
@@ -33,12 +33,12 @@ public class DescribeMappingStatement extends MappingStatement implements Connec
 
     protected ExecutionResults execute(final HConnectionImpl conn) throws HBqlException {
 
-        this.getStatementContext().validateMappingName(conn);
+        this.getMappingContext().validateMappingName(conn);
 
-        final TableMapping tableMapping = this.getStatementContext().getTableMapping();
+        final TableMapping tableMapping = this.getMappingContext().getTableMapping();
 
         if (tableMapping == null)
-            return new ExecutionResults("Unknown mapping: " + this.getStatementContext().getMappingName());
+            return new ExecutionResults("Unknown mapping: " + this.getMappingContext().getMappingName());
         else
             return new ExecutionResults(tableMapping.asString());
     }

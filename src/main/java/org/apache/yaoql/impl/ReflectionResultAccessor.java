@@ -25,7 +25,7 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 import org.apache.hadoop.hbase.hbql.mapping.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.mapping.ResultAccessor;
-import org.apache.hadoop.hbase.hbql.statement.StatementContext;
+import org.apache.hadoop.hbase.hbql.statement.MappingContext;
 import org.apache.hadoop.hbase.hbql.statement.select.SelectElement;
 
 import java.util.List;
@@ -33,11 +33,11 @@ import java.util.List;
 public class ReflectionResultAccessor extends ResultAccessor {
 
     public ReflectionResultAccessor(final Object object) {
-        super(new StatementContext(ReflectionMapping.getReflectionMapping(object)));
+        super(new MappingContext(ReflectionMapping.getReflectionMapping(object)));
     }
 
     public Object newObject(final HConnectionImpl conn,
-                            final StatementContext statementContext,
+                            final MappingContext mappingContext,
                             final List<SelectElement> selectElementList,
                             final int maxVersions,
                             final Result result) throws HBqlException {

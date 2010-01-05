@@ -20,7 +20,7 @@
 
 package org.apache.hadoop.hbase.hbql.statement;
 
-public abstract class TableStatement extends BasicStatement implements ConnectionStatement {
+public abstract class TableStatement extends StatementWithPredicate implements ConnectionStatement {
 
     private final String tableName;
 

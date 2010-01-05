@@ -23,7 +23,7 @@ package org.apache.hadoop.hbase.hbql.mapping;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
-import org.apache.hadoop.hbase.hbql.statement.StatementContext;
+import org.apache.hadoop.hbase.hbql.statement.MappingContext;
 import org.apache.hadoop.hbase.hbql.statement.select.SelectElement;
 
 import java.io.Serializable;
@@ -33,22 +33,22 @@ public abstract class ResultAccessor implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private StatementContext statementContext;
+    private MappingContext mappingContext;
 
     public ResultAccessor() {
     }
 
-    public ResultAccessor(final StatementContext statementContext) {
-        this.statementContext = statementContext;
-        this.getStatementContext().setResultAccessor(this);
+    public ResultAccessor(final MappingContext mappingContext) {
+        this.mappingContext = mappingContext;
+        this.getMappingContext().setResultAccessor(this);
     }
 
-    public StatementContext getStatementContext() {
-        return this.statementContext;
+    public MappingContext getMappingContext() {
+        return this.mappingContext;
     }
 
     public Mapping getMapping() {
-        return this.getStatementContext().getMapping();
+        return this.getMappingContext().getMapping();
     }
 
     public TableMapping getTableMapping() throws HBqlException {
@@ -56,7 +56,7 @@ public abstract class ResultAccessor implements Serializable {
     }
 
     public abstract Object newObject(final HConnectionImpl conn,
-                                     final StatementContext statementContext,
+                                     final MappingContext mappingContext,
                                      final List<SelectElement> selectElementList,
                                      final int maxVersions,
                                      final Result result) throws HBqlException;

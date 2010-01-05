@@ -25,14 +25,14 @@ import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 
-public abstract class BasicStatement {
+public abstract class StatementWithPredicate {
 
     private StatementPredicate predicate = null;
 
-    public BasicStatement() {
+    public StatementWithPredicate() {
     }
 
-    protected BasicStatement(final StatementPredicate predicate) {
+    protected StatementWithPredicate(final StatementPredicate predicate) {
         this.predicate = predicate;
     }
 

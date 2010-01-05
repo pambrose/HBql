@@ -25,7 +25,7 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 import org.apache.hadoop.hbase.hbql.mapping.Mapping;
 
-public class DescribeIndexForMappingStatement extends MappingStatement implements ConnectionStatement {
+public class DescribeIndexForMappingStatement extends StatementWithMapping implements ConnectionStatement {
 
     private final String indexName;
 
@@ -39,7 +39,7 @@ public class DescribeIndexForMappingStatement extends MappingStatement implement
     }
 
     protected ExecutionResults execute(final HConnectionImpl conn) throws HBqlException {
-        final Mapping mapping = conn.getMapping(this.getStatementContext().getMappingName());
+        final Mapping mapping = conn.getMapping(this.getMappingContext().getMappingName());
         return DescribeIndexForTableStatement.executeDescribe(conn, this.getIndexName(), mapping.getTableName());
     }
 

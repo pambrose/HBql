@@ -36,7 +36,7 @@ import org.apache.hadoop.hbase.hbql.mapping.HRecordResultAccessor;
 import org.apache.hadoop.hbase.hbql.mapping.Mapping;
 import org.apache.hadoop.hbase.hbql.mapping.ResultAccessor;
 import org.apache.hadoop.hbase.hbql.mapping.TableMapping;
-import org.apache.hadoop.hbase.hbql.statement.StatementContext;
+import org.apache.hadoop.hbase.hbql.statement.MappingContext;
 import org.apache.hadoop.hbase.hbql.util.Lists;
 import org.apache.hadoop.hbase.hbql.util.Maps;
 
@@ -58,7 +58,7 @@ public abstract class MultipleExpressionContext implements Serializable {
     private final List<NamedParameter> namedParamList = Lists.newArrayList();
     private final Map<String, List<NamedParameter>> namedParamMap = Maps.newHashMap();
 
-    private StatementContext statementContext = null;
+    private MappingContext mappingContext = null;
     private TypeSignature typeSignature = null;
 
     protected MultipleExpressionContext() {
@@ -102,27 +102,27 @@ public abstract class MultipleExpressionContext implements Serializable {
         return this.typeSignature;
     }
 
-    public StatementContext getStatementContext() {
-        return this.statementContext;
+    public MappingContext getMappingContext() {
+        return this.mappingContext;
     }
 
     public Mapping getMapping() throws HBqlException {
-        return this.getStatementContext().getMapping();
+        return this.getMappingContext().getMapping();
     }
 
     public TableMapping getTableMapping() {
-        return this.getStatementContext().getTableMapping();
+        return this.getMappingContext().getTableMapping();
     }
 
     public ResultAccessor getResultAccessor() throws HBqlException {
-        return this.getStatementContext().getResultAccessor();
+        return this.getMappingContext().getResultAccessor();
     }
 
-    public void setStatementContext(final StatementContext statementContext) throws HBqlException {
-        this.statementContext = statementContext;
+    public void setMappingContext(final MappingContext mappingContext) throws HBqlException {
+        this.mappingContext = mappingContext;
 
-        if (this.getStatementContext() != null && this.getStatementContext().getResultAccessor() == null)
-            this.getStatementContext().setResultAccessor(new HRecordResultAccessor(statementContext));
+        if (this.getMappingContext() != null && this.getMappingContext().getResultAccessor() == null)
+            this.getMappingContext().setResultAccessor(new HRecordResultAccessor(mappingContext));
 
         this.setExpressionListContext();
     }

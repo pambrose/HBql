@@ -25,7 +25,7 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 import org.apache.hadoop.hbase.hbql.mapping.TableMapping;
 
-public class DropIndexForMappingStatement extends MappingStatement implements ConnectionStatement {
+public class DropIndexForMappingStatement extends StatementWithMapping implements ConnectionStatement {
 
     private final String indexName;
 
@@ -41,8 +41,8 @@ public class DropIndexForMappingStatement extends MappingStatement implements Co
     }
 
     protected ExecutionResults execute(final HConnectionImpl conn) throws HBqlException {
-        conn.dropIndexForMapping(this.getIndexName(), this.getStatementContext().getMappingName());
-        final TableMapping mapping = conn.getMapping(this.getStatementContext().getMappingName());
+        conn.dropIndexForMapping(this.getIndexName(), this.getMappingContext().getMappingName());
+        final TableMapping mapping = conn.getMapping(this.getMappingContext().getMappingName());
         return new ExecutionResults("Index " + this.getIndexName() + " dropped for table " + mapping.getTableName());
     }
 

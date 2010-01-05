@@ -32,7 +32,7 @@ import org.apache.hadoop.hbase.hbql.util.Lists;
 import java.io.IOException;
 import java.util.List;
 
-public class CreateIndexStatement extends MappingStatement implements ConnectionStatement {
+public class CreateIndexStatement extends StatementWithMapping implements ConnectionStatement {
 
     private final String indexName;
     private final List<String> indexColumns;
@@ -55,7 +55,7 @@ public class CreateIndexStatement extends MappingStatement implements Connection
 
     protected ExecutionResults execute(final HConnectionImpl conn) throws HBqlException {
 
-        final TableMapping mapping = conn.getMapping(this.getStatementContext().getMappingName());
+        final TableMapping mapping = conn.getMapping(this.getMappingContext().getMappingName());
 
         final List<String> indexList = this.getQualifiedNameList(mapping, this.indexColumns);
         final List<String> includeList = this.getQualifiedNameList(mapping, this.includeColumns);
@@ -93,7 +93,7 @@ public class CreateIndexStatement extends MappingStatement implements Connection
                     if (columnAttrib == null)
                         throw new HBqlException("Unknown " +
                                                 ((!column.contains(":")) ? "alias" : "column")
-                                                + " " + column + " in mapping " + this.getStatementContext()
+                                                + " " + column + " in mapping " + this.getMappingContext()
                                 .getMappingName());
                     else
                         retval.add(columnAttrib.getFamilyQualifiedName());
@@ -107,7 +107,7 @@ public class CreateIndexStatement extends MappingStatement implements Connection
     private String getCreateIndexMsg(final List<String> indexList, final List<String> includeList) {
 
         final StringBuilder sbuf = new StringBuilder("Index " + this.getIndexName()
-                                                     + " created for " + this.getStatementContext().getMappingName());
+                                                     + " created for " + this.getMappingContext().getMappingName());
 
         sbuf.append(" (");
 

@@ -24,25 +24,25 @@ import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 import org.apache.hadoop.hbase.hbql.impl.HRecordImpl;
-import org.apache.hadoop.hbase.hbql.statement.StatementContext;
+import org.apache.hadoop.hbase.hbql.statement.MappingContext;
 import org.apache.hadoop.hbase.hbql.statement.select.SelectElement;
 
 import java.util.List;
 
 public class HRecordResultAccessor extends ResultAccessor {
 
-    public HRecordResultAccessor(final StatementContext statementContext) {
-        super(statementContext);
+    public HRecordResultAccessor(final MappingContext mappingContext) {
+        super(mappingContext);
     }
 
     public Object newObject(final HConnectionImpl conn,
-                            final StatementContext statementContext,
+                            final MappingContext mappingContext,
                             final List<SelectElement> selectElementList,
                             final int maxVersions,
                             final Result result) throws HBqlException {
 
         // Create object and assign values
-        final HRecordImpl newrec = new HRecordImpl(statementContext);
+        final HRecordImpl newrec = new HRecordImpl(mappingContext);
         this.assignSelectValues(conn, newrec, selectElementList, maxVersions, result);
         return newrec;
     }

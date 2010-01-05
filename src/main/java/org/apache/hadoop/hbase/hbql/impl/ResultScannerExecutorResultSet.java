@@ -44,7 +44,7 @@ public class ResultScannerExecutorResultSet<T> extends HResultSetImpl<T, ResultS
             final Runnable job = new Runnable() {
                 public void run() {
                     try {
-                        final ResultScanner resultScanner = rowRequest.getResultScanner(getSelectStmt().getStatementContext().getMapping(),
+                        final ResultScanner resultScanner = rowRequest.getResultScanner(getMappingContext().getMapping(),
                                                                                         getWithArgs(),
                                                                                         getHTableWrapper().getHTable());
                         getCompletionQueueExecutor().putElement(resultScanner);

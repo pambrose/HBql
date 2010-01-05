@@ -68,7 +68,7 @@ public class InsertSingleRow extends InsertValueSource {
         final HConnectionImpl conn = this.getInsertStatement().getConnection();
 
         for (final SelectExpressionContext element : this.getValueList()) {
-            element.validate(this.getInsertStatement().getStatementContext(), conn);
+            element.validate(this.getInsertStatement().getMappingContext(), conn);
 
             // Make sure values do not have column references
             if (element.hasAColumnReference())

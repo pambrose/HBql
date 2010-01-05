@@ -29,7 +29,7 @@ import org.apache.hadoop.hbase.hbql.mapping.TableMapping;
 
 import java.io.Serializable;
 
-public class StatementContext implements Serializable {
+public class MappingContext implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -37,14 +37,14 @@ public class StatementContext implements Serializable {
     private Mapping mapping = null;
     private ResultAccessor resultAccessor = null;
 
-    public StatementContext() {
+    public MappingContext() {
     }
 
-    public StatementContext(final Mapping mapping) {
+    public MappingContext(final Mapping mapping) {
         this.setMapping(mapping);
     }
 
-    public StatementContext(final String mappingName) {
+    public MappingContext(final String mappingName) {
         this.setMappingName(mappingName);
     }
 
