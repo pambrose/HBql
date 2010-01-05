@@ -43,11 +43,11 @@ import java.util.NavigableMap;
 
 public class FamilySelectElement implements SelectElement {
 
-    private final boolean useAllFamilies;
     private final List<String> familyNameList = Lists.newArrayList();
     private final List<byte[]> familyNameBytesList = Lists.newArrayList();
     private final List<ColumnAttrib> attribsUsedInExpr = Lists.newArrayList();
     private final String familyName;
+    private final boolean useAllFamilies;
 
     private StatementContext statementContext;
 

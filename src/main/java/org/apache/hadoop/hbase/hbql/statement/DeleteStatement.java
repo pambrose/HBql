@@ -43,14 +43,13 @@ import java.util.Set;
 
 public class DeleteStatement extends StatementContext implements ParameterStatement, ConnectionStatement {
 
-    private static final long serialVersionUID = 1L;
+    private final NamedParameters namedParameters = new NamedParameters();
+    private final List<String> deleteItemList = Lists.newArrayList();
+    private final List<String> originaltemList;
+    private final WithArgs withArgs;
 
     private transient HConnectionImpl connection = null;
     private boolean validated = false;
-    private final NamedParameters namedParameters = new NamedParameters();
-    private final WithArgs withArgs;
-    private final List<String> deleteItemList = Lists.newArrayList();
-    private final List<String> originaltemList;
 
     public DeleteStatement(final StatementPredicate predicate,
                            final List<String> originaltemList,

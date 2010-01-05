@@ -40,15 +40,13 @@ import java.util.List;
 
 public class InsertStatement extends StatementContext implements ParameterStatement, ConnectionStatement {
 
-    private static final long serialVersionUID = 1L;
-
+    private final NamedParameters namedParameters = new NamedParameters();
     private final List<SelectExpressionContext> columnList = Lists.newArrayList();
     private final InsertValueSource insertValuesSource;
-    private final NamedParameters namedParameters = new NamedParameters();
 
     private transient HConnectionImpl connection = null;
-    private HRecord record = null;
     private boolean validated = false;
+    private HRecord record = null;
     private String invalidInsertColumn = null;
 
     public InsertStatement(final StatementPredicate predicate,

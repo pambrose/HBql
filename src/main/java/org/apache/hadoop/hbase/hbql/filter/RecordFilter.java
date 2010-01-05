@@ -62,7 +62,7 @@ public class RecordFilter implements Filter {
         this.getHRecord().setStatementContext(this.getExpressionTree().getStatementContext());
     }
 
-    public static RecordFilter newRecordFilter(final ExpressionTree expressionTree) throws HBqlException {
+    public static RecordFilter newRecordFilter(final ExpressionTree expressionTree) {
         return (expressionTree == null) ? null : new RecordFilter(expressionTree);
     }
 
