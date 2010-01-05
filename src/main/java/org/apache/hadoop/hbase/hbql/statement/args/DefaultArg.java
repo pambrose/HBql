@@ -34,7 +34,7 @@ public class DefaultArg extends ExpressionProperty implements Serializable {
 
     // We have to make value transient because Object is not serializable for RecordFilter
     // We will compute it again on the server after reset is called
-    private transient Object value = null;
+    private Serializable value = null;
     private AtomicBoolean atomicComputed = new AtomicBoolean(false);
 
     public DefaultArg(final Class<? extends GenericValue> exprType, final GenericValue expr) throws HBqlException {
@@ -60,7 +60,7 @@ public class DefaultArg extends ExpressionProperty implements Serializable {
             synchronized (this) {
                 if (!this.getAtomicComputed().get()) {
                     // Type checking happens in this call, so we force it above in the constructor
-                    this.value = this.evaluateConstant(0, false);
+                    this.value = (Serializable)this.evaluateConstant(0, false);
 
                     this.getAtomicComputed().set(true);
                 }
