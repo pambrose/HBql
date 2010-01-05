@@ -5,14 +5,14 @@
 
 Releases
 
-    *{{{./downloads/hbql-0.9.17-alpha.zip}0.9.17-alpha.zip}}
+    *{{{./downloads/hbql-0.9.18-alpha.zip}0.9.18-alpha.zip}}
     
-    *{{{./downloads/hbql-0.9.17-alpha.tar.gz}0.9.17-alpha.tar.gz}}
+    *{{{./downloads/hbql-0.9.18-alpha.tar.gz}0.9.18-alpha.tar.gz}}
 
 
 Javadocs
 
-    *{{{./downloads/javadocs-0.9.17-alpha.zip}javadocs-0.9.17-alpha.zip}}
+    *{{{./downloads/javadocs-0.9.18-alpha.zip}javadocs-0.9.18-alpha.zip}}
     
 
 Source
@@ -26,9 +26,13 @@ git clone git://github.com/pambrose/HBql.git
 
 Release Notes
 
+    0.9.18-alpha -- 01/05/10
+
+        * Misc cleanup.
+
     0.9.17-alpha -- 01/03/10
 
-        * Misc cleanup. 
+        * Misc cleanup.
 
     0.9.16-alpha -- 12/31/09
 
