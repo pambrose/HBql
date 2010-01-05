@@ -26,7 +26,7 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 import org.apache.hadoop.hbase.hbql.statement.select.SimpleExpressionContext;
 
-public class EvalStatement extends StatementWithPredicate implements ConnectionStatement {
+public class EvalStatement extends GenericStatement implements ConnectionStatement {
 
     private final GenericValue genericValue;
 

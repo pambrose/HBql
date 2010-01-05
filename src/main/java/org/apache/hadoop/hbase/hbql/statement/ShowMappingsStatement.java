@@ -25,7 +25,7 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HMapping;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 
-public class ShowMappingsStatement extends StatementWithPredicate implements ConnectionStatement {
+public class ShowMappingsStatement extends GenericStatement implements ConnectionStatement {
 
     public ShowMappingsStatement() {
         super(null);

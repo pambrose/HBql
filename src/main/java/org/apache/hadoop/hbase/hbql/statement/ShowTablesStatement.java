@@ -28,7 +28,7 @@ import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 
 import java.io.IOException;
 
-public class ShowTablesStatement extends StatementWithPredicate implements ConnectionStatement {
+public class ShowTablesStatement extends GenericStatement implements ConnectionStatement {
 
     public ShowTablesStatement() {
         super(null);

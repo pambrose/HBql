@@ -36,7 +36,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
 
-public class ImportStatement extends StatementWithPredicate implements ConnectionStatement {
+public class ImportStatement extends GenericStatement implements ConnectionStatement {
 
     private final String filename;
 

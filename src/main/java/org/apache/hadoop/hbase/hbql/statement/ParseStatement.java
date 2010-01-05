@@ -24,7 +24,7 @@ import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 
-public class ParseStatement extends StatementWithPredicate implements ConnectionStatement {
+public class ParseStatement extends GenericStatement implements ConnectionStatement {
 
     private final HBqlStatement stmt;
 

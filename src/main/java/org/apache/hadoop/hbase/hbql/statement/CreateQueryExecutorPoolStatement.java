@@ -26,7 +26,7 @@ import org.apache.hadoop.hbase.hbql.client.QueryExecutorPoolManager;
 import org.apache.hadoop.hbase.hbql.executor.QueryExecutorPoolDefinition;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 
-public class CreateQueryExecutorPoolStatement extends StatementWithPredicate implements ConnectionStatement {
+public class CreateQueryExecutorPoolStatement extends GenericStatement implements ConnectionStatement {
 
     private final QueryExecutorPoolDefinition args;
 

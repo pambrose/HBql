@@ -27,7 +27,7 @@ import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 
 import java.util.List;
 
-public class AlterTableStatement extends StatementWithPredicate implements ConnectionStatement {
+public class AlterTableStatement extends GenericStatement implements ConnectionStatement {
 
     private final String tableName;
     private final List<AlterTableAction> alterTableActionList;
