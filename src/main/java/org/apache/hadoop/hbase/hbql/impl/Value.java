@@ -20,11 +20,7 @@
 
 package org.apache.hadoop.hbase.hbql.impl;
 
-import java.io.Serializable;
-
-public abstract class Value implements Serializable {
-
-    private static final long serialVersionUID = 1L;
+public abstract class Value {
 
     private final String name;
 

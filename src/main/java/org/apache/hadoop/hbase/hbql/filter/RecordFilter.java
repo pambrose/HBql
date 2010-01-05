@@ -52,7 +52,7 @@ public class RecordFilter implements Filter {
 
     private ExpressionTree expressionTree;
 
-    public transient HRecordImpl record = new HRecordImpl((StatementContext)null);
+    public HRecordImpl record = new HRecordImpl((StatementContext)null);
 
     public RecordFilter() {
     }

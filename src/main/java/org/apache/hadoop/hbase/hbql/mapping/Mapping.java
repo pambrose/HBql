@@ -38,16 +38,16 @@ public abstract class Mapping implements Serializable {
 
     private static final long serialVersionUID = 3L;
 
-    private String mappingName;
-    private String tableName;
+    private final transient AtomicReference<Map<String, ExpressionTree>> atomicEvalMap = AtomicReferences.newAtomicReference();
     private final Map<String, ColumnAttrib> columnAttribByVariableNameMap = Maps.newHashMap();
     private final Set<ColumnAttrib> columnAttribSet = Sets.newHashSet();
 
     private ColumnAttrib keyAttrib = null;
     private List<String> evalList = null;
     private int expressionTreeCacheSize = 25;
+    private String mappingName = null;
+    private String tableName = null;
 
-    private transient AtomicReference<Map<String, ExpressionTree>> atomicEvalMap = AtomicReferences.newAtomicReference();
 
     // For serialization
     public Mapping() {

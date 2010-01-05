@@ -95,7 +95,7 @@ public abstract class TypeSignature implements Serializable {
             throw new RuntimeException("Invalid return type in signature: " + type.getName());
     }
 
-    private Constructor getLiteralConstructor(Class type, final Class literalCastClass) {
+    private Constructor getLiteralConstructor(final Class type, final Class aLiteralCastClass) {
 
         final Class clazz;
 
@@ -123,7 +123,7 @@ public abstract class TypeSignature implements Serializable {
             else
                 throw new RuntimeException("Invalid return type in signature: " + type.getName());
 
-            return clazz.getConstructor(literalCastClass);
+            return clazz.getConstructor(aLiteralCastClass);
         }
         catch (NoSuchMethodException e) {
             throw new RuntimeException("Invalid literal constructor in signature: " + type.getName());

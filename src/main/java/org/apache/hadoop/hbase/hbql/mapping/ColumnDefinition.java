@@ -38,7 +38,7 @@ public final class ColumnDefinition implements Serializable {
     private String aliasName;
     private boolean isArray;
     private FieldType fieldType;
-    private GenericValue defaultValue;
+    private transient GenericValue defaultValue;
     private ColumnWidth columnWidth;
     private String getter;
     private String setter;

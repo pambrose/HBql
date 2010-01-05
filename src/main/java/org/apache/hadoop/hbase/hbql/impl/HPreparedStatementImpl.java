@@ -50,6 +50,10 @@ public class HPreparedStatementImpl extends HStatementImpl implements HPreparedS
         }
     }
 
+    public String getSql() {
+        return this.sql;
+    }
+
     private HBqlStatement getStatement() {
         return this.statement;
     }

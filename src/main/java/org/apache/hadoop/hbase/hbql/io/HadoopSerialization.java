@@ -29,6 +29,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.lang.reflect.Array;
 
 public class HadoopSerialization extends Serialization {
@@ -142,7 +143,7 @@ public class HadoopSerialization extends Serialization {
                 case ObjectType:
                     final ByteArrayOutputStream baos = new ByteArrayOutputStream();
                     final ObjectOutputStream oos = new ObjectOutputStream(baos);
-                    oos.writeObject(obj);
+                    oos.writeObject((Serializable)obj);
                     oos.flush();
                     try {
                         return baos.toByteArray();
@@ -406,7 +407,7 @@ public class HadoopSerialization extends Serialization {
                     final ObjectOutputStream oos = new ObjectOutputStream(baos);
                     oos.writeInt(((Object[])obj).length);
                     for (final Object val : (Object[])obj) {
-                        oos.writeObject(val);
+                        oos.writeObject((Serializable)val);
                     }
                     oos.flush();
                     return baos.toByteArray();

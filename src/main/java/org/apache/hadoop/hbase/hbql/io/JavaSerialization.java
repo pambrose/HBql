@@ -28,6 +28,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.lang.reflect.Array;
 
 public class JavaSerialization extends Serialization {
@@ -150,7 +151,7 @@ public class JavaSerialization extends Serialization {
 
                 case DateType:
                 case ObjectType:
-                    oos.writeObject(obj);
+                    oos.writeObject((Serializable)obj);
                     break;
 
                 default:
@@ -332,7 +333,7 @@ public class JavaSerialization extends Serialization {
                 case ObjectType:
                     oos.writeInt(((Object[])obj).length);
                     for (final Object val : (Object[])obj)
-                        oos.writeObject(val);
+                        oos.writeObject((Serializable)val);
                     break;
 
                 default:

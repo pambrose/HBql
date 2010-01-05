@@ -24,9 +24,11 @@ import org.apache.expreval.expr.node.GenericValue;
 import org.apache.expreval.expr.node.ObjectValue;
 import org.apache.expreval.expr.node.StringValue;
 
-public class ObjectLiteral extends GenericLiteral<Object> implements ObjectValue {
+import java.io.Serializable;
 
-    public ObjectLiteral(final Object value) {
+public class ObjectLiteral extends GenericLiteral<Serializable> implements ObjectValue {
+
+    public ObjectLiteral(final Serializable value) {
         super(value);
     }
 

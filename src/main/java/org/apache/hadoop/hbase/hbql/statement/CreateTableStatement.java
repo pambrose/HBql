@@ -31,7 +31,7 @@ import java.util.List;
 public class CreateTableStatement extends BasicStatement implements ConnectionStatement {
 
     private final String tableName;
-    private final List<FamilyDefinition> familyList;
+    private final transient List<FamilyDefinition> familyList;
 
     public CreateTableStatement(final StatementPredicate predicate,
                                 final String tableName,

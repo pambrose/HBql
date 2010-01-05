@@ -33,7 +33,7 @@ public class KeyRangeArgs implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private final List<KeyRange> keyRangeList;
-    private final List<NamedParameter> namedParamList = Lists.newArrayList();
+    private final transient List<NamedParameter> namedParamList = Lists.newArrayList();
 
     public KeyRangeArgs() {
         this(null);

@@ -213,10 +213,10 @@ public class ServerFilterTest extends TestSupport {
     public void simpleSelect9a() throws HBqlException {
 
         HStatement stmt = connection.createStatement();
-        System.out
-                .println(stmt.execute("CREATE EXECUTOR POOL threadPool1 (max_executor_pool_size: 5, max_thread_count: 2, " +
-                                      "threads_read_results: true, completion_queue_size: 100) " +
-                                      "if not queryExecutorPoolExists('threadPool1')"));
+        System.out.println(stmt.execute("CREATE EXECUTOR POOL threadPool1 " +
+                                        "(max_executor_pool_size: 5, max_thread_count: 2, " +
+                                        "threads_read_results: true, completion_queue_size: 100) " +
+                                        "if not queryExecutorPoolExists('threadPool1')"));
 
         // ExecutorPoolManager.newExecutorPool("threadPool1", 2, 10);
         connection.setQueryExecutorPoolName("threadPool1");

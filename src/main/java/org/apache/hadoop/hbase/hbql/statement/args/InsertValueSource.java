@@ -26,12 +26,9 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 import org.apache.hadoop.hbase.hbql.statement.InsertStatement;
 
-import java.io.Serializable;
 import java.util.List;
 
-public abstract class InsertValueSource implements Serializable {
-
-    private static final long serialVersionUID = 1L;
+public abstract class InsertValueSource {
 
     private InsertStatement insertStatement = null;
 

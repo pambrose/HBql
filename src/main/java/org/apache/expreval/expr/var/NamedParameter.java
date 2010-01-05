@@ -210,14 +210,14 @@ public class NamedParameter implements GenericValue {
         if (val != null && TypeSupport.isACollection(val)) {
             this.typedExprList = Lists.newArrayList();
             for (final Object elem : (Collection)val)
-                this.getTypedExprList().add(this.getValueExpr(elem));
+                this.getTypedExprList().add(this.getValueExpr((Serializable)elem));
         }
         else {
-            this.typedExpr = this.getValueExpr(val);
+            this.typedExpr = this.getValueExpr((Serializable)val);
         }
     }
 
-    private GenericValue getValueExpr(final Object val) throws InvalidTypeException {
+    private GenericValue getValueExpr(final Serializable val) throws InvalidTypeException {
 
         if (val == null)
             return new StringNullLiteral();

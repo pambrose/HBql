@@ -32,16 +32,13 @@ import org.apache.hadoop.hbase.hbql.util.AtomicReferences;
 import org.apache.hadoop.hbase.hbql.util.Lists;
 import org.apache.hadoop.hbase.hbql.util.Maps;
 
-import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 import java.util.NavigableMap;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class HRecordImpl implements HRecord, Serializable {
-
-    private static final long serialVersionUID = 1L;
+public class HRecordImpl implements HRecord {
 
     private StatementContext statementContext;
     private long timestamp = System.currentTimeMillis();

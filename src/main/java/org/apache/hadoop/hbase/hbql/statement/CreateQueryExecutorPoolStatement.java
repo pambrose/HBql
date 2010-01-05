@@ -28,7 +28,7 @@ import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 
 public class CreateQueryExecutorPoolStatement extends BasicStatement implements ConnectionStatement {
 
-    private final QueryExecutorPoolDefinition args;
+    private final transient QueryExecutorPoolDefinition args;
 
     public CreateQueryExecutorPoolStatement(final StatementPredicate predicate,
                                             final QueryExecutorPoolDefinition args) {

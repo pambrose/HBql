@@ -30,7 +30,9 @@ import org.apache.hadoop.hbase.hbql.impl.AggregateValue;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 import org.apache.hadoop.hbase.hbql.impl.InvalidServerFilterExpressionException;
 
-public abstract class GenericLiteral<T> implements GenericValue {
+import java.io.Serializable;
+
+public abstract class GenericLiteral<T extends Serializable> implements GenericValue {
 
     private final T value;
 

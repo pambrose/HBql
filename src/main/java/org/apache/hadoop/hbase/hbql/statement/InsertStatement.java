@@ -42,7 +42,7 @@ public class InsertStatement extends StatementContext implements ParameterStatem
 
     private final NamedParameters namedParameters = new NamedParameters();
     private final List<SelectExpressionContext> columnList = Lists.newArrayList();
-    private final InsertValueSource insertValuesSource;
+    private final transient InsertValueSource insertValuesSource;
 
     private transient HConnectionImpl connection = null;
     private boolean validated = false;
