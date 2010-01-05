@@ -32,7 +32,7 @@ import org.apache.hadoop.hbase.hbql.util.Sets;
 import java.util.List;
 import java.util.Set;
 
-public class CreateMappingStatement extends StatementContext implements ConnectionStatement {
+public class CreateMappingStatement extends MappingStatement implements ConnectionStatement {
 
     private final boolean tempMapping;
     private final boolean systemMapping;
@@ -100,11 +100,11 @@ public class CreateMappingStatement extends StatementContext implements Connecti
 
         final TableMapping tableMapping = conn.createMapping(this.isTempMapping(),
                                                              this.isSystemMapping(),
-                                                             this.getMappingName(),
+                                                             this.getStatementContext().getMappingName(),
                                                              this.getTableName(),
                                                              this.getKeyInfo(),
                                                              this.getFamilyMappingList());
-        this.setMapping(tableMapping);
+        this.getStatementContext().setMapping(tableMapping);
         tableMapping.validate(tableMapping.getMappingName());
         return new ExecutionResults("Mapping " + tableMapping.getMappingName() + " defined.");
     }

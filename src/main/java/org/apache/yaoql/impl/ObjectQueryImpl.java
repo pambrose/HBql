@@ -24,7 +24,6 @@ import org.apache.expreval.expr.ExpressionTree;
 import org.apache.expreval.expr.literal.BooleanLiteral;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.parser.ParserUtil;
-import org.apache.hadoop.hbase.hbql.statement.NonStatement;
 import org.apache.hadoop.hbase.hbql.statement.StatementContext;
 import org.apache.hadoop.hbase.hbql.util.Lists;
 import org.apache.yaoql.client.ObjectQuery;
@@ -76,7 +75,7 @@ public class ObjectQueryImpl<T> extends ParameterBinding implements ObjectQuery<
             // Grab the first object to derive the mapping
             final Object obj = objects.iterator().next();
             final ReflectionMapping mapping = ReflectionMapping.getReflectionMapping(obj);
-            final StatementContext statementContext = new NonStatement(mapping, null);
+            final StatementContext statementContext = new StatementContext(mapping);
             expressionTree = ParserUtil.parseWhereExpression(this.getQuery(), statementContext);
             this.applyParameters(expressionTree);
         }

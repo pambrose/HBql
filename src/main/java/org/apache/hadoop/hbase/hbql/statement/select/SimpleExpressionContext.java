@@ -27,7 +27,7 @@ import org.apache.expreval.expr.MultipleExpressionContext;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
-import org.apache.hadoop.hbase.hbql.statement.NonStatement;
+import org.apache.hadoop.hbase.hbql.statement.StatementContext;
 
 public class SimpleExpressionContext extends MultipleExpressionContext {
 
@@ -49,7 +49,7 @@ public class SimpleExpressionContext extends MultipleExpressionContext {
 
     public Object getValue(final HConnectionImpl conn) throws HBqlException {
         try {
-            this.setStatementContext(new NonStatement(null, null));
+            this.setStatementContext(new StatementContext());
             return this.evaluate(conn, 0, this.allowColumns(), false, conn);
         }
         catch (ResultMissingColumnException e) {

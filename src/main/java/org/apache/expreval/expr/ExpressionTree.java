@@ -29,7 +29,7 @@ import org.apache.hadoop.hbase.filter.Filter;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 import org.apache.hadoop.hbase.hbql.mapping.Mapping;
-import org.apache.hadoop.hbase.hbql.statement.NonStatement;
+import org.apache.hadoop.hbase.hbql.statement.StatementContext;
 
 public class ExpressionTree extends MultipleExpressionContext {
 
@@ -57,7 +57,7 @@ public class ExpressionTree extends MultipleExpressionContext {
     // This is not done in newExpressionTree() because that is called from the parser
     public void setEmbeddedMapping() throws HBqlException {
         if (this.embeddedMapping != null)
-            this.setStatementContext(new NonStatement(this.embeddedMapping, null));
+            this.setStatementContext(new StatementContext(this.embeddedMapping));
     }
 
     public Boolean evaluate(final HConnectionImpl conn, final Object object) throws HBqlException,

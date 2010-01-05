@@ -26,7 +26,6 @@ import org.apache.hadoop.hbase.hbql.client.ColumnVersionMap;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.Mapping;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
-import org.apache.hadoop.hbase.hbql.statement.NonStatement;
 import org.apache.hadoop.hbase.hbql.statement.StatementContext;
 import org.apache.hadoop.hbase.hbql.statement.select.SelectElement;
 import org.apache.hadoop.hbase.hbql.util.Maps;
@@ -44,7 +43,7 @@ public class AnnotationResultAccessor extends ResultAccessor {
 
     private AnnotationResultAccessor(final TableMapping tableMapping, final Class clazz) throws HBqlException {
 
-        super(new NonStatement(tableMapping, null));
+        super(new StatementContext(tableMapping));
 
         this.getStatementContext().setResultAccessor(this);
 

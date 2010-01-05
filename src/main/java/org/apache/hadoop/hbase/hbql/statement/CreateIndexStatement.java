@@ -55,7 +55,7 @@ public class CreateIndexStatement extends MappingStatement implements Connection
 
     protected ExecutionResults execute(final HConnectionImpl conn) throws HBqlException {
 
-        final TableMapping mapping = conn.getMapping(this.getMappingName());
+        final TableMapping mapping = conn.getMapping(this.getStatementContext().getMappingName());
 
         final List<String> indexList = this.getQualifiedNameList(mapping, this.indexColumns);
         final List<String> includeList = this.getQualifiedNameList(mapping, this.includeColumns);
@@ -93,7 +93,8 @@ public class CreateIndexStatement extends MappingStatement implements Connection
                     if (columnAttrib == null)
                         throw new HBqlException("Unknown " +
                                                 ((!column.contains(":")) ? "alias" : "column")
-                                                + " " + column + " in mapping " + this.getMappingName());
+                                                + " " + column + " in mapping " + this.getStatementContext()
+                                .getMappingName());
                     else
                         retval.add(columnAttrib.getFamilyQualifiedName());
                 }
@@ -106,7 +107,7 @@ public class CreateIndexStatement extends MappingStatement implements Connection
     private String getCreateIndexMsg(final List<String> indexList, final List<String> includeList) {
 
         final StringBuilder sbuf = new StringBuilder("Index " + this.getIndexName()
-                                                     + " created for " + this.getMappingName());
+                                                     + " created for " + this.getStatementContext().getMappingName());
 
         sbuf.append(" (");
 

@@ -209,7 +209,7 @@ public abstract class HResultSetImpl<T, R> implements HResultSet<T> {
     }
 
     protected String getTableName() {
-        return this.getSelectStmt().getMapping().getTableName();
+        return this.getSelectStmt().getStatementContext().getMapping().getTableName();
     }
 
     protected WithArgs getWithArgs() {

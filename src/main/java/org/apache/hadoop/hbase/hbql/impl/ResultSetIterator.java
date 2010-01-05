@@ -123,7 +123,7 @@ public abstract class ResultSetIterator<T, R> implements Iterator<T> {
 
         final HResultSetImpl<T, R> rs = this.getResultSet();
         final SelectStatement selectStatement = rs.getSelectStmt();
-        final ResultAccessor resultAccessor = selectStatement.getResultAccessor();
+        final ResultAccessor resultAccessor = selectStatement.getStatementContext().getResultAccessor();
 
         while (this.getCurrentResultIterator() != null || moreResultsPending()) {
 
@@ -154,7 +154,7 @@ public abstract class ResultSetIterator<T, R> implements Iterator<T> {
                 }
                 else {
                     final T val = (T)resultAccessor.newObject(rs.getHConnectionImpl(),
-                                                              selectStatement,
+                                                              selectStatement.getStatementContext(),
                                                               selectStatement.getSelectElementList(),
                                                               rs.getMaxVersions(),
                                                               result);

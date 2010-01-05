@@ -24,7 +24,7 @@ import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 
-public class DropMappingStatement extends StatementContext implements ConnectionStatement {
+public class DropMappingStatement extends MappingStatement implements ConnectionStatement {
 
     public DropMappingStatement(final StatementPredicate predicate, final String mappingName) {
         super(predicate, mappingName);
@@ -34,8 +34,8 @@ public class DropMappingStatement extends StatementContext implements Connection
 
         // this.validateMappingName(connection);
 
-        conn.dropMapping(this.getMappingName());
-        return new ExecutionResults("Mapping " + this.getMappingName() + " dropped.");
+        conn.dropMapping(this.getStatementContext().getMappingName());
+        return new ExecutionResults("Mapping " + this.getStatementContext().getMappingName() + " dropped.");
     }
 
     public static String usage() {

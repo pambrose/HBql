@@ -25,7 +25,6 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 import org.apache.hadoop.hbase.hbql.mapping.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.mapping.ResultAccessor;
-import org.apache.hadoop.hbase.hbql.statement.NonStatement;
 import org.apache.hadoop.hbase.hbql.statement.StatementContext;
 import org.apache.hadoop.hbase.hbql.statement.select.SelectElement;
 
@@ -34,7 +33,7 @@ import java.util.List;
 public class ReflectionResultAccessor extends ResultAccessor {
 
     public ReflectionResultAccessor(final Object object) {
-        super(new NonStatement(ReflectionMapping.getReflectionMapping(object), null));
+        super(new StatementContext(ReflectionMapping.getReflectionMapping(object)));
     }
 
     public Object newObject(final HConnectionImpl conn,

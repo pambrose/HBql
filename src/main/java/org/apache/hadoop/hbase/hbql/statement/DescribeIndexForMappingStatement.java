@@ -39,7 +39,7 @@ public class DescribeIndexForMappingStatement extends MappingStatement implement
     }
 
     protected ExecutionResults execute(final HConnectionImpl conn) throws HBqlException {
-        final Mapping mapping = conn.getMapping(this.getMappingName());
+        final Mapping mapping = conn.getMapping(this.getStatementContext().getMappingName());
         return DescribeIndexForTableStatement.executeDescribe(conn, this.getIndexName(), mapping.getTableName());
     }
 

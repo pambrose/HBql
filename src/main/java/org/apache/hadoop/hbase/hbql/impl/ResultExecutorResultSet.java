@@ -47,7 +47,7 @@ public class ResultExecutorResultSet<T> extends HResultSetImpl<T, Result> {
             final Runnable job = new Runnable() {
                 public void run() {
                     try {
-                        final ResultScanner scanner = rowRequest.getResultScanner(getSelectStmt().getMapping(),
+                        final ResultScanner scanner = rowRequest.getResultScanner(getSelectStmt().getStatementContext().getMapping(),
                                                                                   getWithArgs(),
                                                                                   getHTableWrapper().getHTable());
                         for (final Result result : scanner) {
@@ -126,7 +126,7 @@ public class ResultExecutorResultSet<T> extends HResultSetImpl<T, Result> {
                 @SuppressWarnings("unchecked")
                 protected T fetchNextObject() throws HBqlException {
 
-                    final ResultAccessor resultAccessor = getSelectStmt().getResultAccessor();
+                    final ResultAccessor resultAccessor = getSelectStmt().getStatementContext().getResultAccessor();
 
                     // Read data until all jobs have sent DONE tokens
                     while (true) {
@@ -149,7 +149,7 @@ public class ResultExecutorResultSet<T> extends HResultSetImpl<T, Result> {
                         }
                         else {
                             final T val = (T)resultAccessor.newObject(getHConnectionImpl(),
-                                                                      getSelectStmt(),
+                                                                      getSelectStmt().getStatementContext(),
                                                                       getSelectStmt().getSelectElementList(),
                                                                       getMaxVersions(),
                                                                       result);

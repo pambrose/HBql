@@ -22,21 +22,17 @@ package org.apache.hadoop.hbase.hbql.statement;
 
 public abstract class MappingStatement extends BasicStatement implements ConnectionStatement {
 
-    private String mappingName;
+    private StatementContext statementContext = null;
 
     public MappingStatement() {
     }
 
     protected MappingStatement(final StatementPredicate predicate, final String mappingName) {
         super(predicate);
-        this.mappingName = mappingName;
+        this.statementContext = new StatementContext(mappingName);
     }
 
-    protected String getMappingName() {
-        return mappingName;
-    }
-
-    protected void setMappingName(final String mappingName) {
-        this.mappingName = mappingName;
+    public StatementContext getStatementContext() {
+        return statementContext;
     }
 }

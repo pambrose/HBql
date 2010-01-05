@@ -41,14 +41,14 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 
-public class DeleteStatement extends StatementContext implements ParameterStatement, ConnectionStatement {
+public class DeleteStatement extends MappingStatement implements ParameterStatement, ConnectionStatement {
 
     private final NamedParameters namedParameters = new NamedParameters();
     private final List<String> deleteItemList = Lists.newArrayList();
     private final List<String> originaltemList;
     private final WithArgs withArgs;
 
-    private transient HConnectionImpl connection = null;
+    private HConnectionImpl connection = null;
     private boolean validated = false;
 
     public DeleteStatement(final StatementPredicate predicate,
@@ -93,10 +93,10 @@ public class DeleteStatement extends StatementContext implements ParameterStatem
         this.validated = true;
         this.connection = conn;
 
-        this.validateMappingName(conn);
+        this.getStatementContext().validateMappingName(conn);
 
-        this.getWithArgs().setStatementContext(this);
-        this.getWithArgs().validate(conn, this.getTableMapping());
+        this.getWithArgs().setStatementContext(this.getStatementContext());
+        this.getWithArgs().validate(conn, this.getStatementContext().getTableMapping());
 
         this.collectParameters();
 
@@ -107,7 +107,7 @@ public class DeleteStatement extends StatementContext implements ParameterStatem
                 this.getDeleteItemList().add(deleteItem);
             }
             else {
-                final TableMapping mapping = this.getTableMapping();
+                final TableMapping mapping = this.getStatementContext().getTableMapping();
                 final ColumnAttrib attrib = mapping.getAttribByVariableName(deleteItem);
                 if (attrib == null)
                     throw new HBqlException("Invalid variable: " + deleteItem);
@@ -133,10 +133,10 @@ public class DeleteStatement extends StatementContext implements ParameterStatem
         HTableWrapper tableWrapper = null;
 
         try {
-            tableWrapper = conn.newHTableWrapper(withArgs, this.getMapping().getTableName());
+            tableWrapper = conn.newHTableWrapper(withArgs, this.getStatementContext().getMapping().getTableName());
 
             final List<RowRequest> rowRequests = withArgs.getRowRequestList(conn,
-                                                                            this.getMapping(),
+                                                                            this.getStatementContext().getMapping(),
                                                                             allWhereAttribs);
 
             int cnt = 0;
@@ -169,7 +169,9 @@ public class DeleteStatement extends StatementContext implements ParameterStatem
 
         final HTable table = tableWrapper.getHTable();
         final ExpressionTree clientExpressionTree = withArgs.getClientExpressionTree();
-        final ResultScanner resultScanner = rowRequest.getResultScanner(this.getMapping(), withArgs, table);
+        final ResultScanner resultScanner = rowRequest.getResultScanner(this.getStatementContext().getMapping(),
+                                                                        withArgs,
+                                                                        table);
 
         int cnt = 0;
 
@@ -240,7 +242,7 @@ public class DeleteStatement extends StatementContext implements ParameterStatem
         }
 
         sbuf.append(" FROM ");
-        sbuf.append(this.getMappingName());
+        sbuf.append(this.getStatementContext().getMappingName());
         sbuf.append(" ");
         sbuf.append(this.getWithArgs().asString());
         return sbuf.toString();

@@ -32,7 +32,6 @@ import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 import org.apache.hadoop.hbase.hbql.mapping.ResultAccessor;
 import org.apache.hadoop.hbase.hbql.parser.ParserUtil;
-import org.apache.hadoop.hbase.hbql.statement.NonStatement;
 import org.apache.hadoop.hbase.hbql.statement.StatementContext;
 import org.apache.hadoop.hbase.hbql.statement.args.WithArgs;
 import org.apache.hadoop.hbase.hbql.statement.select.SelectExpressionContext;
@@ -205,14 +204,14 @@ public abstract class TestSupport {
     private static StatementContext getAnnotationStatementContext(final HConnection connection,
                                                                   final Object obj) throws HBqlException {
         if (obj == null)
-            return new NonStatement(null, null);
+            return new StatementContext();
         else
             return getAnnotatedMapping(connection, obj).getStatementContext();
     }
 
     private static StatementContext getReflectionStatementContext(final Object obj) throws HBqlException {
         if (obj == null)
-            return new NonStatement(null, null);
+            return new StatementContext();
         else
             return getReflectionMapping(obj).getStatementContext();
     }
@@ -273,7 +272,7 @@ public abstract class TestSupport {
             expressionTree.setEmbeddedMapping();
 
             if (expressionTree.getStatementContext() == null)
-                expressionTree.setStatementContext((sc == null) ? new NonStatement(null, null) : sc);
+                expressionTree.setStatementContext((sc == null) ? new StatementContext() : sc);
 
             return expressionTree;
         }
@@ -295,7 +294,7 @@ public abstract class TestSupport {
         try {
             final WithArgs args = ParserUtil.parseWithClause(expr);
             System.out.println("Evaluating: " + args.asString());
-            args.setStatementContext(new NonStatement(null, null));
+            args.setStatementContext(new StatementContext());
             args.validateArgTypes();
             return true;
         }

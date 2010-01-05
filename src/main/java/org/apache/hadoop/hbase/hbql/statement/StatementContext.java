@@ -29,26 +29,48 @@ import org.apache.hadoop.hbase.hbql.mapping.TableMapping;
 
 import java.io.Serializable;
 
-public abstract class StatementContext extends MappingStatement implements Serializable {
+public class StatementContext implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    private String mappingName = null;
     private Mapping mapping = null;
     private ResultAccessor resultAccessor = null;
 
     public StatementContext() {
     }
 
-    protected StatementContext(final StatementPredicate predicate, final String mappingName) {
-        super(predicate, mappingName);
-    }
-
-    protected StatementContext(final StatementPredicate predicate, final Mapping mapping) {
-        super(predicate, null);
+    public StatementContext(final Mapping mapping) {
         this.setMapping(mapping);
     }
 
-    protected synchronized void validateMappingName(final HConnectionImpl conn) throws HBqlException {
+    public StatementContext(final String mappingName) {
+        this.setMappingName(mappingName);
+    }
+
+    protected String getMappingName() {
+        return mappingName;
+    }
+
+    protected void setMappingName(final String mappingName) {
+        this.mappingName = mappingName;
+    }
+
+    public void setMapping(final Mapping mapping) {
+        this.mapping = mapping;
+        if (this.getMapping() != null)
+            this.setMappingName(this.getMapping().getMappingName());
+    }
+
+    public Mapping getMapping() {
+        return this.mapping;
+    }
+
+    public TableMapping getTableMapping() {
+        return (TableMapping)this.getMapping();
+    }
+
+    public synchronized void validateMappingName(final HConnectionImpl conn) throws HBqlException {
 
         if (this.getMapping() == null) {
             try {
@@ -63,24 +85,6 @@ public abstract class StatementContext extends MappingStatement implements Seria
         this.validateMatchingNames(this.getResultAccessor());
     }
 
-    public void setMapping(final Mapping mapping) {
-        this.mapping = mapping;
-        if (this.getMapping() != null)
-            this.setMappingName(this.getMapping().getMappingName());
-    }
-
-    public Mapping getMapping() {
-        return this.mapping;
-    }
-
-    public ResultAccessor getResultAccessor() {
-        return this.resultAccessor;
-    }
-
-    public void setResultAccessor(final ResultAccessor resultAccessor) {
-        this.resultAccessor = resultAccessor;
-    }
-
     private void validateMatchingNames(final ResultAccessor accessor) throws HBqlException {
         if (accessor != null && accessor instanceof AnnotationResultAccessor) {
             final String mappingName = accessor.getMapping().getMappingName();
@@ -90,7 +94,11 @@ public abstract class StatementContext extends MappingStatement implements Seria
         }
     }
 
-    public TableMapping getTableMapping() {
-        return (TableMapping)this.getMapping();
+    public ResultAccessor getResultAccessor() {
+        return this.resultAccessor;
+    }
+
+    public void setResultAccessor(final ResultAccessor resultAccessor) {
+        this.resultAccessor = resultAccessor;
     }
 }

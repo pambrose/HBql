@@ -52,7 +52,7 @@ public class AggregateRecord extends HRecordImpl {
 
     public static AggregateRecord newAggregateRecord(final SelectStatement selectStmt) throws HBqlException {
         return (selectStmt.isAnAggregateQuery())
-               ? new AggregateRecord(selectStmt, selectStmt.getSelectElementList())
+               ? new AggregateRecord(selectStmt.getStatementContext(), selectStmt.getSelectElementList())
                : null;
     }
 

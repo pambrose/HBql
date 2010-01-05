@@ -27,7 +27,7 @@ import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 
 public abstract class BasicStatement {
 
-    private StatementPredicate predicate;
+    private StatementPredicate predicate = null;
 
     public BasicStatement() {
     }
