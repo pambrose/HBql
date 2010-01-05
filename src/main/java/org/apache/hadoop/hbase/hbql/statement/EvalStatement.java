@@ -28,7 +28,7 @@ import org.apache.hadoop.hbase.hbql.statement.select.SimpleExpressionContext;
 
 public class EvalStatement extends BasicStatement implements ConnectionStatement {
 
-    private final transient GenericValue genericValue;
+    private final GenericValue genericValue;
 
     public EvalStatement(final GenericValue genericValue) {
         super(null);

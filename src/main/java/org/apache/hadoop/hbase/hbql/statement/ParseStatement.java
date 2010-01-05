@@ -26,7 +26,7 @@ import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 
 public class ParseStatement extends BasicStatement implements ConnectionStatement {
 
-    private final transient HBqlStatement stmt;
+    private final HBqlStatement stmt;
 
     public ParseStatement(final HBqlStatement stmt) {
         super(null);

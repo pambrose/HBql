@@ -27,7 +27,11 @@ import org.apache.hadoop.hbase.hbql.mapping.Mapping;
 import org.apache.hadoop.hbase.hbql.mapping.ResultAccessor;
 import org.apache.hadoop.hbase.hbql.mapping.TableMapping;
 
-public abstract class StatementContext extends MappingStatement {
+import java.io.Serializable;
+
+public abstract class StatementContext extends MappingStatement implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private Mapping mapping = null;
     private ResultAccessor resultAccessor = null;

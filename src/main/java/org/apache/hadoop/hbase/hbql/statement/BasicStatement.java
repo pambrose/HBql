@@ -25,11 +25,7 @@ import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 
-import java.io.Serializable;
-
-public abstract class BasicStatement implements Serializable {
-
-    private static final long serialVersionUID = 1L;
+public abstract class BasicStatement {
 
     private StatementPredicate predicate;
 

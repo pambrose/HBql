@@ -30,7 +30,7 @@ import java.util.List;
 public class AlterTableStatement extends BasicStatement implements ConnectionStatement {
 
     private final String tableName;
-    private final transient List<AlterTableAction> alterTableActionList;
+    private final List<AlterTableAction> alterTableActionList;
 
     public AlterTableStatement(final StatementPredicate predicate,
                                final String tableName,
