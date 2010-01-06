@@ -106,10 +106,6 @@ public class ObjectResultSet<T> implements Iterable<T> {
                 protected Iterator<Result> getNextResultIterator() throws HBqlException {
                     return null;
                 }
-
-                protected void cleanUpAtEndOfIterator(final boolean fromExceptionCatch) {
-                    // No op
-                }
             };
         }
         catch (HBqlException e) {

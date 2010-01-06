@@ -23,12 +23,10 @@ package org.apache.hadoop.hbase.hbql.impl;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.client.ResultScanner;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.client.QueryListener;
 import org.apache.hadoop.hbase.hbql.statement.select.RowRequest;
 import org.apache.hadoop.hbase.hbql.util.CompletionQueue;
 import org.apache.hadoop.hbase.hbql.util.NullIterator;
 
-import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 
@@ -61,6 +59,7 @@ public class ResultScannerExecutorResultSet<T> extends HResultSetImpl<T, ResultS
         }
     }
 
+
     public Iterator<T> iterator() {
 
         try {
@@ -88,33 +87,6 @@ public class ResultScannerExecutorResultSet<T> extends HResultSetImpl<T, ResultS
 
                     setCurrentResultScanner(resultScanner);
                     return (getCurrentResultScanner() == null) ? null : getCurrentResultScanner().iterator();
-                }
-
-                protected void cleanUpAtEndOfIterator(final boolean fromExceptionCatch) {
-                    try {
-                        if (!fromExceptionCatch && getListeners() != null) {
-                            for (final QueryListener<T> listener : getListeners())
-                                listener.onQueryComplete();
-                        }
-
-                        try {
-                            if (getHTableWrapper() != null)
-                                getHTableWrapper().getHTable().close();
-                        }
-                        catch (IOException e) {
-                            // No op
-                            e.printStackTrace();
-                        }
-                    }
-                    finally {
-                        // release to table pool
-                        if (getHTableWrapper() != null)
-                            getHTableWrapper().releaseHTable();
-
-                        setTableWrapper(null);
-
-                        close();
-                    }
                 }
             };
         }

@@ -42,8 +42,6 @@ public abstract class ResultSetIterator<T, R> implements Iterator<T> {
         this.setNextObject(this.fetchNextObject());
     }
 
-    protected abstract void cleanUpAtEndOfIterator(final boolean fromExceptionCatch);
-
     protected abstract boolean moreResultsPending();
 
     protected abstract Iterator<Result> getNextResultIterator() throws HBqlException;
@@ -96,8 +94,8 @@ public abstract class ResultSetIterator<T, R> implements Iterator<T> {
         this.setNextObject(nextObject);
 
         // If the query is finished then clean up.
-        if (!this.hasNext())
-            this.cleanUpAtEndOfIterator(fromExceptionCatch);
+        if (!this.hasNext() && this.getResultSet() != null)
+            this.getResultSet().cleanUpAtEndOfIterator(fromExceptionCatch);
     }
 
     public T next() {

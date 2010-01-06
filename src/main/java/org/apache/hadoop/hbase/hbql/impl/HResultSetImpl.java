@@ -33,6 +33,7 @@ import org.apache.hadoop.hbase.hbql.statement.select.RowRequest;
 import org.apache.hadoop.hbase.hbql.util.CompletionQueueExecutor;
 import org.apache.hadoop.hbase.hbql.util.Lists;
 
+import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -90,6 +91,33 @@ public abstract class HResultSetImpl<T, R> implements HResultSet<T> {
     protected abstract void submitWork(final List<RowRequest> rowRequestList);
 
     public abstract Iterator<T> iterator();
+
+    protected void cleanUpAtEndOfIterator(final boolean fromExceptionCatch) {
+        try {
+            if (!fromExceptionCatch && getListeners() != null) {
+                for (final QueryListener<T> listener : getListeners())
+                    listener.onQueryComplete();
+            }
+
+            try {
+                if (getHTableWrapper() != null)
+                    getHTableWrapper().getHTable().close();
+            }
+            catch (IOException e) {
+                // No op
+                e.printStackTrace();
+            }
+        }
+        finally {
+            // release to table pool
+            if (getHTableWrapper() != null)
+                getHTableWrapper().releaseHTable();
+
+            setTableWrapper(null);
+
+            close();
+        }
+    }
 
     protected CompletionQueueExecutor<R> getCompletionQueueExecutor() {
         return this.completionQueueExecutor;
