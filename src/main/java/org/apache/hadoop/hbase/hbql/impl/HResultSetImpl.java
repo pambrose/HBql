@@ -224,4 +224,12 @@ public abstract class HResultSetImpl<T, R> implements HResultSet<T> {
     protected List<QueryListener<T>> getListeners() {
         return this.getQuery().getListeners();
     }
+
+    protected T callOnEachRow(T val) {
+        if (this.getListeners() != null) {
+            for (final QueryListener<T> listener : getListeners())
+                listener.onEachRow(val);
+        }
+        return val;
+    }
 }

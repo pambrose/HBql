@@ -110,6 +110,7 @@ public class ResultScannerExecutorResultSet<T> extends HResultSetImpl<T, ResultS
                         // release to table pool
                         if (getHTableWrapper() != null)
                             getHTableWrapper().releaseHTable();
+
                         setTableWrapper(null);
 
                         close();

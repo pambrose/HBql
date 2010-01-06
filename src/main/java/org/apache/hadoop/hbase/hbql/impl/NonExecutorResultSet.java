@@ -84,6 +84,7 @@ public class NonExecutorResultSet<T> extends HResultSetImpl<T, Object> {
                         // release to table pool
                         if (getHTableWrapper() != null)
                             getHTableWrapper().releaseHTable();
+
                         setTableWrapper(null);
                     }
                 }

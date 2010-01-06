@@ -24,7 +24,6 @@ import org.apache.expreval.client.NullColumnValueException;
 import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.client.QueryListener;
 import org.apache.hadoop.hbase.hbql.mapping.ResultAccessor;
 import org.apache.hadoop.hbase.hbql.statement.SelectStatement;
 
@@ -159,11 +158,7 @@ public abstract class ResultSetIterator<T, R> implements Iterator<T> {
                                                               rs.getMaxVersions(),
                                                               result);
 
-                    if (rs.getListeners() != null)
-                        for (final QueryListener<T> listener : rs.getListeners())
-                            listener.onEachRow(val);
-
-                    return val;
+                    return rs.callOnEachRow(val);
                 }
             }
 
@@ -173,10 +168,12 @@ public abstract class ResultSetIterator<T, R> implements Iterator<T> {
 
         if (this.getResultSet().getSelectStmt().isAnAggregateQuery()
             && this.getResultSet().getAggregateRecord() != null) {
+
             // Stash the value and then null it out for next time through
             final AggregateRecord retval = this.getResultSet().getAggregateRecord();
             this.getResultSet().setAggregateRecord(null);
-            return (T)retval;
+
+            return rs.callOnEachRow((T)retval);
         }
 
         return null;

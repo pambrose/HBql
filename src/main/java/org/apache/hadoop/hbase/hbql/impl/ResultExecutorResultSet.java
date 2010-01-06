@@ -153,20 +153,17 @@ public class ResultExecutorResultSet<T> extends HResultSetImpl<T, Result> {
                                                                       getSelectStmt().getSelectElementList(),
                                                                       getMaxVersions(),
                                                                       result);
-
-                            if (getListeners() != null)
-                                for (final QueryListener<T> listener : getListeners())
-                                    listener.onEachRow(val);
-
-                            return val;
+                            return callOnEachRow(val);
                         }
                     }
 
                     if (getSelectStmt().isAnAggregateQuery() && getAggregateRecord() != null) {
+
                         // Stash the value and then null it out for next time through
                         final AggregateRecord retval = getAggregateRecord();
                         setAggregateRecord(null);
-                        return (T)retval;
+
+                        return callOnEachRow((T)retval);
                     }
 
                     return null;
