@@ -96,4 +96,10 @@ public abstract class ElementPool<T extends PoolableElement> {
         this.getElementPool().add(element);
         this.getTakenElementCount().decrementAndGet();
     }
+
+    public void shutdown() {
+        for (final T val : this.getElementPool()) {
+            val.shutdown();
+        }
+    }
 }

@@ -50,7 +50,7 @@ public class QueryExecutorPoolManager {
                                                          final int completionQueueSize) throws HBqlException {
 
         if (Utils.isValidString(poolName) && getExecutorPoolMap().containsKey(poolName))
-            throw new HBqlException("Query executor pool already exists: " + poolName);
+            throw new HBqlException("QueryExecutorPool already exists: " + poolName);
 
         final QueryExecutorPool executorPool = new QueryExecutorPool(poolName,
                                                                      maxExecutorPoolSize,
@@ -67,7 +67,8 @@ public class QueryExecutorPoolManager {
     public static boolean dropExecutorPool(final String name) {
 
         if (Utils.isValidString(name) && getExecutorPoolMap().containsKey(name)) {
-            getExecutorPoolMap().remove(name);
+            final QueryExecutorPool queryExecutorPool = getExecutorPoolMap().remove(name);
+            queryExecutorPool.shutdown();
             return true;
         }
 
@@ -80,7 +81,7 @@ public class QueryExecutorPoolManager {
 
     public static QueryExecutorPool getExecutorPool(final String poolName) throws HBqlException {
         if (!QueryExecutorPoolManager.getExecutorPoolMap().containsKey(poolName))
-            throw new HBqlException("Missing executor pool: " + poolName);
+            throw new HBqlException("QueryExecutorPool does not exist: " + poolName);
 
         return QueryExecutorPoolManager.getExecutorPoolMap().get(poolName);
     }

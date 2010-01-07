@@ -42,6 +42,10 @@ public class QueryExecutor {
                                                                                       queueSize));
     }
 
+    public void shutdown() {
+        this.getExecutorImpl().getExecutor().shutdown();
+    }
+
     private QueryExecutorImpl getExecutorImpl() {
         return (QueryExecutorImpl)this;
     }

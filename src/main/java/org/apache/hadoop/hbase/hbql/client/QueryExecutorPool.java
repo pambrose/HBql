@@ -33,14 +33,14 @@ public class QueryExecutorPool extends ElementPool<CompletionQueueExecutor> {
     private final boolean threadsReadResults;
     private final int completionQueueSize;
 
-    public QueryExecutorPool(final String name,
+    public QueryExecutorPool(final String poolName,
                              final int maxExecutorPoolSize,
                              final int minThreadCount,
                              final int maxThreadCount,
                              final long keepAliveSecs,
                              final boolean threadsReadResults,
                              final int completionQueueSize) {
-        super(name, maxExecutorPoolSize);
+        super(poolName, maxExecutorPoolSize);
         this.minThreadCount = minThreadCount;
         this.maxThreadCount = maxThreadCount;
         this.keepAliveSecs = keepAliveSecs;

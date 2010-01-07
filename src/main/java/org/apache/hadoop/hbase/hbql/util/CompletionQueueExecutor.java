@@ -36,7 +36,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public abstract class CompletionQueueExecutor<T> implements PoolableElement {
 
-    private final AtomicBoolean atomicClosed = new AtomicBoolean(false);
+    private final AtomicBoolean atomicShutdown = new AtomicBoolean(false);
     private final AtomicInteger workSubmittedCounter = new AtomicInteger(0);
     private final ExecutorService submitterThread = Executors.newSingleThreadExecutor();
     private final QueryExecutorPool executorPool;
@@ -186,23 +186,20 @@ public abstract class CompletionQueueExecutor<T> implements PoolableElement {
             this.getExecutorPool().release(this);
     }
 
-    private AtomicBoolean getAtomicClosed() {
-        return this.atomicClosed;
+    private AtomicBoolean getAtomicShutdown() {
+        return this.atomicShutdown;
     }
 
-    public boolean isClosed() {
-        return this.getAtomicClosed().get();
+    public boolean isShutdown() {
+        return this.getAtomicShutdown().get();
     }
 
-    public void close() {
-        if (!this.isClosed()) {
+    public void shutdown() {
+        if (!this.isShutdown()) {
             synchronized (this) {
-                if (!this.isClosed()) {
-                    this.release();
-
+                if (!this.isShutdown()) {
                     this.getThreadPoolExecutor().shutdown();
-
-                    this.getAtomicClosed().set(true);
+                    this.getAtomicShutdown().set(true);
                 }
             }
         }
