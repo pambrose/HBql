@@ -22,7 +22,7 @@ package org.apache.hadoop.hbase.hbql.client;
 
 public interface QueryListener<T> {
 
-    void onQueryInit();
+    void onQueryStart();
 
     void onEachRow(T val);
 

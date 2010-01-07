@@ -25,20 +25,20 @@ import java.util.List;
 public interface HStatement {
 
     // Async queries
-    QueryFuture executeQueryAsync(String sql, QueryListener<HRecord> listener) throws HBqlException;
+    QueryFuture executeQueryAsync(String sql, QueryListener<HRecord>... listeners) throws HBqlException;
 
-    <T> QueryFuture executeQueryAsync(String sql, Class clazz, QueryListener<T> listener) throws HBqlException;
+    <T> QueryFuture executeQueryAsync(String sql, Class clazz, QueryListener<T>... listeners) throws HBqlException;
 
     // Sync queries
-    HResultSet<HRecord> executeQuery(String sql) throws HBqlException;
+    HResultSet<HRecord> executeQuery(String sql, QueryListener<HRecord>... listeners) throws HBqlException;
 
-    <T> HResultSet<T> executeQuery(String sql, Class clazz) throws HBqlException;
+    <T> HResultSet<T> executeQuery(String sql, Class clazz, QueryListener<T>... listeners) throws HBqlException;
 
     ExecutionResults execute(String sql) throws HBqlException;
 
-    List<HRecord> executeQueryAndFetch(String sql) throws HBqlException;
+    List<HRecord> executeQueryAndFetch(String sql, QueryListener<HRecord>... listeners) throws HBqlException;
 
-    <T> List<T> executeQueryAndFetch(String sql, Class clazz) throws HBqlException;
+    <T> List<T> executeQueryAndFetch(String sql, Class clazz, QueryListener<T>... listeners) throws HBqlException;
 
     ExecutionResults executeUpdate(String sql) throws HBqlException;
 

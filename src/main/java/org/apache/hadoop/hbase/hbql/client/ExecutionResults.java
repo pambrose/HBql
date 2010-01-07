@@ -33,8 +33,8 @@ public class ExecutionResults {
     private boolean predicate = true;
 
     public ExecutionResults() {
-        baos = new ByteArrayOutputStream();
-        out = new PrintStream(baos);
+        this.baos = new ByteArrayOutputStream();
+        this.out = new PrintStream(baos);
     }
 
     public ExecutionResults(final String str) {

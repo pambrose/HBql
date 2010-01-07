@@ -22,7 +22,7 @@ package org.apache.hadoop.hbase.hbql.client;
 
 public abstract class QueryListenerAdapter<T> implements QueryListener<T> {
 
-    public void onQueryInit() {
+    public void onQueryStart() {
     }
 
     public void onEachRow(T val) {

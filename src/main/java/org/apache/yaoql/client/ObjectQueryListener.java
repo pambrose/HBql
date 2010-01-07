@@ -24,7 +24,7 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 
 public interface ObjectQueryListener<T> {
 
-    void onQueryInit();
+    void onQueryStart();
 
     void onEachObject(T val) throws HBqlException;
 

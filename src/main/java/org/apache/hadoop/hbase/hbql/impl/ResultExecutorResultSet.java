@@ -113,18 +113,18 @@ public class ResultExecutorResultSet<T> extends HResultSetImpl<T, Result> {
                             result = element.getValue();
                         }
 
-                        incrementReturnedRecordCount();
-
                         if (getSelectStmt().isAnAggregateQuery()) {
                             getAggregateRecord().applyValues(result);
                         }
                         else {
+                            incrementReturnedRecordCount();
+
                             final T val = (T)resultAccessor.newObject(getHConnectionImpl(),
                                                                       getMappingContext(),
                                                                       getSelectStmt().getSelectElementList(),
                                                                       getMaxVersions(),
                                                                       result);
-                            return callOnEachRow(val);
+                            return getQuery().callOnEachRow(val);
                         }
                     }
 
@@ -134,7 +134,7 @@ public class ResultExecutorResultSet<T> extends HResultSetImpl<T, Result> {
                         final AggregateRecord retval = getAggregateRecord();
                         setAggregateRecord(null);
 
-                        return callOnEachRow((T)retval);
+                        return getQuery().callOnEachRow((T)retval);
                     }
 
                     return null;

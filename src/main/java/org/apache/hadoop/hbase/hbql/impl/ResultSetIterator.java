@@ -144,19 +144,19 @@ public abstract class ResultSetIterator<T, R> implements Iterator<T> {
                     continue;
                 }
 
-                incrementReturnedRecordCount();
-
                 if (selectStatement.isAnAggregateQuery()) {
                     this.getResultSet().getAggregateRecord().applyValues(result);
                 }
                 else {
+                    incrementReturnedRecordCount();
+
                     final T val = (T)resultAccessor.newObject(rs.getHConnectionImpl(),
                                                               selectStatement.getMappingContext(),
                                                               selectStatement.getSelectElementList(),
                                                               rs.getMaxVersions(),
                                                               result);
 
-                    return rs.callOnEachRow(val);
+                    return rs.getQuery().callOnEachRow(val);
                 }
             }
 
@@ -171,7 +171,7 @@ public abstract class ResultSetIterator<T, R> implements Iterator<T> {
             final AggregateRecord retval = this.getResultSet().getAggregateRecord();
             this.getResultSet().setAggregateRecord(null);
 
-            return rs.callOnEachRow((T)retval);
+            return rs.getQuery().callOnEachRow((T)retval);
         }
 
         return null;

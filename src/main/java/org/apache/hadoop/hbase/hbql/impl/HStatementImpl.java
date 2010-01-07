@@ -81,27 +81,28 @@ public class HStatementImpl implements HStatement {
         }
     }
 
-    protected <T> HResultSet<T> executeQuery(final HBqlStatement statement, final Class clazz) throws HBqlException {
+    protected <T> HResultSet<T> executeQuery(final HBqlStatement statement,
+                                             final Class clazz,
+                                             final QueryListener<T>... listeners) throws HBqlException {
 
         if (!Utils.isSelectStatement(statement))
             throw new HBqlException("executeQuery() requires a SELECT statement");
 
-        final Query<T> query = Query.newQuery(this.getHConnectionImpl(), (SelectStatement)statement, clazz);
-        final HResultSet<T> rs = query.newResultSet(this.getIgnoreQueryExecutor());
-        this.resultSet = rs;
+        final Query<T> query = Query.newQuery(this.getHConnectionImpl(), (SelectStatement)statement, clazz, listeners);
+
+        this.resultSet = query.newResultSet(this.getIgnoreQueryExecutor());
+
         return this.resultSet;
     }
 
     protected <T> QueryFuture executeQueryAsync(final HBqlStatement statement,
                                                 final Class clazz,
-                                                final QueryListener<T> listener) throws HBqlException {
+                                                final QueryListener<T>... listeners) throws HBqlException {
 
         if (!Utils.isSelectStatement(statement))
             throw new HBqlException("executeQueryAsync() requires a SELECT statement");
 
-        final Query<T> query = Query.newQuery(this.getHConnectionImpl(), (SelectStatement)statement, clazz);
-
-        query.addQueryListener(listener);
+        final Query<T> query = Query.newQuery(this.getHConnectionImpl(), (SelectStatement)statement, clazz, listeners);
 
         final UnboundedAsyncExecutor asyncExecutor = this.getHConnectionImpl().getAsyncExecutorForConnection();
 
@@ -126,14 +127,16 @@ public class HStatementImpl implements HStatement {
                 });
     }
 
-    protected <T> List<T> executeQueryAndFetch(final HBqlStatement statement, final Class clazz) throws HBqlException {
+    protected <T> List<T> executeQueryAndFetch(final HBqlStatement statement,
+                                               final Class clazz,
+                                               final QueryListener<T>... listeners) throws HBqlException {
 
         final List<T> retval = Lists.newArrayList();
 
         HResultSet<T> results = null;
 
         try {
-            results = this.executeQuery(statement, clazz);
+            results = this.executeQuery(statement, clazz, listeners);
 
             for (final T val : results)
                 retval.add(val);
@@ -160,31 +163,37 @@ public class HStatementImpl implements HStatement {
         return this.execute(Utils.parseHBqlStatement(sql));
     }
 
-    public HResultSet<HRecord> executeQuery(final String sql) throws HBqlException {
-        return this.executeQuery(Utils.parseHBqlStatement(sql), HRecord.class);
+    public HResultSet<HRecord> executeQuery(final String sql,
+                                            final QueryListener<HRecord>... listeners) throws HBqlException {
+        return this.executeQuery(Utils.parseHBqlStatement(sql), HRecord.class, listeners);
     }
 
     public QueryFuture executeQueryAsync(final String sql,
-                                         final QueryListener<HRecord> listener) throws HBqlException {
-        return this.executeQueryAsync(Utils.parseHBqlStatement(sql), HRecord.class, listener);
+                                         final QueryListener<HRecord>... listeners) throws HBqlException {
+        return this.executeQueryAsync(Utils.parseHBqlStatement(sql), HRecord.class, listeners);
     }
 
-    public <T> HResultSet<T> executeQuery(final String sql, final Class clazz) throws HBqlException {
-        return this.executeQuery(Utils.parseHBqlStatement(sql), clazz);
+    public <T> HResultSet<T> executeQuery(final String sql,
+                                          final Class clazz,
+                                          final QueryListener<T>... listeners) throws HBqlException {
+        return this.executeQuery(Utils.parseHBqlStatement(sql), clazz, listeners);
     }
 
     public <T> QueryFuture executeQueryAsync(final String sql,
                                              final Class clazz,
-                                             final QueryListener<T> listener) throws HBqlException {
-        return this.executeQueryAsync(Utils.parseHBqlStatement(sql), clazz, listener);
+                                             final QueryListener<T>... listeners) throws HBqlException {
+        return this.executeQueryAsync(Utils.parseHBqlStatement(sql), clazz, listeners);
     }
 
-    public List<HRecord> executeQueryAndFetch(final String sql) throws HBqlException {
-        return this.executeQueryAndFetch(Utils.parseHBqlStatement(sql), HRecord.class);
+    public List<HRecord> executeQueryAndFetch(final String sql,
+                                              final QueryListener<HRecord>... listeners) throws HBqlException {
+        return this.executeQueryAndFetch(Utils.parseHBqlStatement(sql), HRecord.class, listeners);
     }
 
-    public <T> List<T> executeQueryAndFetch(final String sql, final Class clazz) throws HBqlException {
-        return this.executeQueryAndFetch(Utils.parseHBqlStatement(sql), clazz);
+    public <T> List<T> executeQueryAndFetch(final String sql,
+                                            final Class clazz,
+                                            final QueryListener<T>... listeners) throws HBqlException {
+        return this.executeQueryAndFetch(Utils.parseHBqlStatement(sql), clazz, listeners);
     }
 
     public ExecutionResults executeUpdate(final String sql) throws HBqlException {

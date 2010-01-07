@@ -22,13 +22,9 @@ package org.apache.yaoql.client;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 
-import java.io.Serializable;
+public abstract class ObjectQueryListenerAdapter<T> implements ObjectQueryListener<T> {
 
-public abstract class ObjectQueryListenerAdapter<T> implements ObjectQueryListener<T>, Serializable {
-
-    private static final long serialVersionUID = 1L;
-
-    public void onQueryInit() {
+    public void onQueryStart() {
     }
 
     public void onEachObject(T val) throws HBqlException {

@@ -299,12 +299,12 @@ public class ServerFilterTest extends TestSupport {
     @Test
     public void asyncSelect1() throws HBqlException {
 
-        QueryExecutorPoolManager.newQueryExecutorPool("threadPool1", 5, 2, 5, 30, true, 100);
+        QueryExecutorPoolManager.newQueryExecutorPool("threadPool2", 5, 2, 5, 30, true, 100);
 
-        AsyncExecutorPoolManager.newAsyncExecutorPool("asyncPool1", 5, 2, 4, 60);
+        AsyncExecutorPoolManager.newAsyncExecutorPool("asyncPool2", 5, 2, 4, 60);
 
-        connection.setQueryExecutorPoolName("threadPool1");
-        connection.setAsyncExecutorPoolName("asyncPool1");
+        connection.setQueryExecutorPoolName("threadPool2");
+        connection.setAsyncExecutorPoolName("asyncPool2");
 
         final List<QueryFuture> futureList = Lists.newArrayList();
 
@@ -326,7 +326,7 @@ public class ServerFilterTest extends TestSupport {
             QueryFuture future = stmt.executeQueryAsync(q1.toString(), new QueryListener<HRecord>() {
                 AtomicInteger rec_cnt = new AtomicInteger(0);
 
-                public void onQueryInit() {
+                public void onQueryStart() {
                     System.out.println("Starting query");
                 }
 

@@ -23,8 +23,4 @@ package org.apache.hadoop.hbase.hbql.client;
 public interface HResultSet<T> extends Iterable<T> {
 
     void close();
-
-    void addQueryListener(QueryListener<T> listener);
-
-    void clearQueryListeners();
 }

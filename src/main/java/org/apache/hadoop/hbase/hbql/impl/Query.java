@@ -40,11 +40,23 @@ public class Query<T> {
 
     private final HConnectionImpl connection;
     private final SelectStatement selectStatement;
-    private List<QueryListener<T>> listeners = null;
+    private final List<QueryListener<T>> listeners;
 
-    private Query(final HConnectionImpl conn, final SelectStatement selectStatement) throws HBqlException {
+    private Query(final HConnectionImpl conn,
+                  final SelectStatement selectStatement,
+                  final QueryListener<T>... listeners) throws HBqlException {
         this.connection = conn;
         this.selectStatement = selectStatement;
+
+        if (listeners.length > 0)
+            this.listeners = Lists.newArrayList();
+        else
+            this.listeners = null;
+
+        for (final QueryListener<T> listener : listeners)
+            this.getListeners().add(listener);
+
+        this.callOnQueryInit();
 
         this.getSelectStmt().validate(this.getHConnectionImpl());
         this.getSelectStmt().validateTypes();
@@ -52,7 +64,8 @@ public class Query<T> {
 
     public static <E> Query<E> newQuery(final HConnectionImpl conn,
                                         final SelectStatement selectStatement,
-                                        final Class clazz) throws HBqlException {
+                                        final Class clazz,
+                                        final QueryListener<E>... listeners) throws HBqlException {
         final ResultAccessor accessor;
         if (clazz.equals(HRecord.class)) {
             accessor = new HRecordResultAccessor(selectStatement.getMappingContext());
@@ -65,17 +78,7 @@ public class Query<T> {
 
         selectStatement.getMappingContext().setResultAccessor(accessor);
 
-        return new Query<E>(conn, selectStatement);
-    }
-
-    public void addQueryListener(final QueryListener<T> listener) {
-        if (this.getListeners() == null) {
-            synchronized (this) {
-                if (this.getListeners() == null)
-                    this.listeners = Lists.newArrayList();
-            }
-        }
-        this.getListeners().add(listener);
+        return new Query<E>(conn, selectStatement, listeners);
     }
 
     public HConnectionImpl getHConnectionImpl() {
@@ -104,11 +107,6 @@ public class Query<T> {
         return this.listeners;
     }
 
-    public void clearQueryListeners() {
-        if (this.getListeners() != null)
-            this.getListeners().clear();
-    }
-
     public HResultSet<T> newResultSet(final boolean ignoreQueryExecutor) throws HBqlException {
         if (!this.getHConnectionImpl().usesQueryExecutor() || ignoreQueryExecutor) {
             return new NonExecutorResultSet<T>(this);
@@ -120,6 +118,28 @@ public class Query<T> {
                 return new ResultExecutorResultSet<T>(this, (ResultExecutor)executor);
             else
                 return new ResultScannerExecutorResultSet<T>(this, (ResultScannerExecutor)executor);
+        }
+    }
+
+    private void callOnQueryInit() {
+        if (this.getListeners() != null) {
+            for (final QueryListener<T> listener : this.getListeners())
+                listener.onQueryStart();
+        }
+    }
+
+    protected T callOnEachRow(T val) {
+        if (this.getListeners() != null) {
+            for (final QueryListener<T> listener : this.getListeners())
+                listener.onEachRow(val);
+        }
+        return val;
+    }
+
+    protected void callOnQueryComplete() {
+        if (this.getListeners() != null) {
+            for (final QueryListener<T> listener : this.getListeners())
+                listener.onQueryComplete();
         }
     }
 }
