@@ -199,6 +199,7 @@ public abstract class CompletionQueueExecutor<T> implements PoolableElement {
             synchronized (this) {
                 if (!this.isShutdown()) {
                     this.getThreadPoolExecutor().shutdown();
+                    this.getSubmitterThread().shutdown();
                     this.getAtomicShutdown().set(true);
                 }
             }
