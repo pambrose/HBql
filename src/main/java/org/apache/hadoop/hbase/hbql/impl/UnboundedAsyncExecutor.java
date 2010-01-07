@@ -18,67 +18,69 @@
  * limitations under the License.
  */
 
-package org.apache.hadoop.hbase.hbql.util;
+package org.apache.hadoop.hbase.hbql.impl;
 
+import org.apache.hadoop.hbase.hbql.client.AsyncExecutorPool;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.client.QueryExecutorPool;
+import org.apache.hadoop.hbase.hbql.client.QueryFuture;
+import org.apache.hadoop.hbase.hbql.util.PoolableElement;
 
-import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.RejectedExecutionHandler;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public abstract class CompletionQueueExecutor<T> implements PoolableElement {
+public class UnboundedAsyncExecutor implements PoolableElement {
 
     private final AtomicBoolean atomicShutdown = new AtomicBoolean(false);
     private final AtomicInteger workSubmittedCounter = new AtomicInteger(0);
-    private final ExecutorService submitterThread = Executors.newSingleThreadExecutor();
-    private final QueryExecutorPool executorPool;
+    private final AsyncExecutorPool executorPool;
     private final LocalThreadPoolExecutor threadPoolExecutor;
-    private final CompletionQueue<T> completionQueue;
-
-    private static class LocalCallerRunsPolicy extends ThreadPoolExecutor.CallerRunsPolicy {
-
-        public void rejectedExecution(final Runnable runnable, final ThreadPoolExecutor threadPoolExecutor) {
-            super.rejectedExecution(runnable, threadPoolExecutor);
-            ((LocalThreadPoolExecutor)threadPoolExecutor).incrementRejectionCount();
-        }
-    }
 
     private static class LocalThreadPoolExecutor extends ThreadPoolExecutor {
 
-        private final AtomicInteger rejectionCounter = new AtomicInteger(0);
+        private final AtomicInteger queryCounter = new AtomicInteger(0);
 
         private LocalThreadPoolExecutor(final int minPoolSize,
                                         final int maxPoolSize,
                                         final long keepAliveTime,
                                         final TimeUnit timeUnit,
                                         final BlockingQueue<Runnable> workQueue,
-                                        final ThreadFactory threadFactory,
-                                        final RejectedExecutionHandler handler) {
-            super(minPoolSize, maxPoolSize, keepAliveTime, timeUnit, workQueue, threadFactory, handler);
+                                        final ThreadFactory threadFactory) {
+            super(minPoolSize, maxPoolSize, keepAliveTime, timeUnit, workQueue, threadFactory);
         }
 
-        private AtomicInteger getRejectionCounter() {
-            return this.rejectionCounter;
+        private AtomicInteger getQueryCounter() {
+            return this.queryCounter;
         }
 
-        private void incrementRejectionCount() {
-            this.getRejectionCounter().incrementAndGet();
+        private void incrementQueryCount() {
+            this.getQueryCounter().incrementAndGet();
         }
 
         private void reset() {
-            this.getRejectionCounter().set(0);
+            this.getQueryCounter().set(0);
         }
 
-        public int getRejectionCount() {
-            return this.getRejectionCounter().get();
+        public int getQueryCount() {
+            return this.getQueryCounter().get();
+        }
+
+        protected void beforeExecute(final Thread thread, final Runnable runnable) {
+            super.beforeExecute(thread, runnable);
+
+            final AsyncRunnable asyncRunnable = (AsyncRunnable)runnable;
+            asyncRunnable.getQueryFuture().startQuery();
+        }
+
+        protected void afterExecute(final Runnable runnable, final Throwable throwable) {
+            super.afterExecute(runnable, throwable);
+
+            final AsyncRunnable asyncRunnable = (AsyncRunnable)runnable;
+            asyncRunnable.getQueryFuture().completeQuery();
         }
     }
 
@@ -98,82 +100,42 @@ public abstract class CompletionQueueExecutor<T> implements PoolableElement {
         }
     }
 
-    protected CompletionQueueExecutor(final QueryExecutorPool executorPool,
-                                      final int minThreadCount,
-                                      final int maxThreadCount,
-                                      final long keepAliveSecs,
-                                      final int completionQueueSize) throws HBqlException {
+    public UnboundedAsyncExecutor(final AsyncExecutorPool executorPool,
+                                  final int minThreadCount,
+                                  final int maxThreadCount,
+                                  final long keepAliveSecs) throws HBqlException {
         this.executorPool = executorPool;
-        final BlockingQueue<Runnable> backingQueue = new ArrayBlockingQueue<Runnable>(maxThreadCount * 5);
-        final String name = executorPool == null ? "Non pool" : "Executor pool " + executorPool.getName();
+        final BlockingQueue<Runnable> backingQueue = new LinkedBlockingQueue<Runnable>();
+        final String name = executorPool == null ? "Non async exec pool" : "Async exec pool " + executorPool.getName();
         this.threadPoolExecutor = new LocalThreadPoolExecutor(minThreadCount,
                                                               maxThreadCount,
                                                               keepAliveSecs,
                                                               TimeUnit.SECONDS,
                                                               backingQueue,
-                                                              new LocalThreadFactory(name),
-                                                              new LocalCallerRunsPolicy());
-        this.completionQueue = new CompletionQueue<T>(completionQueueSize);
+                                                              new LocalThreadFactory(name));
     }
 
-    public abstract boolean threadsReadResults();
-
-    private QueryExecutorPool getExecutorPool() {
+    private AsyncExecutorPool getExecutorPool() {
         return this.executorPool;
-    }
-
-    private ExecutorService getSubmitterThread() {
-        return this.submitterThread;
     }
 
     private LocalThreadPoolExecutor getThreadPoolExecutor() {
         return this.threadPoolExecutor;
     }
 
-    private CompletionQueue<T> getCompletionQueue() {
-        return this.completionQueue;
-    }
-
     private AtomicInteger getWorkSubmittedCounter() {
         return this.workSubmittedCounter;
     }
 
-    public void putElement(final T val) throws HBqlException {
-        this.getCompletionQueue().putElement(val);
-    }
-
-    public void putCompletion() {
-        this.getCompletionQueue().putCompletionToken();
-    }
-
-    public CompletionQueue.Element<T> takeElement() throws HBqlException {
-        return this.getCompletionQueue().takeElement();
-    }
-
-    public int getRejectionCount() {
-        return this.getThreadPoolExecutor().getRejectionCount();
-    }
-
-    public boolean moreResultsPending() {
-        final int completionCount = this.getCompletionQueue().getCompletionCount();
-        final int submittedCount = this.getWorkSubmittedCounter().get();
-        return completionCount < submittedCount;
-    }
-
     public void reset() {
         this.getWorkSubmittedCounter().set(0);
-        this.getCompletionQueue().reset();
         this.getThreadPoolExecutor().reset();
     }
 
-    public void submitWorkToSubmitterThread(final Runnable job) {
-        this.getWorkSubmittedCounter().incrementAndGet();
-        this.getSubmitterThread().submit(job);
-    }
-
-    public void submitWorkToThreadPool(final Runnable job) {
+    public QueryFuture submit(final AsyncRunnable job) {
         this.getWorkSubmittedCounter().incrementAndGet();
         this.getThreadPoolExecutor().execute(job);
+        return job.getQueryFuture();
     }
 
     public boolean isPooled() {
@@ -199,7 +161,6 @@ public abstract class CompletionQueueExecutor<T> implements PoolableElement {
             synchronized (this) {
                 if (!this.isShutdown()) {
                     this.getThreadPoolExecutor().shutdown();
-                    this.getSubmitterThread().shutdown();
                     this.getAtomicShutdown().set(true);
                 }
             }

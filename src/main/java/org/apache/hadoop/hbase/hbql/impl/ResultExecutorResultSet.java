@@ -86,12 +86,12 @@ public class ResultExecutorResultSet<T> extends HResultSetImpl<T, Result> {
         try {
             return new ResultSetIterator<T, Result>(this) {
 
-                protected Iterator<Result> getNextResultIterator() throws HBqlException {
-                    return null;
-                }
-
                 protected boolean moreResultsPending() {
                     return getCompletionQueueExecutor().moreResultsPending();
+                }
+
+                protected Iterator<Result> getNextResultIterator() throws HBqlException {
+                    return null;
                 }
 
                 @SuppressWarnings("unchecked")

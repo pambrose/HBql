@@ -18,9 +18,10 @@
  * limitations under the License.
  */
 
-package org.apache.hadoop.hbase.hbql.util;
+package org.apache.hadoop.hbase.hbql.impl;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.util.PoolableElement;
 
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
@@ -91,7 +92,7 @@ public abstract class ElementPool<T extends PoolableElement> {
         }
     }
 
-    protected void release(final T element) {
+    public void release(final T element) {
         element.reset();
         this.getElementPool().add(element);
         this.getTakenElementCount().decrementAndGet();

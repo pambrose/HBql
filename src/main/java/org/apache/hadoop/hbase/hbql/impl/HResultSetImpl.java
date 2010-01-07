@@ -30,7 +30,6 @@ import org.apache.hadoop.hbase.hbql.mapping.MappingContext;
 import org.apache.hadoop.hbase.hbql.statement.SelectStatement;
 import org.apache.hadoop.hbase.hbql.statement.args.WithArgs;
 import org.apache.hadoop.hbase.hbql.statement.select.RowRequest;
-import org.apache.hadoop.hbase.hbql.util.CompletionQueueExecutor;
 import org.apache.hadoop.hbase.hbql.util.Lists;
 
 import java.io.IOException;
@@ -69,10 +68,7 @@ public abstract class HResultSetImpl<T, R> implements HResultSet<T> {
         // Set it once per evaluation
         DateLiteral.resetNow();
 
-        if (this.getListeners() != null) {
-            for (final QueryListener<T> listener : this.getListeners())
-                listener.onQueryInit();
-        }
+        this.callOnQueryInit();
 
         if (this.getCompletionQueueExecutor() != null) {
             // Submit work to executor
@@ -94,10 +90,8 @@ public abstract class HResultSetImpl<T, R> implements HResultSet<T> {
 
     protected void cleanUpAtEndOfIterator(final boolean fromExceptionCatch) {
         try {
-            if (!fromExceptionCatch && getListeners() != null) {
-                for (final QueryListener<T> listener : getListeners())
-                    listener.onQueryComplete();
-            }
+            if (!fromExceptionCatch)
+                callOnQueryComplete();
 
             try {
                 if (getHTableWrapper() != null)
@@ -222,11 +216,11 @@ public abstract class HResultSetImpl<T, R> implements HResultSet<T> {
     }
 
     public void addQueryListener(QueryListener<T> listener) {
-        this.getQuery().addListener(listener);
+        this.getQuery().addQueryListener(listener);
     }
 
     public void clearQueryListeners() {
-        this.getQuery().clearListeners();
+        this.getQuery().clearQueryListeners();
     }
 
     protected HConnectionImpl getHConnectionImpl() {
@@ -253,11 +247,25 @@ public abstract class HResultSetImpl<T, R> implements HResultSet<T> {
         return this.getQuery().getListeners();
     }
 
+    private void callOnQueryInit() {
+        if (this.getListeners() != null) {
+            for (final QueryListener<T> listener : this.getListeners())
+                listener.onQueryInit();
+        }
+    }
+
     protected T callOnEachRow(T val) {
         if (this.getListeners() != null) {
-            for (final QueryListener<T> listener : getListeners())
+            for (final QueryListener<T> listener : this.getListeners())
                 listener.onEachRow(val);
         }
         return val;
+    }
+
+    private void callOnQueryComplete() {
+        if (this.getListeners() != null) {
+            for (final QueryListener<T> listener : this.getListeners())
+                listener.onQueryComplete();
+        }
     }
 }

@@ -20,10 +20,10 @@
 
 package org.apache.hadoop.hbase.hbql.client;
 
+import org.apache.hadoop.hbase.hbql.impl.CompletionQueueExecutor;
+import org.apache.hadoop.hbase.hbql.impl.ElementPool;
 import org.apache.hadoop.hbase.hbql.impl.ResultExecutor;
 import org.apache.hadoop.hbase.hbql.impl.ResultScannerExecutor;
-import org.apache.hadoop.hbase.hbql.util.CompletionQueueExecutor;
-import org.apache.hadoop.hbase.hbql.util.ElementPool;
 
 public class QueryExecutorPool extends ElementPool<CompletionQueueExecutor> {
 

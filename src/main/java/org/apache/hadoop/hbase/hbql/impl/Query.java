@@ -30,7 +30,6 @@ import org.apache.hadoop.hbase.hbql.mapping.ResultAccessor;
 import org.apache.hadoop.hbase.hbql.statement.SelectStatement;
 import org.apache.hadoop.hbase.hbql.statement.args.WithArgs;
 import org.apache.hadoop.hbase.hbql.statement.select.RowRequest;
-import org.apache.hadoop.hbase.hbql.util.CompletionQueueExecutor;
 import org.apache.hadoop.hbase.hbql.util.Lists;
 import org.apache.hadoop.hbase.hbql.util.Sets;
 
@@ -69,10 +68,13 @@ public class Query<T> {
         return new Query<E>(conn, selectStatement);
     }
 
-    public synchronized void addListener(final QueryListener<T> listener) {
-        if (this.getListeners() == null)
-            this.listeners = Lists.newArrayList();
-
+    public void addQueryListener(final QueryListener<T> listener) {
+        if (this.getListeners() == null) {
+            synchronized (this) {
+                if (this.getListeners() == null)
+                    this.listeners = Lists.newArrayList();
+            }
+        }
         this.getListeners().add(listener);
     }
 
@@ -102,7 +104,7 @@ public class Query<T> {
         return this.listeners;
     }
 
-    public void clearListeners() {
+    public void clearQueryListeners() {
         if (this.getListeners() != null)
             this.getListeners().clear();
     }
@@ -113,7 +115,7 @@ public class Query<T> {
         }
         else {
             // This may block waiting for a Executor to become available from the ExecutorPool
-            final CompletionQueueExecutor executor = this.getHConnectionImpl().getExecutorForConnection();
+            final CompletionQueueExecutor executor = this.getHConnectionImpl().getQueryExecutorForConnection();
             if (executor.threadsReadResults())
                 return new ResultExecutorResultSet<T>(this, (ResultExecutor)executor);
             else

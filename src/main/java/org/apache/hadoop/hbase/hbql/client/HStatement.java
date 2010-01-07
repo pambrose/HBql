@@ -24,11 +24,17 @@ import java.util.List;
 
 public interface HStatement {
 
-    ExecutionResults execute(String sql) throws HBqlException;
+    // Async queries
+    QueryFuture executeQueryAsync(String sql, QueryListener<HRecord> listener) throws HBqlException;
 
+    <T> QueryFuture executeQueryAsync(String sql, Class clazz, QueryListener<T> listener) throws HBqlException;
+
+    // Sync queries
     HResultSet<HRecord> executeQuery(String sql) throws HBqlException;
 
     <T> HResultSet<T> executeQuery(String sql, Class clazz) throws HBqlException;
+
+    ExecutionResults execute(String sql) throws HBqlException;
 
     List<HRecord> executeQueryAndFetch(String sql) throws HBqlException;
 

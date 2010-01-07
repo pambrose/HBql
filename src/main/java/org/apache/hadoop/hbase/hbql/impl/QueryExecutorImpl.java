@@ -21,7 +21,6 @@
 package org.apache.hadoop.hbase.hbql.impl;
 
 import org.apache.hadoop.hbase.hbql.client.QueryExecutor;
-import org.apache.hadoop.hbase.hbql.util.CompletionQueueExecutor;
 
 // This hides details form the public API
 public class QueryExecutorImpl extends QueryExecutor {

@@ -20,6 +20,7 @@
 
 package org.apache.hadoop.hbase.hbql;
 
+import org.apache.hadoop.hbase.hbql.client.AsyncExecutorPoolManager;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.client.HConnectionManager;
@@ -31,15 +32,20 @@ import org.apache.hadoop.hbase.hbql.client.HResultSet;
 import org.apache.hadoop.hbase.hbql.client.HStatement;
 import org.apache.hadoop.hbase.hbql.client.QueryExecutor;
 import org.apache.hadoop.hbase.hbql.client.QueryExecutorPoolManager;
+import org.apache.hadoop.hbase.hbql.client.QueryFuture;
+import org.apache.hadoop.hbase.hbql.client.QueryListener;
 import org.apache.hadoop.hbase.hbql.client.Util;
 import org.apache.hadoop.hbase.hbql.impl.Utils;
+import org.apache.hadoop.hbase.hbql.util.Lists;
 import org.apache.hadoop.hbase.hbql.util.TestSupport;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class ServerFilterTest extends TestSupport {
 
@@ -266,49 +272,93 @@ public class ServerFilterTest extends TestSupport {
                                         "threads_read_results: true, completion_queue_size: 100) " +
                                         "if not queryExecutorPoolExists('threadPool1')"));
         System.out.println(stmt.execute("DROP EXECUTOR POOL threadPool1 if queryExecutorPoolExists('threadPool1')"));
-        System.out
-                .println(stmt.execute("CREATE EXECUTOR POOL threadPool1 (max_executor_pool_size: 5, max_thread_count: 4, " +
-                                      "threads_read_results: true, completion_queue_size: 100)"));
+        System.out.println(stmt.execute("CREATE EXECUTOR POOL threadPool1 " +
+                                        "(max_executor_pool_size: 5, max_thread_count: 4, " +
+                                        "threads_read_results: true, completion_queue_size: 100)"));
 
         connection.setQueryExecutorPoolName("threadPool1");
 
         for (int i = 0; i < 50; i++) {
-            final String q1 = "select * from tab3 WITH "
-                              + "KEYS " +
-                              "'0000000001'TO '0000000009', " +
-                              "'0000000001'TO '0000000009', " +
-                              "'0000000001'TO '0000000009', " +
-                              "'0000000001'TO '0000000009', " +
-                              "'0000000001'TO '0000000009', " +
-                              "'0000000001'TO '0000000009', " +
-                              "'0000000001'TO '0000000009', " +
-                              "'0000000001'TO '0000000009', " +
-                              "'0000000001'TO '0000000009', " +
-                              "'0000000001'TO '0000000009', " +
-                              "'0000000001'TO '0000000009', " +
-                              "'0000000001'TO '0000000009', " +
-                              "'0000000001'TO '0000000009', " +
-                              "'0000000001'TO '0000000009', " +
-                              "'0000000001'TO '0000000009', " +
-                              "'0000000001'TO '0000000009', " +
-                              "'0000000001'TO '0000000009', " +
-                              "'0000000001'TO '0000000009', " +
-                              "'0000000001'TO '0000000009', " +
-                              "'0000000001'TO '0000000009', " +
-                              "'0000000001'TO '0000000009', " +
-                              "'0000000001'TO '0000000009', " +
-                              "'0000000001'TO '0000000009', " +
-                              "'0000000001'TO '0000000009', " +
-                              "'0000000001'TO '0000000009', " +
-                              "'0000000001'TO '0000000009', " +
-                              "'0000000001'TO '0000000009', " +
-                              "'0000000001'TO '0000000009', " +
-                              "'0000000001'TO '0000000009', " +
-                              "'0000000001'TO '0000000009' "
-                              + "SERVER FILTER where val1+'ss' BETWEEN '11ss' AND '13ss' ";
-            // + "CLIENT FILTER where val1 BETWEEN '11' AND '13' ";
+            final StringBuilder q1 = new StringBuilder("select * from tab3 WITH "
+                                                       + "KEYS ");
+            boolean firstTime = true;
+            int cnt = 30;
+            for (int j = 0; j < cnt; j++) {
+                if (!firstTime)
+                    q1.append(", ");
+                else
+                    firstTime = false;
+                q1.append("'0000000001'TO '0000000009'");
+            }
+            q1.append("SERVER FILTER where val1+'ss' BETWEEN '11ss' AND '13ss' ");
             System.out.println("Values for iteration:" + i);
-            showValues(q1, 90, false);
+            showValues(q1.toString(), cnt * 3, false);
+        }
+    }
+
+    @Test
+    public void asyncSelect1() throws HBqlException {
+
+        QueryExecutorPoolManager.newQueryExecutorPool("threadPool1", 5, 2, 5, 30, true, 100);
+
+        AsyncExecutorPoolManager.newAsyncExecutorPool("asyncPool1", 5, 2, 4, 60);
+
+        connection.setQueryExecutorPoolName("threadPool1");
+        connection.setAsyncExecutorPoolName("asyncPool1");
+
+        final List<QueryFuture> futureList = Lists.newArrayList();
+
+        for (int i = 0; i < 50; i++) {
+            final StringBuilder q1 = new StringBuilder("select * from tab3 WITH "
+                                                       + "KEYS ");
+            boolean firstTime = true;
+            final int cnt = 30;
+            for (int j = 0; j < cnt; j++) {
+                if (!firstTime)
+                    q1.append(", ");
+                else
+                    firstTime = false;
+                q1.append("'0000000001'TO '0000000009'");
+            }
+            q1.append("SERVER FILTER where val1+'ss' BETWEEN '11ss' AND '13ss' ");
+
+            HStatement stmt = connection.createStatement();
+            QueryFuture future = stmt.executeQueryAsync(q1.toString(), new QueryListener<HRecord>() {
+                AtomicInteger rec_cnt = new AtomicInteger(0);
+
+                public void onQueryInit() {
+                    System.out.println("Starting query");
+                }
+
+                public void onEachRow(final HRecord rec) {
+                    try {
+                        String keyval = (String)rec.getCurrentValue("keyval");
+                        String val1 = (String)rec.getCurrentValue("val1");
+                        int val2 = (Integer)rec.getCurrentValue("f1:val2");
+                        int val3 = (Integer)rec.getCurrentValue("val3");
+                        //System.out.println("Current Values: " + keyval + " : " + val1 + " : " + val2 + " : " + val3);
+                        this.rec_cnt.incrementAndGet();
+                    }
+                    catch (HBqlException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                public void onQueryComplete() {
+                    System.out.println("Finished query with rec_cnt = " + rec_cnt.get());
+                    assertTrue(rec_cnt.get() == cnt * 3);
+                }
+            });
+            futureList.add(future);
+        }
+
+        for (final QueryFuture future : futureList) {
+            try {
+                future.getLatch().await();
+            }
+            catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -382,12 +432,7 @@ public class ServerFilterTest extends TestSupport {
                                 }
                                 finally {
                                     if (conn != null) {
-                                        try {
-                                            conn.close();
-                                        }
-                                        catch (HBqlException e1) {
-                                            e1.printStackTrace();
-                                        }
+                                        conn.close();
                                     }
                                     latch.countDown();
                                 }

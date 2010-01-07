@@ -26,6 +26,8 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.client.HResultSet;
 import org.apache.hadoop.hbase.hbql.client.HStatement;
+import org.apache.hadoop.hbase.hbql.client.QueryFuture;
+import org.apache.hadoop.hbase.hbql.client.QueryListener;
 import org.apache.hadoop.hbase.hbql.statement.ConnectionStatement;
 import org.apache.hadoop.hbase.hbql.statement.HBqlStatement;
 import org.apache.hadoop.hbase.hbql.statement.NonConnectionStatement;
@@ -56,7 +58,7 @@ public class HStatementImpl implements HStatement {
     }
 
     public boolean getIgnoreQueryExecutor() {
-        return ignoreQueryExecutor;
+        return this.ignoreQueryExecutor;
     }
 
     public void setIgnoreQueryExecutor(final boolean ignoreQueryExecutor) {
@@ -88,6 +90,40 @@ public class HStatementImpl implements HStatement {
         final HResultSet<T> rs = query.newResultSet(this.getIgnoreQueryExecutor());
         this.resultSet = rs;
         return this.resultSet;
+    }
+
+    protected <T> QueryFuture executeQueryAsync(final HBqlStatement statement,
+                                                final Class clazz,
+                                                final QueryListener<T> listener) throws HBqlException {
+
+        if (!Utils.isSelectStatement(statement))
+            throw new HBqlException("executeQueryAsync() requires a SELECT statement");
+
+        final Query<T> query = Query.newQuery(this.getHConnectionImpl(), (SelectStatement)statement, clazz);
+
+        query.addQueryListener(listener);
+
+        final UnboundedAsyncExecutor asyncExecutor = this.getHConnectionImpl().getAsyncExecutorForConnection();
+
+        return asyncExecutor.submit(
+                new AsyncRunnable() {
+                    public void run() {
+                        try {
+                            final HResultSet<T> rs = query.newResultSet(false);
+                            for (T rec : rs) {
+                                // Iterate through the results
+                            }
+                            rs.close();
+                        }
+                        catch (Exception e) {
+                            e.printStackTrace();
+                            this.getQueryFuture().setCaughtException(e);
+                        }
+                        finally {
+                            asyncExecutor.release();
+                        }
+                    }
+                });
     }
 
     protected <T> List<T> executeQueryAndFetch(final HBqlStatement statement, final Class clazz) throws HBqlException {
@@ -128,8 +164,19 @@ public class HStatementImpl implements HStatement {
         return this.executeQuery(Utils.parseHBqlStatement(sql), HRecord.class);
     }
 
+    public QueryFuture executeQueryAsync(final String sql,
+                                         final QueryListener<HRecord> listener) throws HBqlException {
+        return this.executeQueryAsync(Utils.parseHBqlStatement(sql), HRecord.class, listener);
+    }
+
     public <T> HResultSet<T> executeQuery(final String sql, final Class clazz) throws HBqlException {
         return this.executeQuery(Utils.parseHBqlStatement(sql), clazz);
+    }
+
+    public <T> QueryFuture executeQueryAsync(final String sql,
+                                             final Class clazz,
+                                             final QueryListener<T> listener) throws HBqlException {
+        return this.executeQueryAsync(Utils.parseHBqlStatement(sql), clazz, listener);
     }
 
     public List<HRecord> executeQueryAndFetch(final String sql) throws HBqlException {

@@ -34,7 +34,7 @@ public interface HConnection {
 
     Set<String> getFamilyNames(String tableName) throws HBqlException;
 
-    void close() throws HBqlException;
+    void close();
 
     boolean isClosed() throws HBqlException;
 
@@ -91,6 +91,7 @@ public interface HConnection {
 
     Set<HMapping> getAllMappings() throws HBqlException;
 
+    // Query Executor Routines
     void setQueryExecutorPoolName(String name);
 
     String getQueryExecutorPoolName();
@@ -98,4 +99,13 @@ public interface HConnection {
     void setQueryExecutor(QueryExecutor executor);
 
     QueryExecutor getQueryExecutor();
+
+    // Async Executor Routines
+    void setAsyncExecutorPoolName(String name);
+
+    String getAsyncExecutorPoolName();
+
+    void setAsyncExecutor(AsyncExecutor executor);
+
+    AsyncExecutor getAsyncExecutor();
 }

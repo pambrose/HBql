@@ -31,6 +31,9 @@ import org.apache.hadoop.hbase.client.tableindexed.IndexSpecification;
 import org.apache.hadoop.hbase.client.tableindexed.IndexedTable;
 import org.apache.hadoop.hbase.client.tableindexed.IndexedTableAdmin;
 import org.apache.hadoop.hbase.client.tableindexed.IndexedTableDescriptor;
+import org.apache.hadoop.hbase.hbql.client.AsyncExecutor;
+import org.apache.hadoop.hbase.hbql.client.AsyncExecutorPool;
+import org.apache.hadoop.hbase.hbql.client.AsyncExecutorPoolManager;
 import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
@@ -48,7 +51,6 @@ import org.apache.hadoop.hbase.hbql.mapping.TableMapping;
 import org.apache.hadoop.hbase.hbql.statement.args.KeyInfo;
 import org.apache.hadoop.hbase.hbql.statement.args.WithArgs;
 import org.apache.hadoop.hbase.hbql.util.AtomicReferences;
-import org.apache.hadoop.hbase.hbql.util.CompletionQueueExecutor;
 import org.apache.hadoop.hbase.hbql.util.Maps;
 import org.apache.hadoop.hbase.hbql.util.PoolableElement;
 import org.apache.hadoop.hbase.hbql.util.Sets;
@@ -77,8 +79,11 @@ public class HConnectionImpl implements HConnection, PoolableElement {
     private final AtomicReference<HBaseAdmin> atomicHbaseAdmin = AtomicReferences.newAtomicReference();
     private final AtomicReference<IndexedTableAdmin> atomicIndexTableAdmin = AtomicReferences.newAtomicReference();
 
-    private String executorPoolName = null;
+    private String queryExecutorPoolName = null;
     private QueryExecutor queryExecutor = null;
+
+    private String asyncExecutorPoolName = null;
+    private AsyncExecutor asyncExecutor = null;
 
     public HConnectionImpl(final HBaseConfiguration hbaseConfig,
                            final HConnectionPoolImpl connectionPool,
@@ -291,6 +296,10 @@ public class HConnectionImpl implements HConnection, PoolableElement {
         this.getConnectionPool().releaseConnection(this);
     }
 
+    public void shutdown() {
+        // No op
+    }
+
     private AtomicBoolean getAtomicClosed() {
         return this.atomicClosed;
     }
@@ -299,7 +308,7 @@ public class HConnectionImpl implements HConnection, PoolableElement {
         return this.getAtomicClosed().get();
     }
 
-    public void close() throws HBqlException {
+    public void close() {
         // If it is a pool conection, just give it back to pool (reset() will be called on release)
         if (this.isPooled()) {
             this.release();
@@ -490,20 +499,37 @@ public class HConnectionImpl implements HConnection, PoolableElement {
     }
 
     // The value returned from this call must be eventually released.
-    public CompletionQueueExecutor getExecutorForConnection() throws HBqlException {
+    public CompletionQueueExecutor getQueryExecutorForConnection() throws HBqlException {
         // If Connection is assigned an Executor, then just return it.  Otherwise, get one from the pool
         final CompletionQueueExecutor executorQueue = this.getQueryExecutor() != null
                                                       ? this.getQueryExecutorImpl().getExecutor()
-                                                      : this.takeExecutorFromPool();
+                                                      : this.takeQueryExecutorFromPool();
         // Reset it prior to handing it out
         executorQueue.reset();
         return executorQueue;
     }
 
-    private CompletionQueueExecutor takeExecutorFromPool() throws HBqlException {
-        this.validateExecutorPoolNameExists(this.getQueryExecutorPoolName());
+    // The value returned from this call must be eventually released.
+    public UnboundedAsyncExecutor getAsyncExecutorForConnection() throws HBqlException {
+        // If Connection is assigned an Executor, then just return it.  Otherwise, get one from the pool
+        final UnboundedAsyncExecutor executor = this.getAsyncExecutor() != null
+                                                ? this.getAsyncExecutorImpl().getExecutor()
+                                                : this.takeAsyncExecutorFromPool();
+        // Reset it prior to handing it out
+        executor.reset();
+        return executor;
+    }
+
+    private CompletionQueueExecutor takeQueryExecutorFromPool() throws HBqlException {
+        this.validateQueryExecutorPoolNameExists(this.getQueryExecutorPoolName());
         final QueryExecutorPool pool = QueryExecutorPoolManager.getExecutorPool(this.getQueryExecutorPoolName());
         return pool.takeQueryExecutor();
+    }
+
+    private UnboundedAsyncExecutor takeAsyncExecutorFromPool() throws HBqlException {
+        this.validateAsyncExecutorPoolNameExists(this.getAsyncExecutorPoolName());
+        final AsyncExecutorPool pool = AsyncExecutorPoolManager.getExecutorPool(this.getAsyncExecutorPoolName());
+        return pool.takeAsyncExecutor();
     }
 
     public boolean usesQueryExecutor() {
@@ -511,11 +537,11 @@ public class HConnectionImpl implements HConnection, PoolableElement {
     }
 
     public String getQueryExecutorPoolName() {
-        return this.executorPoolName;
+        return this.queryExecutorPoolName;
     }
 
     public void setQueryExecutorPoolName(final String poolName) {
-        this.executorPoolName = poolName;
+        this.queryExecutorPoolName = poolName;
     }
 
     public void setQueryExecutor(final QueryExecutor executor) {
@@ -527,7 +553,27 @@ public class HConnectionImpl implements HConnection, PoolableElement {
     }
 
     private QueryExecutorImpl getQueryExecutorImpl() {
-        return (QueryExecutorImpl)this.queryExecutor;
+        return (QueryExecutorImpl)this.getQueryExecutor();
+    }
+
+    public String getAsyncExecutorPoolName() {
+        return this.asyncExecutorPoolName;
+    }
+
+    public void setAsyncExecutorPoolName(final String poolName) {
+        this.asyncExecutorPoolName = poolName;
+    }
+
+    public void setAsyncExecutor(final AsyncExecutor executor) {
+        this.asyncExecutor = executor;
+    }
+
+    public AsyncExecutor getAsyncExecutor() {
+        return this.asyncExecutor;
+    }
+
+    private AsyncExecutorImpl getAsyncExecutorImpl() {
+        return (AsyncExecutorImpl)this.getAsyncExecutor();
     }
 
     public void validateTableName(final String tableName) throws HBqlException {
@@ -550,8 +596,13 @@ public class HConnectionImpl implements HConnection, PoolableElement {
             throw new HBqlException("Index " + indexName + " not defined for table " + tableName);
     }
 
-    public void validateExecutorPoolNameExists(final String poolName) throws HBqlException {
+    public void validateQueryExecutorPoolNameExists(final String poolName) throws HBqlException {
         if (!QueryExecutorPoolManager.queryExecutorPoolExists(poolName))
-            throw new HBqlException("Executor pool " + poolName + " does not exist.");
+            throw new HBqlException("QueryExecutorPool " + poolName + " does not exist.");
+    }
+
+    public void validateAsyncExecutorPoolNameExists(final String poolName) throws HBqlException {
+        if (!AsyncExecutorPoolManager.asyncExecutorPoolExists(poolName))
+            throw new HBqlException("AsyncExecutorPool " + poolName + " does not exist.");
     }
 }

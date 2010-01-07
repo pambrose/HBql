@@ -18,16 +18,20 @@
  * limitations under the License.
  */
 
-package org.apache.hadoop.hbase.hbql.client;
+package org.apache.hadoop.hbase.hbql.impl;
 
-public abstract class QueryListenerAdapter<T> implements QueryListener<T> {
+import org.apache.hadoop.hbase.hbql.client.AsyncExecutor;
 
-    public void onQueryInit() {
+// This hides details form the public API
+public class AsyncExecutorImpl extends AsyncExecutor {
+
+    private UnboundedAsyncExecutor executor;
+
+    public AsyncExecutorImpl(final UnboundedAsyncExecutor executor) {
+        this.executor = executor;
     }
 
-    public void onEachRow(T val) {
-    }
-
-    public void onQueryComplete() {
+    public UnboundedAsyncExecutor getExecutor() {
+        return this.executor;
     }
 }

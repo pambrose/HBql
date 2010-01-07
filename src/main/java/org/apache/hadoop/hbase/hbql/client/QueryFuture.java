@@ -20,14 +20,21 @@
 
 package org.apache.hadoop.hbase.hbql.client;
 
-public abstract class QueryListenerAdapter<T> implements QueryListener<T> {
+import java.util.concurrent.CountDownLatch;
 
-    public void onQueryInit() {
-    }
+public interface QueryFuture {
 
-    public void onEachRow(T val) {
-    }
+    Exception getCaughtException();
 
-    public void onQueryComplete() {
-    }
+    boolean isStarted();
+
+    boolean isComplete();
+
+    long getStartTime();
+
+    long getCompleteTime();
+
+    long getElapsedTime();
+
+    public CountDownLatch getLatch();
 }

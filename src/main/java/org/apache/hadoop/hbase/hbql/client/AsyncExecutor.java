@@ -20,14 +20,22 @@
 
 package org.apache.hadoop.hbase.hbql.client;
 
-public abstract class QueryListenerAdapter<T> implements QueryListener<T> {
+import org.apache.hadoop.hbase.hbql.impl.AsyncExecutorImpl;
+import org.apache.hadoop.hbase.hbql.impl.UnboundedAsyncExecutor;
 
-    public void onQueryInit() {
+public class AsyncExecutor {
+
+    public static AsyncExecutor newAsyncExecutor(final int minThreadCount,
+                                                 final int maxThreadCount,
+                                                 final long keepAliveSecs) throws HBqlException {
+        return new AsyncExecutorImpl(new UnboundedAsyncExecutor(null, minThreadCount, maxThreadCount, keepAliveSecs));
     }
 
-    public void onEachRow(T val) {
+    private AsyncExecutorImpl getExecutorImpl() {
+        return (AsyncExecutorImpl)this;
     }
 
-    public void onQueryComplete() {
+    public void shutdown() {
+        this.getExecutorImpl().getExecutor().shutdown();
     }
 }

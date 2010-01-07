@@ -23,7 +23,6 @@ package org.apache.hadoop.hbase.hbql.impl;
 import org.apache.hadoop.hbase.client.ResultScanner;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.QueryExecutorPool;
-import org.apache.hadoop.hbase.hbql.util.CompletionQueueExecutor;
 
 public class ResultScannerExecutor extends CompletionQueueExecutor<ResultScanner> {
 

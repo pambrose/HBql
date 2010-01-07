@@ -18,16 +18,13 @@
  * limitations under the License.
  */
 
-package org.apache.hadoop.hbase.hbql.client;
+package org.apache.hadoop.hbase.hbql.impl;
 
-public abstract class QueryListenerAdapter<T> implements QueryListener<T> {
+public abstract class AsyncRunnable implements Runnable {
 
-    public void onQueryInit() {
-    }
+    private final QueryFutureImpl queryFuture = new QueryFutureImpl();
 
-    public void onEachRow(T val) {
-    }
-
-    public void onQueryComplete() {
+    public QueryFutureImpl getQueryFuture() {
+        return this.queryFuture;
     }
 }

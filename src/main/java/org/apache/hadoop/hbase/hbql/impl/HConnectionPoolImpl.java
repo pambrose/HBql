@@ -24,7 +24,6 @@ import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.client.HConnectionPool;
-import org.apache.hadoop.hbase.hbql.util.ElementPool;
 
 public class HConnectionPoolImpl extends ElementPool<HConnectionImpl> implements HConnectionPool {
 
