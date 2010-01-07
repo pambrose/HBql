@@ -41,10 +41,16 @@ public class ResultExecutorResultSet<T> extends HResultSetImpl<T, Result> {
     }
 
     protected void submitWork(final List<RowRequest> rowRequestList) {
+
+        // This will submit jobs until a job is rejected, at which point, execution will take place in
+        // the context of this thread
         for (final RowRequest rowRequest : rowRequestList) {
-            final Runnable job = new Runnable() {
+            this.getCompletionQueueExecutor().submitWorkToThreadPool(new Runnable() {
                 public void run() {
                     try {
+                        if (getHTableWrapper() == null)
+                            System.out.println("null");
+
                         final ResultScanner scanner = rowRequest.getResultScanner(getMappingContext().getMapping(),
                                                                                   getWithArgs(),
                                                                                   getHTableWrapper().getHTable());
@@ -75,9 +81,7 @@ public class ResultExecutorResultSet<T> extends HResultSetImpl<T, Result> {
                         getCompletionQueueExecutor().putCompletion();
                     }
                 }
-            };
-
-            this.getCompletionQueueExecutor().submitWorkToThreadPool(job);
+            });
         }
     }
 

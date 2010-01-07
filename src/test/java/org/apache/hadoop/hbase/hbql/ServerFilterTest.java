@@ -308,56 +308,57 @@ public class ServerFilterTest extends TestSupport {
 
         final List<QueryFuture> futureList = Lists.newArrayList();
 
-        for (int i = 0; i < 50; i++) {
-            final StringBuilder q1 = new StringBuilder("select * from tab3 WITH "
-                                                       + "KEYS ");
-            boolean firstTime = true;
-            final int cnt = 30;
-            for (int j = 0; j < cnt; j++) {
-                if (!firstTime)
-                    q1.append(", ");
-                else
-                    firstTime = false;
-                q1.append("'0000000001'TO '0000000009'");
-            }
-            q1.append("SERVER FILTER where val1+'ss' BETWEEN '11ss' AND '13ss' ");
-
-            HStatement stmt = connection.createStatement();
-            QueryFuture future = stmt.executeQueryAsync(q1.toString(), new QueryListener<HRecord>() {
-                AtomicInteger rec_cnt = new AtomicInteger(0);
-
-                public void onQueryStart() {
-                    System.out.println("Starting query");
+        for (int i = 0; i < 10; i++) {
+            for (int j = 0; j < Utils.getRandomPositiveInt(100); j++) {
+                final StringBuilder q1 = new StringBuilder("select * from tab3 WITH KEYS ");
+                boolean firstTime = true;
+                final int cnt = Utils.getRandomPositiveInt(200);
+                for (int k = 0; k < cnt; k++) {
+                    if (!firstTime)
+                        q1.append(", ");
+                    else
+                        firstTime = false;
+                    q1.append("'0000000001'TO '0000000009'");
                 }
+                q1.append("SERVER FILTER where val1+'ss' BETWEEN '11ss' AND '13ss' ");
 
-                public void onEachRow(final HRecord rec) {
-                    try {
-                        String keyval = (String)rec.getCurrentValue("keyval");
-                        String val1 = (String)rec.getCurrentValue("val1");
-                        int val2 = (Integer)rec.getCurrentValue("f1:val2");
-                        int val3 = (Integer)rec.getCurrentValue("val3");
-                        //System.out.println("Current Values: " + keyval + " : " + val1 + " : " + val2 + " : " + val3);
-                        this.rec_cnt.incrementAndGet();
+                HStatement stmt = connection.createStatement();
+                QueryFuture future = stmt.executeQueryAsync(q1.toString(), new QueryListener<HRecord>() {
+                    AtomicInteger rec_cnt = new AtomicInteger(0);
+
+                    public void onQueryStart() {
+                        System.out.println("Starting query");
                     }
-                    catch (HBqlException e) {
-                        e.printStackTrace();
+
+                    public void onEachRow(final HRecord rec) {
+                        try {
+                            String keyval = (String)rec.getCurrentValue("keyval");
+                            String val1 = (String)rec.getCurrentValue("val1");
+                            int val2 = (Integer)rec.getCurrentValue("f1:val2");
+                            int val3 = (Integer)rec.getCurrentValue("val3");
+                            //System.out.println("Current Values: " + keyval + " : " + val1 + " : " + val2 + " : " + val3);
+                            this.rec_cnt.incrementAndGet();
+                        }
+                        catch (HBqlException e) {
+                            e.printStackTrace();
+                        }
                     }
-                }
 
-                public void onQueryComplete() {
-                    System.out.println("Finished query with rec_cnt = " + rec_cnt.get());
-                    assertTrue(rec_cnt.get() == cnt * 3);
-                }
-            });
-            futureList.add(future);
-        }
-
-        for (final QueryFuture future : futureList) {
-            try {
-                future.getLatch().await();
+                    public void onQueryComplete() {
+                        System.out.println("Finished query with rec_cnt = " + rec_cnt.get());
+                        assertTrue(rec_cnt.get() == cnt * 3);
+                    }
+                });
+                futureList.add(future);
             }
-            catch (InterruptedException e) {
-                e.printStackTrace();
+
+            for (final QueryFuture future : futureList) {
+                try {
+                    future.getLatch().await();
+                }
+                catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }

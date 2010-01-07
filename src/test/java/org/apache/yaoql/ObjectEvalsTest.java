@@ -83,7 +83,7 @@ public class ObjectEvalsTest extends ObjectTests<ObjectEvalsTest.SimpleObject> {
                     }
                 }
         );
-        query.getResults(objList);
+        query.getResultList(objList);
         assertTrue(cnt1.getCount() == 3);
 
         query = ObjectQueryManager.newObjectQuery(qstr);
