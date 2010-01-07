@@ -28,12 +28,14 @@ import org.apache.hadoop.hbase.hbql.mapping.ResultAccessor;
 import org.apache.hadoop.hbase.hbql.statement.SelectStatement;
 
 import java.util.Iterator;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public abstract class ResultSetIterator<T, R> implements Iterator<T> {
 
     private final HResultSetImpl<T, R> resultSet;
     private Iterator<Result> currentResultIterator = null;
-    private T nextObject = null;
+    private volatile T nextObject = null;
+    private final AtomicBoolean iteratorComplete = new AtomicBoolean(false);
 
     protected ResultSetIterator(final HResultSetImpl<T, R> resultSet) throws HBqlException {
         this.resultSet = resultSet;
@@ -58,8 +60,25 @@ public abstract class ResultSetIterator<T, R> implements Iterator<T> {
         this.nextObject = nextObject;
     }
 
+    protected AtomicBoolean getIteratorComplete() {
+        return this.iteratorComplete;
+    }
+
+    private boolean isIteratorComplete() {
+        return this.getIteratorComplete().get();
+    }
+
     public boolean hasNext() {
-        return this.getNextObject() != null;
+
+        if (this.getResultSet() != null) {
+            if (this.getResultSet().returnedRecordLimitMet())
+                this.readRemaingObjects();
+
+            if (this.isIteratorComplete())
+                this.getResultSet().cleanUpAtEndOfIterator(false);
+        }
+
+        return !this.isIteratorComplete();
     }
 
     public void remove() {
@@ -75,27 +94,26 @@ public abstract class ResultSetIterator<T, R> implements Iterator<T> {
     }
 
     protected void incrementReturnedRecordCount() {
+        if (this.getResultSet() != null)
+            this.getResultSet().incrementRecordCount();
+    }
 
-        if (this.getResultSet() == null)
-            return;
+    private void readRemaingObjects() {
 
-        this.getResultSet().incrementRecordCount();
-
-        // See if the limit has been met.  If so, then advance through the rest of the results
-        if (this.getResultSet().returnedRecordLimitMet()) {
-            while (this.hasNext()) {
-                this.next();
+        try {
+            while (!this.isIteratorComplete()) {
+                this.fetchNextObject();
             }
         }
+        catch (HBqlException e) {
+            e.printStackTrace();
+        }
     }
+
 
     protected void setNextObject(final T nextObject, final boolean fromExceptionCatch) {
 
         this.setNextObject(nextObject);
-
-        // If the query is finished then clean up.
-        if (!this.hasNext() && this.getResultSet() != null)
-            this.getResultSet().cleanUpAtEndOfIterator(fromExceptionCatch);
     }
 
     public T next() {
@@ -105,7 +123,8 @@ public abstract class ResultSetIterator<T, R> implements Iterator<T> {
 
         // Now prefetch next value so that hasNext() will be correct
         try {
-            this.setNextObject(this.fetchNextObject(), false);
+            final T nextObject = this.fetchNextObject();
+            this.setNextObject(nextObject, false);
         }
         catch (HBqlException e) {
             e.printStackTrace();
@@ -144,12 +163,12 @@ public abstract class ResultSetIterator<T, R> implements Iterator<T> {
                     continue;
                 }
 
+                this.incrementReturnedRecordCount();
+
                 if (selectStatement.isAnAggregateQuery()) {
                     this.getResultSet().getAggregateRecord().applyValues(result);
                 }
                 else {
-                    incrementReturnedRecordCount();
-
                     final T val = (T)resultAccessor.newObject(rs.getHConnectionImpl(),
                                                               selectStatement.getMappingContext(),
                                                               selectStatement.getSelectElementList(),
@@ -174,6 +193,7 @@ public abstract class ResultSetIterator<T, R> implements Iterator<T> {
             return rs.getQuery().callOnEachRow((T)retval);
         }
 
+        this.getIteratorComplete().set(true);
         return null;
     }
 }

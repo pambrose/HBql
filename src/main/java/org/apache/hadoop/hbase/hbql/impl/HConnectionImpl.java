@@ -541,11 +541,13 @@ public class HConnectionImpl implements HConnection, PoolableElement {
     }
 
     public void setQueryExecutorPoolName(final String poolName) {
+        this.queryExecutor = null;
         this.queryExecutorPoolName = poolName;
     }
 
     public void setQueryExecutor(final QueryExecutor executor) {
         this.queryExecutor = executor;
+        this.queryExecutorPoolName = null;
     }
 
     public QueryExecutor getQueryExecutor() {
@@ -561,11 +563,13 @@ public class HConnectionImpl implements HConnection, PoolableElement {
     }
 
     public void setAsyncExecutorPoolName(final String poolName) {
+        this.asyncExecutor = null;
         this.asyncExecutorPoolName = poolName;
     }
 
     public void setAsyncExecutor(final AsyncExecutor executor) {
         this.asyncExecutor = executor;
+        this.asyncExecutorPoolName = null;
     }
 
     public AsyncExecutor getAsyncExecutor() {

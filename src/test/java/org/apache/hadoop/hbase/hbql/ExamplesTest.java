@@ -58,10 +58,8 @@ public class ExamplesTest extends TestSupport {
 
         // START SNIPPET: show-tables
 
+        // Using the API
         HConnection conn = HConnectionManager.newConnection();
-        System.out.println(conn.execute("SHOW TABLES"));
-
-        // Or using the API
         Set<String> tableNames = conn.getTableNames();
 
         // END SNIPPET: show-tables
@@ -71,11 +69,8 @@ public class ExamplesTest extends TestSupport {
 
         // START SNIPPET: show-mappings
 
+        // Using the API
         HConnection conn = HConnectionManager.newConnection();
-
-        System.out.println(conn.execute("SHOW MAPPINGS"));
-
-        // Or using the API
         Set<HMapping> mappings = conn.getAllMappings();
         for (HMapping mapping : mappings)
             System.out.println(mapping.getMappingName());

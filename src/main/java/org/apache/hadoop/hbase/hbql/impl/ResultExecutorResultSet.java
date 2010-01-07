@@ -48,9 +48,6 @@ public class ResultExecutorResultSet<T> extends HResultSetImpl<T, Result> {
             this.getCompletionQueueExecutor().submitWorkToThreadPool(new Runnable() {
                 public void run() {
                     try {
-                        if (getHTableWrapper() == null)
-                            System.out.println("null");
-
                         final ResultScanner scanner = rowRequest.getResultScanner(getMappingContext().getMapping(),
                                                                                   getWithArgs(),
                                                                                   getHTableWrapper().getHTable());
@@ -117,12 +114,12 @@ public class ResultExecutorResultSet<T> extends HResultSetImpl<T, Result> {
                             result = element.getValue();
                         }
 
+                        this.incrementReturnedRecordCount();
+
                         if (getSelectStmt().isAnAggregateQuery()) {
                             getAggregateRecord().applyValues(result);
                         }
                         else {
-                            incrementReturnedRecordCount();
-
                             final T val = (T)resultAccessor.newObject(getHConnectionImpl(),
                                                                       getMappingContext(),
                                                                       getSelectStmt().getSelectElementList(),
@@ -141,6 +138,7 @@ public class ResultExecutorResultSet<T> extends HResultSetImpl<T, Result> {
                         return getQuery().callOnEachRow((T)retval);
                     }
 
+                    this.getIteratorComplete().set(true);
                     return null;
                 }
             };

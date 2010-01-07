@@ -185,7 +185,7 @@ public abstract class HResultSetImpl<T, R> implements HResultSet<T> {
     }
 
     protected boolean returnedRecordLimitMet() {
-        return this.getReturnedRecordLimit() > 0 && this.getReturnedRecordCount() >= this.getReturnedRecordLimit();
+        return this.getReturnedRecordLimit() > 0 && this.getReturnedRecordCount() > this.getReturnedRecordLimit();
     }
 
     protected long getReturnedRecordLimit() {
