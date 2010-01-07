@@ -30,23 +30,23 @@ public class ResultScannerExecutor extends CompletionQueueExecutor<ResultScanner
                                  final int minThreadCount,
                                  final int maxThreadCount,
                                  final long keepAliveSecs,
-                                 final int queueSize) throws HBqlException {
-        super(executorPool, minThreadCount, maxThreadCount, keepAliveSecs, queueSize);
+                                 final int completionQueueSize) throws HBqlException {
+        super(executorPool, minThreadCount, maxThreadCount, keepAliveSecs, completionQueueSize);
     }
 
     public static ResultScannerExecutor newPooledResultScannerExecutor(final QueryExecutorPool executorPool,
                                                                        final int minThreadCount,
                                                                        final int maxThreadCount,
                                                                        final long keepAliveSecs,
-                                                                       final int queueSize) throws HBqlException {
-        return new ResultScannerExecutor(executorPool, minThreadCount, maxThreadCount, keepAliveSecs, queueSize);
+                                                                       final int completionQueueSize) throws HBqlException {
+        return new ResultScannerExecutor(executorPool, minThreadCount, maxThreadCount, keepAliveSecs, completionQueueSize);
     }
 
     public static ResultScannerExecutor newResultScannerExecutor(final int minThreadCount,
                                                                  final int maxThreadCount,
                                                                  final long keepAliveSecs,
-                                                                 final int queueSize) throws HBqlException {
-        return new ResultScannerExecutor(null, minThreadCount, maxThreadCount, keepAliveSecs, queueSize);
+                                                                 final int completionQueueSize) throws HBqlException {
+        return new ResultScannerExecutor(null, minThreadCount, maxThreadCount, keepAliveSecs, completionQueueSize);
     }
 
     public boolean threadsReadResults() {

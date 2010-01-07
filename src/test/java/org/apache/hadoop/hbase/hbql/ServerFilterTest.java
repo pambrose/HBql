@@ -20,7 +20,7 @@
 
 package org.apache.hadoop.hbase.hbql;
 
-import org.apache.hadoop.hbase.hbql.client.AsyncExecutorPoolManager;
+import org.apache.hadoop.hbase.hbql.client.AsyncExecutor;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.client.HConnectionManager;
@@ -299,12 +299,16 @@ public class ServerFilterTest extends TestSupport {
     @Test
     public void asyncSelect1() throws HBqlException {
 
+        /*
         QueryExecutorPoolManager.newQueryExecutorPool("threadPool2", 5, 2, 5, 30, true, 100);
-
         AsyncExecutorPoolManager.newAsyncExecutorPool("asyncPool2", 5, 2, 4, 60);
-
         connection.setQueryExecutorPoolName("threadPool2");
         connection.setAsyncExecutorPoolName("asyncPool2");
+        */
+        QueryExecutor qexec = QueryExecutor.newQueryExecutor(2, 5, 30, true, 100);
+        AsyncExecutor aexec = AsyncExecutor.newAsyncExecutor(2, 4, 60);
+        connection.setQueryExecutor(qexec);
+        connection.setAsyncExecutor(aexec);
 
         final List<QueryFuture> futureList = Lists.newArrayList();
 
@@ -361,6 +365,9 @@ public class ServerFilterTest extends TestSupport {
                 }
             }
         }
+
+        aexec.shutdown();
+        qexec.shutdown();
     }
 
     @Test

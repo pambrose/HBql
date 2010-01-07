@@ -39,11 +39,11 @@ public class QueryFutureImpl implements QueryFuture {
         this.caughtException = exception;
     }
 
-    protected void startQuery() {
+    protected void markQueryStart() {
         this.startTime = System.currentTimeMillis();
     }
 
-    protected void completeQuery() {
+    protected void markQueryComplete() {
         this.completeTime = System.currentTimeMillis();
         this.getLatch().countDown();
     }

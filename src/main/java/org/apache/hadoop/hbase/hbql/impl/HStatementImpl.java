@@ -121,7 +121,7 @@ public class HStatementImpl implements HStatement {
                             this.getQueryFuture().setCaughtException(e);
                         }
                         finally {
-                            asyncExecutor.release();
+                            asyncExecutor.close();
                         }
                     }
                 });

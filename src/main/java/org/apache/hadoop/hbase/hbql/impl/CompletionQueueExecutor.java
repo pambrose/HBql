@@ -61,10 +61,10 @@ public abstract class CompletionQueueExecutor<T> implements PoolableElement {
                                         final int maxPoolSize,
                                         final long keepAliveTime,
                                         final TimeUnit timeUnit,
-                                        final BlockingQueue<Runnable> workQueue,
+                                        final BlockingQueue<Runnable> backingQueue,
                                         final ThreadFactory threadFactory,
                                         final RejectedExecutionHandler handler) {
-            super(minPoolSize, maxPoolSize, keepAliveTime, timeUnit, workQueue, threadFactory, handler);
+            super(minPoolSize, maxPoolSize, keepAliveTime, timeUnit, backingQueue, threadFactory, handler);
         }
 
         private AtomicInteger getRejectionCounter() {
@@ -178,14 +178,19 @@ public abstract class CompletionQueueExecutor<T> implements PoolableElement {
         this.getThreadPoolExecutor().execute(job);
     }
 
-    public boolean isPooled() {
+    private boolean isPooled() {
         return this.getExecutorPool() != null;
+    }
+
+    public void close() {
+        this.reset();
+        this.release();
     }
 
     public void release() {
         // Release if it is a pool element
         if (this.isPooled())
-            this.getExecutorPool().release(this);
+            this.getExecutorPool().releaseQueryExecutor(this);
     }
 
     private AtomicBoolean getAtomicShutdown() {

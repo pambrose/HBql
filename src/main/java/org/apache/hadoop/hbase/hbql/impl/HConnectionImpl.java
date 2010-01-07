@@ -309,17 +309,17 @@ public class HConnectionImpl implements HConnection, PoolableElement {
     }
 
     public void close() {
-        // If it is a pool conection, just give it back to pool (reset() will be called on release)
-        if (this.isPooled()) {
-            this.release();
-        }
-        else {
-            if (!this.isClosed()) {
-                synchronized (this) {
-                    if (!this.isClosed()) {
-                        this.reset();
-                        this.getAtomicClosed().set(true);
+        if (!this.isClosed()) {
+            synchronized (this) {
+                if (!this.isClosed()) {
+                    if (this.isPooled()) {
+                        // If it is a pool conection, just give it back to pool (reset() will be called on release)
+                        this.release();
                     }
+                    else {
+                        this.reset();
+                    }
+                    this.getAtomicClosed().set(true);
                 }
             }
         }
@@ -500,6 +500,10 @@ public class HConnectionImpl implements HConnection, PoolableElement {
 
     // The value returned from this call must be eventually released.
     public CompletionQueueExecutor getQueryExecutorForConnection() throws HBqlException {
+
+        if (this.getQueryExecutor() == null && !Utils.isValidString(this.getQueryExecutorPoolName()))
+            throw new HBqlException("Connection not assigned a QueryExecutor or QueryExecutorPool name");
+
         // If Connection is assigned an Executor, then just return it.  Otherwise, get one from the pool
         final CompletionQueueExecutor executorQueue = this.getQueryExecutor() != null
                                                       ? this.getQueryExecutorImpl().getExecutor()
@@ -511,6 +515,10 @@ public class HConnectionImpl implements HConnection, PoolableElement {
 
     // The value returned from this call must be eventually released.
     public UnboundedAsyncExecutor getAsyncExecutorForConnection() throws HBqlException {
+
+        if (this.getAsyncExecutor() == null && !Utils.isValidString(this.getAsyncExecutorPoolName()))
+            throw new HBqlException("Connection not assigned a AsyncExecutor or AsyncExecutorPool name");
+
         // If Connection is assigned an Executor, then just return it.  Otherwise, get one from the pool
         final UnboundedAsyncExecutor executor = this.getAsyncExecutor() != null
                                                 ? this.getAsyncExecutorImpl().getExecutor()
@@ -606,6 +614,7 @@ public class HConnectionImpl implements HConnection, PoolableElement {
     }
 
     public void validateAsyncExecutorPoolNameExists(final String poolName) throws HBqlException {
+
         if (!AsyncExecutorPoolManager.asyncExecutorPoolExists(poolName))
             throw new HBqlException("AsyncExecutorPool " + poolName + " does not exist.");
     }

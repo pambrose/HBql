@@ -167,8 +167,9 @@ public abstract class HResultSetImpl<T, R> implements HResultSet<T> {
 
                     this.getResultScannerList().clear();
 
-                    if (this.getCompletionQueueExecutor() != null)
-                        this.getCompletionQueueExecutor().release();
+                    if (this.getCompletionQueueExecutor() != null) {
+                        this.getCompletionQueueExecutor().close();
+                    }
 
                     this.getAtomicClosed().set(true);
                 }

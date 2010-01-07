@@ -48,9 +48,9 @@ public class UnboundedAsyncExecutor implements PoolableElement {
                                         final int maxPoolSize,
                                         final long keepAliveTime,
                                         final TimeUnit timeUnit,
-                                        final BlockingQueue<Runnable> workQueue,
+                                        final BlockingQueue<Runnable> backingQueue,
                                         final ThreadFactory threadFactory) {
-            super(minPoolSize, maxPoolSize, keepAliveTime, timeUnit, workQueue, threadFactory);
+            super(minPoolSize, maxPoolSize, keepAliveTime, timeUnit, backingQueue, threadFactory);
         }
 
         private AtomicInteger getQueryCounter() {
@@ -73,14 +73,14 @@ public class UnboundedAsyncExecutor implements PoolableElement {
             super.beforeExecute(thread, runnable);
 
             final AsyncRunnable asyncRunnable = (AsyncRunnable)runnable;
-            asyncRunnable.getQueryFuture().startQuery();
+            asyncRunnable.getQueryFuture().markQueryStart();
         }
 
         protected void afterExecute(final Runnable runnable, final Throwable throwable) {
             super.afterExecute(runnable, throwable);
 
             final AsyncRunnable asyncRunnable = (AsyncRunnable)runnable;
-            asyncRunnable.getQueryFuture().completeQuery();
+            asyncRunnable.getQueryFuture().markQueryComplete();
         }
     }
 
@@ -142,10 +142,15 @@ public class UnboundedAsyncExecutor implements PoolableElement {
         return this.getExecutorPool() != null;
     }
 
+    public void close() {
+        this.reset();
+        this.release();
+    }
+
     public void release() {
         // Release if it is a pool element
         if (this.isPooled())
-            this.getExecutorPool().release(this);
+            this.getExecutorPool().releaseAsyncExecutor(this);
     }
 
     private AtomicBoolean getAtomicShutdown() {
