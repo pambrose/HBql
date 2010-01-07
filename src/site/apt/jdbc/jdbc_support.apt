@@ -5,13 +5,13 @@
 
 JDBC Support
 
-    * The driver is not yet 100% comlete. The Driver, Connection, Statement, PreparedStatement, and
-     ResultSet implementations are reasonable, but the metadata calls are still in progress.
+    * The driver is not yet 100% complete. The Driver, Connection, Statement, PreparedStatement, \
+    and ResultSet implementations are reasonable, but the metadata calls are still in progress.
 
 
-    * You can access non-relational features of HBase not supported in JDBC, e.g., value versions and
-    columns in the family default map, by casting A ResultSet to a ResulSetImpl and
-    then calling ResultSetImpl.getCurrentHRecord().
+    * You can access non-relational features of HBase not supported in JDBC, \
+    e.g., value versions and columns in the family default map, by casting a \
+    ResultSet to a ResulSetImpl and then calling ResultSetImpl.getCurrentHRecord().
 
 
     * HBql supports both named parameters and parameters indicated with "?" character.
@@ -20,17 +20,18 @@ JDBC Support
     * JDBC examples can be seen {{{../examples/jdbc.html}here}}.
 
 
-    * Each connection makes use of an HTablePool.  For a connection returned by Driver.getConnection(),
-    the size of the HTablePool is specified in the jdbc url using the parameter
-    maxtablerefs, e.g., "jdbc:hbql;maxtablerefs=10".
-    For a connection pool, the size of the HTablePool is indicated with
+    * Each connection makes use of an HTablePool.  For a connection returned by \
+    Driver.getConnection(), the size of the HTablePool is specified in the jdbc url \
+    using the parameter maxtablerefs, e.g., "jdbc:hbql;maxtablerefs=10". \
+    For a connection pool, the size of the HTablePool is indicated with  \
     ConnectionPool.setMaxPoolReferencesPerTablePerConnection(10)
     prior to calling the ConnectionPool constructor.
 
 
-    * To create a non-pooled JDBC connection using a HBaseConfiguration object, you must call
-    org.apache.hadoop.hbase.jdbc.Driver.getConnection(url, config).
+    * To create a non-pooled JDBC connection using a HBaseConfiguration object, \
+    you must call org.apache.hadoop.hbase.jdbc.Driver.getConnection(url, config).
+    
 
-    * The JDBC connection url for HBase is "jdbc:hbql".  There are two optional parameters:
-    "maxtablerefs" and "hbase.master".
+    * The JDBC connection url for HBase is "jdbc:hbql".  \
+    There are two optional parameters: "maxtablerefs" and "hbase.master".
     

@@ -9,7 +9,7 @@ Installation
 
     * Add the following jars to your client classpath.
 
-        ** $HBQL_HOME/hbql-0.9.18-alpha.jar
+        ** $HBQL_HOME/hbql-0.9.19-alpha.jar
 
         ** $HBQL_HOME/lib/antlr-runtime-3.1.3.jar
 
@@ -17,7 +17,7 @@ Installation
 
     * Add the following jar to HBASE_CLASSPATH in $HBASE_HOME/conf/hbase-env.sh and restart hbase.
 
-        ** $HBQL_HOME/hbql-0.9.18-alpha.jar
+        ** $HBQL_HOME/hbql-0.9.19-alpha.jar
 
     * To verify your installation, run the {{{./console/console.html}console}}
       and enter the {{{./statements/version.html}VERSION}}
@@ -39,9 +39,9 @@ Installation
             
 
 
-        ***As described in the org.apache.hadoop.hbase.client.tableindexed package description:
-        "Modify hbase-site.xml to turn on the IndexedRegionServer.
-        This is done by setting hbase.regionserver.class to org.apache.hadoop.hbase.ipc.IndexedRegionInterface
+        ***As described in the org.apache.hadoop.hbase.client.tableindexed package description: \
+        "Modify hbase-site.xml to turn on the IndexedRegionServer.  This is done by setting \
+        hbase.regionserver.class to org.apache.hadoop.hbase.ipc.IndexedRegionInterface
         and hbase.regionserver.impl to org.apache.hadoop.hbase.regionserver.tableindexed.IndexedRegionServer".
 
 ---------------------------

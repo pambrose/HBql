@@ -5,14 +5,14 @@
 
 Releases
 
-    *{{{./downloads/hbql-0.9.18-alpha.zip}0.9.18-alpha.zip}}
+    *{{{./downloads/hbql-0.9.19-alpha.zip}0.9.19-alpha.zip}}
     
-    *{{{./downloads/hbql-0.9.18-alpha.tar.gz}0.9.18-alpha.tar.gz}}
+    *{{{./downloads/hbql-0.9.19-alpha.tar.gz}0.9.19-alpha.tar.gz}}
 
 
 Javadocs
 
-    *{{{./downloads/javadocs-0.9.18-alpha.zip}javadocs-0.9.18-alpha.zip}}
+    *{{{./downloads/javadocs-0.9.19-alpha.zip}javadocs-0.9.19-alpha.zip}}
     
 
 Source
@@ -26,6 +26,14 @@ git clone git://github.com/pambrose/HBql.git
 
 Release Notes
 
+    0.9.19-alpha -- 01/07/10
+
+        * Added support for asynchronous queries using AsyncExecutors and AsyncExecutorPools
+
+        * Cleaned up QueryListener usage
+
+        * Added Executor shutdown()
+
     0.9.18-alpha -- 01/05/10
 
         * Misc cleanup.
@@ -36,7 +44,7 @@ Release Notes
 
     0.9.16-alpha -- 12/31/09
 
-        * Improved QueryExecutor with queued thread pool work submission and additional tuning parameters.
+        * Improved QueryExecutor with queued thread pool work submission and additional tuning parameters
 
     0.9.15-alpha -- 12/30/09
 
@@ -54,7 +62,7 @@ Release Notes
 
         * Added support for server-side filters
         
-        * Added support for INDEX {{{statements/with-index-clause.html}queries}}.
+        * Added support for INDEX {{{statements/with-index-clause.html}queries}}
 
         * Added {{{statements/create-index.html}CREATE INDEX}} statement
 
@@ -83,40 +91,40 @@ Release Notes
 
     0.9.10-alpha -- 11/28/09
 
-        * Fixed a problem in type signature validation.
+        * Fixed a problem in type signature validation
 
     0.9.9-alpha -- 11/26/09
 
-        * Added predicates to statements (with functions tableExists(), mappingExists(), tableEnabled(), and familyExistsForTable()).
+        * Added predicates to statements (with functions tableExists(), mappingExists(), tableEnabled(), and familyExistsForTable())
 
-        * Added {{{statements/alter-table.html}ALTER TABLE}} statement.
+        * Added {{{statements/alter-table.html}ALTER TABLE}} statement
 
     0.9.8-alpha -- 11/23/09
 
-        * Added family and column arguments to {{{statements/delete.html}DELETE}} statement.
+        * Added family and column arguments to {{{statements/delete.html}DELETE}} statement
 
     0.9.7-alpha -- 11/22/09
 
         * Cleaned up syntax of CREATE MAPPING statement.
 
-        * Added family-specific configuration parameters in  {{{statements/create-table.html}CREATE TABLE}} statement.
+        * Added family-specific configuration parameters in  {{{statements/create-table.html}CREATE TABLE}} statement
 
     0.9.6-alpha -- 11/19/09
 
-        * Made HBase-specific values available through the JDBC driver via ResultSetImpl.getCurrentHRecord() method.
+        * Made HBase-specific values available through the JDBC driver via ResultSetImpl.getCurrentHRecord() method
 
         * Added build support for HBase 0.20.2
 
     0.9.5-alpha -- 11/18/09
 
-        * Associated mappings with connections and added support for temporary and persistent mappings.
+        * Associated mappings with connections and added support for temporary and persistent mappings
 
     0.9.4-alpha -- 11/16/09
 
         * Added initial JDBC support: Driver, Connection, Statement, PreparedStatement, and
-         ResultSet implementations.
+         ResultSet implementations
 
-        * Refactored the HBql API to be parallel to JDBC.
+        * Refactored the HBql API to be parallel to JDBC
 
     0.9.3-alpha -- 11/12/09
 
@@ -126,8 +134,8 @@ Release Notes
 
     0.9.2-alpha -- 11/10/09
 
-        * Added support for aggregate functions count(), max(), and min().
+        * Added support for aggregate functions count(), max(), and min()
 
-        * Renamed pre-existing max() and min() functions to greater() and lesser().
+        * Renamed pre-existing max() and min() functions to greater() and lesser()
 
         * Renamed LIST TABLES and LIST MAPPINGS to SHOW TABLES and SHOW MAPPINGS

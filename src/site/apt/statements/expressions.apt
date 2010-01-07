@@ -7,15 +7,19 @@ Expressions
 
 * Boolean expressions
 
-    ** string_value [NOT] CONTAINS string_value
-
-    ** string_value [NOT] LIKE string_value
-
     ** string_value IS [NOT] NULL
 
     ** value [NOT] BETWEEN value AND value
 
     ** value [NOT] IN ( value [, ...] )
+
+    ** string_value [NOT] CONTAINS string_value
+
+    ** string_value [NOT] LIKE string_value
+
+    The CONTAINS AND LIKE statements are implemented with java.util.regex.Pattern. \
+    So the the pattern string should use Java regex syntax, which is not the same as traditional SQL regex syntax. \
+    For example, instead of 'foo*bar' you would use 'foo.*bar'
 
 * Value expressions
 
@@ -51,7 +55,7 @@ Types
 
     ** Parameters are specified by :name notation.
 
-    ** Parameter types are not determined until a value is bound with a setParameter() call.
+    ** Parameter types are not determined until a value is bound with a setParameter() call. \
     Thus parameter types can change if bound with a different type in a
     subsequent setParameter() call.
 
