@@ -24,7 +24,7 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.yaoql.client.ObjectQuery;
-import org.apache.yaoql.client.ObjectQueryListenerAdapter;
+import org.apache.yaoql.client.ObjectQueryListener;
 import org.apache.yaoql.client.ObjectQueryManager;
 import org.apache.yaoql.client.ObjectQueryPredicate;
 import org.apache.yaoql.client.ObjectResultSet;
@@ -75,16 +75,29 @@ public class ObjectEvalsTest extends ObjectTests<ObjectEvalsTest.SimpleObject> {
         // Using Listeners with CollectionQuery Object
         String qstr = "strval like 'T[est]+ Value: [1-3]'";
         final Counter cnt1 = new Counter();
+        final Counter cnt2 = new Counter();
+        final Counter cnt3 = new Counter();
         ObjectQuery<SimpleObject> query = ObjectQueryManager.newObjectQuery(qstr);
         query.addListener(
-                new ObjectQueryListenerAdapter<SimpleObject>() {
-                    public void onEachObject(final SimpleObject val) {
+                new ObjectQueryListener<SimpleObject>() {
+
+                    public void onQueryStart() {
                         cnt1.increment();
+                    }
+
+                    public void onEachObject(final SimpleObject val) {
+                        cnt2.increment();
+                    }
+
+                    public void onQueryComplete() {
+                        cnt3.increment();
                     }
                 }
         );
         query.getResultList(objList);
-        assertTrue(cnt1.getCount() == 3);
+        assertTrue(cnt1.getCount() == 1);
+        assertTrue(cnt2.getCount() == 3);
+        assertTrue(cnt3.getCount() == 1);
 
         query = ObjectQueryManager.newObjectQuery(qstr);
         List<SimpleObject> r1 = query.getResultList(objList);
@@ -96,12 +109,12 @@ public class ObjectEvalsTest extends ObjectTests<ObjectEvalsTest.SimpleObject> {
         assertTrue(r1.size() == 3);
 
         // Using Iterator
-        int cnt2 = 0;
+        int c = 0;
         ObjectQuery<SimpleObject> query2 = ObjectQueryManager.newObjectQuery("strval like 'T[est]+ Value: [1-3]'");
         final ObjectResultSet<SimpleObject> results = query2.getResults(objList);
         for (final SimpleObject obj : results)
-            cnt2++;
-        assertTrue(cnt2 == 3);
+            c++;
+        assertTrue(c == 3);
 
         // Using Google collections
         qstr = "intval1 in (1, 2+1, 2+1+1, 4+3)";

@@ -106,16 +106,13 @@ public class ObjectQueryImpl<T> extends ParameterBinding implements ObjectQuery<
     }
 
     public ObjectResultSet<T> getResults(final Collection<T> objs) throws HBqlException {
-
         this.callOnQueryInit();
-
         return new ObjectResultSet<T>(this, objs);
     }
 
     public List<T> getResultList(final Collection<T> objs) throws HBqlException {
 
         final List<T> retval = Lists.newArrayList();
-
         final ObjectResultSet<T> results = this.getResults(objs);
 
         for (final T val : results)

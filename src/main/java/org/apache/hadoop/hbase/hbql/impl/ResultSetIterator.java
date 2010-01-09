@@ -68,15 +68,17 @@ public abstract class ResultSetIterator<T, R> implements Iterator<T> {
         return this.getIteratorComplete().get();
     }
 
+    protected void iteratorCompleteAction() {
+        this.getResultSet().cleanUpAtEndOfIterator();
+    }
+
     public boolean hasNext() {
 
-        if (this.getResultSet() != null) {
-            if (this.getResultSet().returnedRecordLimitMet())
-                this.getIteratorComplete().set(true);
+        if (this.getResultSet() != null && this.getResultSet().returnedRecordLimitMet())
+            this.getIteratorComplete().set(true);
 
-            if (this.isIteratorComplete())
-                this.getResultSet().cleanUpAtEndOfIterator();
-        }
+        if (this.isIteratorComplete())
+            this.iteratorCompleteAction();
 
         return !this.isIteratorComplete();
     }
