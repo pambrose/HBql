@@ -36,26 +36,48 @@ import java.util.List;
 public class ObjectQueryImpl<T> extends ParameterBinding implements ObjectQuery<T> {
 
     private final String query;
-    private List<ObjectQueryListener<T>> listeners = null;
+    private List<ObjectQueryListener<T>> queryListeners = null;
 
     public ObjectQueryImpl(final String query) {
         this.query = query;
     }
 
     public void addListener(final ObjectQueryListener<T> listener) {
-        if (this.getListeners() == null)
-            this.listeners = Lists.newArrayList();
+        if (this.getQueryListeners() == null)
+            this.queryListeners = Lists.newArrayList();
 
-        this.getListeners().add(listener);
+        this.getQueryListeners().add(listener);
     }
 
-    private List<ObjectQueryListener<T>> getListeners() {
-        return this.listeners;
+    private List<ObjectQueryListener<T>> getQueryListeners() {
+        return this.queryListeners;
     }
 
     public void clearListeners() {
-        if (this.getListeners() != null)
-            this.getListeners().clear();
+        if (this.getQueryListeners() != null)
+            this.getQueryListeners().clear();
+    }
+
+    private void callOnQueryInit() {
+        if (this.getQueryListeners() != null) {
+            for (final ObjectQueryListener<T> listener : this.getQueryListeners())
+                listener.onQueryStart();
+        }
+    }
+
+    public T callOnEachObject(T val) {
+        if (this.getQueryListeners() != null) {
+            for (final ObjectQueryListener<T> listener : this.getQueryListeners())
+                listener.onEachObject(val);
+        }
+        return val;
+    }
+
+    public void callOnQueryComplete() {
+        if (this.getQueryListeners() != null) {
+            for (final ObjectQueryListener<T> listener : this.getQueryListeners())
+                listener.onQueryComplete();
+        }
     }
 
     public String getQuery() {
@@ -85,23 +107,9 @@ public class ObjectQueryImpl<T> extends ParameterBinding implements ObjectQuery<
 
     public ObjectResultSet<T> getResults(final Collection<T> objs) throws HBqlException {
 
-        final ObjectResultSet<T> retval = new ObjectResultSet<T>(this, objs);
-        //zzz
-        if (this.getListeners() != null && this.getListeners().size() > 0) {
+        this.callOnQueryInit();
 
-            for (final ObjectQueryListener<T> listener : this.getListeners())
-                listener.onQueryStart();
-
-            for (final T val : retval) {
-                for (final ObjectQueryListener<T> listener : this.getListeners())
-                    listener.onEachObject(val);
-            }
-
-            for (final ObjectQueryListener<T> listener : this.getListeners())
-                listener.onQueryComplete();
-        }
-
-        return retval;
+        return new ObjectResultSet<T>(this, objs);
     }
 
     public List<T> getResultList(final Collection<T> objs) throws HBqlException {

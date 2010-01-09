@@ -82,7 +82,7 @@ public class ObjectResultSet<T> implements Iterable<T> {
                         final T val = getObjectIter().next();
                         try {
                             if (getExpressionTree() == null || getExpressionTree().evaluate(null, val))
-                                return val;
+                                return getObjectQuery().callOnEachObject(val);
                         }
                         catch (ResultMissingColumnException e) {
                             // Just skip and do nothing

@@ -72,10 +72,10 @@ public abstract class ResultSetIterator<T, R> implements Iterator<T> {
 
         if (this.getResultSet() != null) {
             if (this.getResultSet().returnedRecordLimitMet())
-                this.readRemaingObjects();
+                this.getIteratorComplete().set(true);
 
             if (this.isIteratorComplete())
-                this.getResultSet().cleanUpAtEndOfIterator(false);
+                this.getResultSet().cleanUpAtEndOfIterator();
         }
 
         return !this.isIteratorComplete();
@@ -98,21 +98,7 @@ public abstract class ResultSetIterator<T, R> implements Iterator<T> {
             this.getResultSet().incrementRecordCount();
     }
 
-    private void readRemaingObjects() {
-
-        try {
-            while (!this.isIteratorComplete()) {
-                this.fetchNextObject();
-            }
-        }
-        catch (HBqlException e) {
-            e.printStackTrace();
-        }
-    }
-
-
     protected void setNextObject(final T nextObject, final boolean fromExceptionCatch) {
-
         this.setNextObject(nextObject);
     }
 

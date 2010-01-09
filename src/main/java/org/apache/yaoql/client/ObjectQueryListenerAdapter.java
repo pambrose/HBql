@@ -20,14 +20,12 @@
 
 package org.apache.yaoql.client;
 
-import org.apache.hadoop.hbase.hbql.client.HBqlException;
-
 public abstract class ObjectQueryListenerAdapter<T> implements ObjectQueryListener<T> {
 
     public void onQueryStart() {
     }
 
-    public void onEachObject(T val) throws HBqlException {
+    public void onEachObject(T val) {
     }
 
     public void onQueryComplete() {

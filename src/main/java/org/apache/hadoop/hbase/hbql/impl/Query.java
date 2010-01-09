@@ -40,21 +40,21 @@ public class Query<T> {
 
     private final HConnectionImpl connection;
     private final SelectStatement selectStatement;
-    private final List<QueryListener<T>> listeners;
+    private final List<QueryListener<T>> queryListeners;
 
     private Query(final HConnectionImpl conn,
                   final SelectStatement selectStatement,
-                  final QueryListener<T>... listeners) throws HBqlException {
+                  final QueryListener<T>... queryListeners) throws HBqlException {
         this.connection = conn;
         this.selectStatement = selectStatement;
 
-        if (listeners.length > 0)
-            this.listeners = Lists.newArrayList();
+        if (queryListeners.length > 0)
+            this.queryListeners = Lists.newArrayList();
         else
-            this.listeners = null;
+            this.queryListeners = null;
 
-        for (final QueryListener<T> listener : listeners)
-            this.getListeners().add(listener);
+        for (final QueryListener<T> listener : queryListeners)
+            this.getQueryListeners().add(listener);
 
         this.callOnQueryInit();
 
@@ -103,8 +103,8 @@ public class Query<T> {
                                           allAttribs);
     }
 
-    public List<QueryListener<T>> getListeners() {
-        return this.listeners;
+    public List<QueryListener<T>> getQueryListeners() {
+        return this.queryListeners;
     }
 
     public HResultSet<T> newResultSet(final boolean ignoreQueryExecutor) throws HBqlException {
@@ -123,23 +123,23 @@ public class Query<T> {
     }
 
     private void callOnQueryInit() {
-        if (this.getListeners() != null) {
-            for (final QueryListener<T> listener : this.getListeners())
+        if (this.getQueryListeners() != null) {
+            for (final QueryListener<T> listener : this.getQueryListeners())
                 listener.onQueryStart();
         }
     }
 
     protected T callOnEachRow(T val) {
-        if (this.getListeners() != null) {
-            for (final QueryListener<T> listener : this.getListeners())
+        if (this.getQueryListeners() != null) {
+            for (final QueryListener<T> listener : this.getQueryListeners())
                 listener.onEachRow(val);
         }
         return val;
     }
 
     protected void callOnQueryComplete() {
-        if (this.getListeners() != null) {
-            for (final QueryListener<T> listener : this.getListeners())
+        if (this.getQueryListeners() != null) {
+            for (final QueryListener<T> listener : this.getQueryListeners())
                 listener.onQueryComplete();
         }
     }

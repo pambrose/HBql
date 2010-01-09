@@ -78,7 +78,7 @@ public class ObjectEvalsTest extends ObjectTests<ObjectEvalsTest.SimpleObject> {
         ObjectQuery<SimpleObject> query = ObjectQueryManager.newObjectQuery(qstr);
         query.addListener(
                 new ObjectQueryListenerAdapter<SimpleObject>() {
-                    public void onEachObject(final SimpleObject val) throws HBqlException {
+                    public void onEachObject(final SimpleObject val) {
                         cnt1.increment();
                     }
                 }

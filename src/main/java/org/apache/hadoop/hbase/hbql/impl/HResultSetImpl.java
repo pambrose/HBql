@@ -89,12 +89,9 @@ public abstract class HResultSetImpl<T, R> implements HResultSet<T> {
 
     public abstract Iterator<T> iterator();
 
-    protected void cleanUpAtEndOfIterator(final boolean fromExceptionCatch) {
+    protected void cleanUpAtEndOfIterator() {
 
         try {
-            if (!fromExceptionCatch)
-                this.getQuery().callOnQueryComplete();
-
             try {
                 if (this.getTableWrapper() != null)
                     this.getTableWrapper().getHTable().close();
@@ -103,18 +100,23 @@ public abstract class HResultSetImpl<T, R> implements HResultSet<T> {
                 // No op
                 e.printStackTrace();
             }
+
+            this.getQuery().callOnQueryComplete();
         }
         finally {
             // release to table pool
             //if (this.getTableWrapper() != null)
-            if (!this.tableWrapperClosed.get())
+            if (!this.getTableWrapperClosed().get())
                 this.getTableWrapper().releaseHTable();
 
-            this.tableWrapperClosed.set(true);
-            //this.setTableWrapper(null);
+            this.getTableWrapperClosed().set(true);
 
             this.close();
         }
+    }
+
+    private AtomicBoolean getTableWrapperClosed() {
+        return this.tableWrapperClosed;
     }
 
     protected CompletionQueueExecutor<R> getCompletionQueueExecutor() {

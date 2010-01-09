@@ -503,7 +503,7 @@ public class HConnectionImpl implements HConnection, PoolableElement {
     public UnboundedAsyncExecutor getAsyncExecutorForConnection() throws HBqlException {
 
         if (!Utils.isValidString(this.getAsyncExecutorPoolName()))
-            throw new HBqlException("Connection not assigned a AsyncExecutorPool name");
+            throw new HBqlException("Connection not assigned an AsyncExecutorPool name");
 
         // If Connection is assigned an Executor, then just return it.  Otherwise, get one from the pool
         final UnboundedAsyncExecutor executor = this.takeAsyncExecutorFromPool();
@@ -571,7 +571,6 @@ public class HConnectionImpl implements HConnection, PoolableElement {
     }
 
     public void validateAsyncExecutorPoolNameExists(final String poolName) throws HBqlException {
-
         if (!AsyncExecutorPoolManager.asyncExecutorPoolExists(poolName))
             throw new HBqlException("AsyncExecutorPool " + poolName + " does not exist.");
     }
