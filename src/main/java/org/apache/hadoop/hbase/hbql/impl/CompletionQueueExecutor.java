@@ -22,10 +22,11 @@ package org.apache.hadoop.hbase.hbql.impl;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.QueryExecutorPool;
+import org.apache.hadoop.hbase.hbql.util.ArrayBlockingQueues;
 import org.apache.hadoop.hbase.hbql.util.CompletionQueue;
+import org.apache.hadoop.hbase.hbql.util.NamedThreadFactory;
 import org.apache.hadoop.hbase.hbql.util.PoolableElement;
 
-import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -41,9 +42,9 @@ public abstract class CompletionQueueExecutor<T> implements PoolableElement {
     private final AtomicBoolean atomicShutdown = new AtomicBoolean(false);
     private final AtomicInteger workSubmittedCounter = new AtomicInteger(0);
     private final ExecutorService submitterThread = Executors.newSingleThreadExecutor();
-    private final QueryExecutorPool executorPool;
     private final LocalThreadPoolExecutor threadPoolExecutor;
     private final CompletionQueue<T> completionQueue;
+    private ElementPool executorPool;
 
     private static class LocalCallerRunsPolicy extends ThreadPoolExecutor.CallerRunsPolicy {
 
@@ -84,45 +85,25 @@ public abstract class CompletionQueueExecutor<T> implements PoolableElement {
         }
     }
 
-    private static class LocalThreadFactory implements ThreadFactory {
-
-        private final AtomicInteger threadCounter = new AtomicInteger(0);
-        private final String name;
-
-        private LocalThreadFactory(final String name) {
-            this.name = name;
-        }
-
-        public Thread newThread(Runnable r) {
-            final Thread thread = new Thread(r);
-            thread.setName(this.name + " thread: " + this.threadCounter.incrementAndGet());
-            return thread;
-        }
-    }
-
     protected CompletionQueueExecutor(final QueryExecutorPool executorPool,
                                       final int minThreadCount,
                                       final int maxThreadCount,
                                       final long keepAliveSecs,
                                       final int completionQueueSize) throws HBqlException {
-        this.executorPool = executorPool;
-        final BlockingQueue<Runnable> backingQueue = new ArrayBlockingQueue<Runnable>(maxThreadCount * 5);
+        this.setExecutorPool(executorPool);
+        final BlockingQueue<Runnable> backingQueue = ArrayBlockingQueues.newArrayBlockingQueue(maxThreadCount * 5);
         final String name = executorPool == null ? "Non query exec pool" : "Query exec pool " + executorPool.getName();
         this.threadPoolExecutor = new LocalThreadPoolExecutor(minThreadCount,
                                                               maxThreadCount,
                                                               keepAliveSecs,
                                                               TimeUnit.SECONDS,
                                                               backingQueue,
-                                                              new LocalThreadFactory(name),
+                                                              new NamedThreadFactory(name),
                                                               new LocalCallerRunsPolicy());
         this.completionQueue = new CompletionQueue<T>(completionQueueSize);
     }
 
     public abstract boolean threadsReadResults();
-
-    private QueryExecutorPool getExecutorPool() {
-        return this.executorPool;
-    }
 
     private ExecutorService getSubmitterThread() {
         return this.submitterThread;
@@ -138,6 +119,14 @@ public abstract class CompletionQueueExecutor<T> implements PoolableElement {
 
     private AtomicInteger getWorkSubmittedCounter() {
         return this.workSubmittedCounter;
+    }
+
+    private ElementPool getExecutorPool() {
+        return this.executorPool;
+    }
+
+    public void setExecutorPool(final ElementPool executorPool) {
+        this.executorPool = executorPool;
     }
 
     public void putElement(final T val) throws HBqlException {
@@ -190,7 +179,7 @@ public abstract class CompletionQueueExecutor<T> implements PoolableElement {
     public void release() {
         // Release if it is a pool element
         if (this.isPooled())
-            this.getExecutorPool().releaseQueryExecutor(this);
+            this.getExecutorPool().release(this);
     }
 
     private AtomicBoolean getAtomicShutdown() {

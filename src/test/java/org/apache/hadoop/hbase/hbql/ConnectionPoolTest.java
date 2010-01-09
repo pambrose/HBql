@@ -158,24 +158,25 @@ public class ConnectionPoolTest extends TestSupport {
         for (int i = 0; i < clients; i++) {
             final String id = "" + i;
             System.out.println("Created: " + i);
-            Future future = exec.submit(new Runnable() {
-                public void run() {
-                    try {
-                        for (int i = 0; i < iterations; i++)
-                            doQuery(id, i);
+            Future future = exec.submit(
+                    new Runnable() {
+                        public void run() {
+                            try {
+                                for (int i = 0; i < iterations; i++)
+                                    doQuery(id, i);
 
-                        try {
-                            Thread.sleep(10);
+                                try {
+                                    Thread.sleep(10);
+                                }
+                                catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                            catch (HBqlException e) {
+                                e.printStackTrace();
+                            }
                         }
-                        catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                    catch (HBqlException e) {
-                        e.printStackTrace();
-                    }
-                }
-            });
+                    });
             futureList.add(future);
         }
 

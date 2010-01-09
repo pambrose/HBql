@@ -32,7 +32,6 @@ import org.apache.hadoop.hbase.hbql.client.HPreparedStatement;
 import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.client.HResultSet;
 import org.apache.hadoop.hbase.hbql.client.HStatement;
-import org.apache.hadoop.hbase.hbql.client.QueryExecutor;
 import org.apache.hadoop.hbase.hbql.client.QueryExecutorPoolManager;
 import org.apache.hadoop.hbase.hbql.client.Util;
 import org.apache.hadoop.hbase.hbql.util.TestSupport;
@@ -398,10 +397,6 @@ public class ExamplesTest extends TestSupport {
 
         // Then assign the connection a query executor pool name to use for queries
         conn.setQueryExecutorPoolName("execPool");
-
-        // Or could use a dedicated QueryExecutor, rather than one from a pool:
-        QueryExecutor executor = QueryExecutor.newQueryExecutor(5, 10, Long.MAX_VALUE, true, 100);
-        conn.setQueryExecutor(executor);
 
         // Now use connection in a query.
 

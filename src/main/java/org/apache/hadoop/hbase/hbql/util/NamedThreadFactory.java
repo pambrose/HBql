@@ -20,13 +20,21 @@
 
 package org.apache.hadoop.hbase.hbql.util;
 
-public interface PoolableElement {
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.atomic.AtomicInteger;
 
-    void reset();
+public class NamedThreadFactory implements ThreadFactory {
 
-    void release();
+    private final AtomicInteger threadCounter = new AtomicInteger(0);
+    private final String name;
 
-    void shutdown();
+    public NamedThreadFactory(final String name) {
+        this.name = name;
+    }
 
-    void close();
+    public Thread newThread(Runnable r) {
+        final Thread thread = new Thread(r);
+        thread.setName(this.name + " thread: " + this.threadCounter.incrementAndGet());
+        return thread;
+    }
 }

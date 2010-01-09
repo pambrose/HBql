@@ -96,16 +96,8 @@ public interface HConnection {
 
     String getQueryExecutorPoolName();
 
-    void setQueryExecutor(QueryExecutor executor);
-
-    QueryExecutor getQueryExecutor();
-
     // Async Executor Routines
     void setAsyncExecutorPoolName(String name);
 
     String getAsyncExecutorPoolName();
-
-    void setAsyncExecutor(AsyncExecutor executor);
-
-    AsyncExecutor getAsyncExecutor();
 }

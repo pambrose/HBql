@@ -208,16 +208,12 @@ public class HStatementImpl implements HStatement {
         return this.getAtomicClosed().get();
     }
 
-    public void close() throws HBqlException {
+    public synchronized void close() throws HBqlException {
         if (!this.isClosed()) {
-            synchronized (this) {
-                if (!this.isClosed()) {
-                    if (this.getResultSet() != null)
-                        this.getResultSet().close();
+            if (this.getResultSet() != null)
+                this.getResultSet().close();
 
-                    this.getAtomicClosed().set(true);
-                }
-            }
+            this.getAtomicClosed().set(true);
         }
     }
 }

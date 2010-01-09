@@ -44,7 +44,7 @@ public class ResultScannerExecutorResultSet<T> extends HResultSetImpl<T, ResultS
                     try {
                         final ResultScanner resultScanner = rowRequest.getResultScanner(getMappingContext().getMapping(),
                                                                                         getWithArgs(),
-                                                                                        getHTableWrapper().getHTable());
+                                                                                        getTableWrapper().getHTable());
                         getCompletionQueueExecutor().putElement(resultScanner);
                     }
                     catch (HBqlException e) {

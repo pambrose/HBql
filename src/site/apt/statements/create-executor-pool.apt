@@ -26,9 +26,10 @@ executorArg:
 
     Creates a named QueryExecutor pool.
 
-    * A QueryExecutor provides a thread pool for processing query results.  A QueryExecutor can be assigned
-    from a QueryExecutorPool using HConncetion.setQueryExecutorPoolName(), or a dedicated QueryExecutor can
-    be assigned using HConncetion.setQueryExecutor().
+    * A QueryExecutor provides a thread pool for processing query results.  A QueryExecutorPool is assigned
+    using HConncetion.setQueryExecutorPoolName().  A ResultSet uses one QuerExecutor,
+    so if async queries are invoked, the maximum number of concurrent queries is equal to the number
+    of QueryExecutors in the assign QueryExecutorPool.
 
     * A QueryExecutor pool request will block if all elements in the pool have been already taken.
     A pooled QueryExecutor is released back to a pool when the ResultSet is closed (when the ResultSet
@@ -41,9 +42,9 @@ executorArg:
     Or, the threads can iterate through the ResultScanner results and return the Result objects back to
     the main thread.
 
-    * If an HConnection is from an HConnectionPool, the QueryExecutor assignments (dedicated or from a pool) are
-      reset when HConnection.close() is called.  Thus, QueryExecutor assignments should be made when an
-      HConnection is retrieved from a pool.
+    * If an HConnection is from an HConnectionPool, the QueryExecutor assignments are reset when
+    HConnection.close() is called.  Thus, QueryExecutorPool name assignments should be made when an
+    HConnection is retrieved from a pool.
 
 * Parameters
 

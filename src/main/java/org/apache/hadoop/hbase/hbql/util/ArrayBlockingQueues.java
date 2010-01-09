@@ -20,13 +20,15 @@
 
 package org.apache.hadoop.hbase.hbql.util;
 
-public interface PoolableElement {
+import java.util.concurrent.ArrayBlockingQueue;
 
-    void reset();
+public class ArrayBlockingQueues {
 
-    void release();
+    public static <E> ArrayBlockingQueue<E> newArrayBlockingQueue(final int size) {
+        return new ArrayBlockingQueue<E>(size);
+    }
 
-    void shutdown();
-
-    void close();
+    public static <E> ArrayBlockingQueue<E> newArrayBlockingQueue(final int size, final boolean fair) {
+        return new ArrayBlockingQueue<E>(size, fair);
+    }
 }

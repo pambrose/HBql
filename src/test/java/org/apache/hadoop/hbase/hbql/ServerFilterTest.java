@@ -20,7 +20,7 @@
 
 package org.apache.hadoop.hbase.hbql;
 
-import org.apache.hadoop.hbase.hbql.client.AsyncExecutor;
+import org.apache.hadoop.hbase.hbql.client.AsyncExecutorPoolManager;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.client.HConnectionManager;
@@ -30,7 +30,6 @@ import org.apache.hadoop.hbase.hbql.client.HPreparedStatement;
 import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.client.HResultSet;
 import org.apache.hadoop.hbase.hbql.client.HStatement;
-import org.apache.hadoop.hbase.hbql.client.QueryExecutor;
 import org.apache.hadoop.hbase.hbql.client.QueryExecutorPoolManager;
 import org.apache.hadoop.hbase.hbql.client.QueryFuture;
 import org.apache.hadoop.hbase.hbql.client.QueryListener;
@@ -242,27 +241,6 @@ public class ServerFilterTest extends TestSupport {
     }
 
     @Test
-    public void simpleSelect9b() throws HBqlException {
-
-        QueryExecutor executor = QueryExecutor.newQueryExecutor(2, 4, Long.MAX_VALUE, true, 100);
-        connection.setQueryExecutor(executor);
-
-        for (int i = 0; i < 100; i++) {
-            final String q1 = "select * from tab3 "
-                              + "WITH "
-                              + "KEYS '0000000001', '0000000002', '0000000003', '0000000003', '0000000004', '0000000005'  "
-                              //+ "KEYS '0000000001'TO '0000000005' "
-                              //+ "KEYS  '0000000005' "
-                              //+ "SERVER FILTER where keyval BETWEEN '0000000001' AND '0000000003' ";
-                              // + "SERVER FILTER where keyval = '0000000001' ";
-                              + "SERVER FILTER where val1+'ss' BETWEEN '11ss' AND '13ss' ";
-
-            System.out.println("Values for iteration:" + i);
-            showValues(q1, 4, false);
-        }
-    }
-
-    @Test
     public void simpleSelect10() throws HBqlException {
 
         HStatement stmt = connection.createStatement();
@@ -299,24 +277,18 @@ public class ServerFilterTest extends TestSupport {
     @Test
     public void asyncSelect1() throws HBqlException {
 
-        /*
         QueryExecutorPoolManager.newQueryExecutorPool("threadPool2", 5, 2, 5, 30, true, 100);
         AsyncExecutorPoolManager.newAsyncExecutorPool("asyncPool2", 5, 2, 4, 60);
         connection.setQueryExecutorPoolName("threadPool2");
         connection.setAsyncExecutorPoolName("asyncPool2");
-        */
-        QueryExecutor qexec = QueryExecutor.newQueryExecutor(2, 5, 30, true, 100);
-        AsyncExecutor aexec = AsyncExecutor.newAsyncExecutor(2, 4, 60);
-        connection.setQueryExecutor(qexec);
-        connection.setAsyncExecutor(aexec);
 
         final List<QueryFuture> futureList = Lists.newArrayList();
 
         for (int i = 0; i < 10; i++) {
-            for (int j = 0; j < Utils.getRandomPositiveInt(100); j++) {
+            for (int j = 0; j < Utils.getRandomPositiveInt(10); j++) {
                 final StringBuilder q1 = new StringBuilder("select * from tab3 WITH KEYS ");
                 boolean firstTime = true;
-                final int cnt = Utils.getRandomPositiveInt(200);
+                final int cnt = Utils.getRandomPositiveInt(10);
                 for (int k = 0; k < cnt; k++) {
                     if (!firstTime)
                         q1.append(", ");
@@ -349,7 +321,7 @@ public class ServerFilterTest extends TestSupport {
                     }
 
                     public void onQueryComplete() {
-                        System.out.println("Finished query with rec_cnt = " + rec_cnt.get());
+                        System.out.println("Finished query with rec_cnt = " + rec_cnt.get() + " vs " + (cnt * 3));
                         assertTrue(rec_cnt.get() == cnt * 3);
                     }
                 });
@@ -365,9 +337,6 @@ public class ServerFilterTest extends TestSupport {
                 }
             }
         }
-
-        aexec.shutdown();
-        qexec.shutdown();
     }
 
     @Test

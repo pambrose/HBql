@@ -112,8 +112,9 @@ public class Query<T> {
             return new NonExecutorResultSet<T>(this);
         }
         else {
-            // This may block waiting for a Executor to become available from the ExecutorPool
+            // This may block waiting for a Executor to become available from the ExecutorPool or SingletonQueue
             final CompletionQueueExecutor executor = this.getHConnectionImpl().getQueryExecutorForConnection();
+
             if (executor.threadsReadResults())
                 return new ResultExecutorResultSet<T>(this, (ResultExecutor)executor);
             else

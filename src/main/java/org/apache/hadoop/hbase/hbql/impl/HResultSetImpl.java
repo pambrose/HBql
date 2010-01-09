@@ -47,7 +47,8 @@ public abstract class HResultSetImpl<T, R> implements HResultSet<T> {
     private final List<ResultScanner> resultScannerList = Lists.newArrayList();
     private ResultScanner currentResultScanner = null;
     private AggregateRecord aggregateRecord;
-    private HTableWrapper tableWrapper;
+    private final HTableWrapper tableWrapper;
+    private final AtomicBoolean tableWrapperClosed = new AtomicBoolean(false);
 
     private final Query<T> query;
     private final ExpressionTree clientExpressionTree;
@@ -60,9 +61,12 @@ public abstract class HResultSetImpl<T, R> implements HResultSet<T> {
         this.clientExpressionTree = this.getWithArgs().getClientExpressionTree();
         this.returnedRecordLimit = this.getWithArgs().getLimit();
 
-        this.setTableWrapper(this.getHConnectionImpl().newHTableWrapper(this.getWithArgs(), this.getTableName()));
+        //this.setTableWrapper(this.getHConnectionImpl().newHTableWrapper(this.getWithArgs(), this.getTableName()));
+        this.tableWrapper = this.getHConnectionImpl().newHTableWrapper(this.getWithArgs(), this.getTableName());
         this.getQuery().getSelectStmt().determineIfAggregateQuery();
-        this.setAggregateRecord(AggregateRecord.newAggregateRecord(this.getQuery().getSelectStmt()));
+
+        if (this.getSelectStmt().isAnAggregateQuery())
+            this.setAggregateRecord(AggregateRecord.newAggregateRecord(this.getQuery().getSelectStmt()));
 
         // Set it once per evaluation
         DateLiteral.resetNow();
@@ -86,13 +90,14 @@ public abstract class HResultSetImpl<T, R> implements HResultSet<T> {
     public abstract Iterator<T> iterator();
 
     protected void cleanUpAtEndOfIterator(final boolean fromExceptionCatch) {
+
         try {
             if (!fromExceptionCatch)
-                getQuery().callOnQueryComplete();
+                this.getQuery().callOnQueryComplete();
 
             try {
-                if (getHTableWrapper() != null)
-                    getHTableWrapper().getHTable().close();
+                if (this.getTableWrapper() != null)
+                    this.getTableWrapper().getHTable().close();
             }
             catch (IOException e) {
                 // No op
@@ -101,12 +106,14 @@ public abstract class HResultSetImpl<T, R> implements HResultSet<T> {
         }
         finally {
             // release to table pool
-            if (getHTableWrapper() != null)
-                getHTableWrapper().releaseHTable();
+            //if (this.getTableWrapper() != null)
+            if (!this.tableWrapperClosed.get())
+                this.getTableWrapper().releaseHTable();
 
-            setTableWrapper(null);
+            this.tableWrapperClosed.set(true);
+            //this.setTableWrapper(null);
 
-            close();
+            this.close();
         }
     }
 
@@ -158,22 +165,18 @@ public abstract class HResultSetImpl<T, R> implements HResultSet<T> {
         return this.getAtomicClosed().get();
     }
 
-    public void close() {
+    public synchronized void close() {
         if (!this.isClosed()) {
-            synchronized (this) {
-                if (!this.isClosed()) {
-                    for (final ResultScanner scanner : this.getResultScannerList())
-                        closeResultScanner(scanner, false);
+            for (final ResultScanner scanner : this.getResultScannerList())
+                closeResultScanner(scanner, false);
 
-                    this.getResultScannerList().clear();
+            this.getResultScannerList().clear();
 
-                    if (this.getCompletionQueueExecutor() != null) {
-                        this.getCompletionQueueExecutor().close();
-                    }
-
-                    this.getAtomicClosed().set(true);
-                }
+            if (this.getCompletionQueueExecutor() != null) {
+                this.getCompletionQueueExecutor().close();
             }
+
+            this.getAtomicClosed().set(true);
         }
     }
 
@@ -205,12 +208,8 @@ public abstract class HResultSetImpl<T, R> implements HResultSet<T> {
         return this.clientExpressionTree;
     }
 
-    protected HTableWrapper getHTableWrapper() {
+    protected HTableWrapper getTableWrapper() {
         return this.tableWrapper;
-    }
-
-    protected void setTableWrapper(final HTableWrapper tableWrapper) {
-        this.tableWrapper = tableWrapper;
     }
 
     protected HConnectionImpl getHConnectionImpl() {

@@ -30,19 +30,19 @@ public class QueryExecutor {
                                                  final int maxThreadCount,
                                                  final long keepAliveSecs,
                                                  final boolean threadsReadResults,
-                                                 final int queueSize) throws HBqlException {
+                                                 final int completionQueueSize) throws HBqlException {
         return new QueryExecutorImpl(threadsReadResults
                                      ? ResultExecutor.newResultExecutor(minThreadCount,
                                                                         maxThreadCount,
                                                                         keepAliveSecs,
-                                                                        queueSize)
+                                                                        completionQueueSize)
                                      : ResultScannerExecutor.newResultScannerExecutor(minThreadCount,
                                                                                       maxThreadCount,
                                                                                       keepAliveSecs,
-                                                                                      queueSize));
+                                                                                      completionQueueSize));
     }
 
-    private QueryExecutorImpl getExecutorImpl() {
+    public QueryExecutorImpl getExecutorImpl() {
         return (QueryExecutorImpl)this;
     }
 

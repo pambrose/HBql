@@ -22,7 +22,6 @@ package org.apache.hadoop.hbase.hbql.util;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 
-import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -69,10 +68,10 @@ public class CompletionQueue<T> {
 
     public CompletionQueue(final int size) throws HBqlException {
 
-        this.elementQueue = new ArrayBlockingQueue<Element<T>>(size, true);
+        this.elementQueue = ArrayBlockingQueues.newArrayBlockingQueue(size, true);
 
         // Reusable element queue avoids creating objects for every item put in queue.
-        this.reusableElementQueue = new ArrayBlockingQueue<Element<T>>(size);
+        this.reusableElementQueue = ArrayBlockingQueues.newArrayBlockingQueue(size);
 
         try {
             for (int i = 0; i < size; i++) {

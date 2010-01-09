@@ -58,7 +58,7 @@ public class NonExecutorResultSet<T> extends HResultSetImpl<T, Object> {
                     final RowRequest rowRequest = getRowRequestIterator().next();
                     setCurrentResultScanner(rowRequest.getResultScanner(getMappingContext().getMapping(),
                                                                         getWithArgs(),
-                                                                        getHTableWrapper().getHTable()));
+                                                                        getTableWrapper().getHTable()));
                     return getCurrentResultScanner().iterator();
                 }
             };

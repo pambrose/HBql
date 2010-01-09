@@ -48,9 +48,10 @@ public class ResultExecutorResultSet<T> extends HResultSetImpl<T, Result> {
             this.getCompletionQueueExecutor().submitWorkToThreadPool(new Runnable() {
                 public void run() {
                     try {
+
                         final ResultScanner scanner = rowRequest.getResultScanner(getMappingContext().getMapping(),
                                                                                   getWithArgs(),
-                                                                                  getHTableWrapper().getHTable());
+                                                                                  getTableWrapper().getHTable());
                         for (final Result result : scanner) {
 
                             try {
