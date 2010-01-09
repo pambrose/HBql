@@ -20,16 +20,16 @@
 
 package org.apache.hadoop.hbase.hbql.statement;
 
+import org.apache.hadoop.hbase.hbql.client.AsyncExecutorPoolManager;
 import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.client.QueryExecutorPoolManager;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 
-public class DropQueryExecutorPoolStatement extends GenericStatement implements ConnectionStatement {
+public class DropAsyncExecutorPoolStatement extends GenericStatement implements ConnectionStatement {
 
     private final String poolName;
 
-    public DropQueryExecutorPoolStatement(final StatementPredicate predicate, final String poolName) {
+    public DropAsyncExecutorPoolStatement(final StatementPredicate predicate, final String poolName) {
         super(predicate);
         this.poolName = poolName;
     }
@@ -41,18 +41,18 @@ public class DropQueryExecutorPoolStatement extends GenericStatement implements 
     protected ExecutionResults execute(final HConnectionImpl conn) throws HBqlException {
 
         final String msg;
-        if (!QueryExecutorPoolManager.queryExecutorPoolExists(this.getPoolName())) {
-            msg = "Query Executor pool " + this.getPoolName() + " does not exist";
+        if (!AsyncExecutorPoolManager.asyncExecutorPoolExists(this.getPoolName())) {
+            msg = "Async Executor pool " + this.getPoolName() + " does not exist";
         }
         else {
-            QueryExecutorPoolManager.dropQueryExecutorPool(this.getPoolName());
-            msg = "Query Executor pool " + this.getPoolName() + " dropped.";
+            AsyncExecutorPoolManager.dropAsyncExecutorPool(this.getPoolName());
+            msg = "Async Executor pool " + this.getPoolName() + " dropped.";
         }
         return new ExecutionResults(msg);
     }
 
 
     public static String usage() {
-        return "DROP QUERY EXECUTOR POOL pool_name [IF bool_expr]";
+        return "DROP ASYNC EXECUTOR POOL pool_name [IF bool_expr]";
     }
 }
