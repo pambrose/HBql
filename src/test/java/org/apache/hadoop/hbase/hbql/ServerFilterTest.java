@@ -284,12 +284,14 @@ public class ServerFilterTest extends TestSupport {
 
         final List<QueryFuture> futureList = Lists.newArrayList();
 
-        for (int i = 0; i < 10; i++) {
-            for (int j = 0; j < Utils.getRandomPositiveInt(10); j++) {
+        int repeats = 25;
+        for (int i = 0; i < repeats; i++) {
+            int queryCount = Utils.getRandomPositiveInt(100);
+            for (int j = 0; j < queryCount; j++) {
                 final StringBuilder q1 = new StringBuilder("select * from tab3 WITH KEYS ");
                 boolean firstTime = true;
-                final int cnt = Utils.getRandomPositiveInt(10);
-                for (int k = 0; k < cnt; k++) {
+                final int keyCount = Utils.getRandomPositiveInt(100);
+                for (int k = 0; k < keyCount; k++) {
                     if (!firstTime)
                         q1.append(", ");
                     else
@@ -303,7 +305,7 @@ public class ServerFilterTest extends TestSupport {
                     AtomicInteger rec_cnt = new AtomicInteger(0);
 
                     public void onQueryStart() {
-                        System.out.println("Starting query");
+                        //System.out.println("Starting query");
                     }
 
                     public void onEachRow(final HRecord rec) {
@@ -321,8 +323,8 @@ public class ServerFilterTest extends TestSupport {
                     }
 
                     public void onQueryComplete() {
-                        System.out.println("Finished query with rec_cnt = " + rec_cnt.get() + " vs " + (cnt * 3));
-                        assertTrue(rec_cnt.get() == cnt * 3);
+                        System.out.println("Finished query with rec_cnt = " + rec_cnt.get() + " vs " + (keyCount * 3));
+                        assertTrue(rec_cnt.get() == keyCount * 3);
                     }
                 });
                 futureList.add(future);
@@ -364,7 +366,7 @@ public class ServerFilterTest extends TestSupport {
 
         for (int i = 0; i < repeats; i++) {
             final int totalJobs = Utils.getRandomPositiveInt(50);
-            final int maxKeyRangeCount = Utils.getRandomPositiveInt(50);
+            final int keyCount = Utils.getRandomPositiveInt(50);
             final CountDownLatch latch = new CountDownLatch(totalJobs);
 
             for (int tj = 0; tj < totalJobs; tj++) {
@@ -389,7 +391,7 @@ public class ServerFilterTest extends TestSupport {
                                                  + "))");
 
                                     final StringBuilder query = new StringBuilder("select * from tab3 WITH KEYS ");
-                                    final int rangeCount = Utils.getRandomPositiveInt(maxKeyRangeCount);
+                                    final int rangeCount = Utils.getRandomPositiveInt(keyCount);
                                     boolean firstTime = true;
                                     for (int rc = 0; rc < rangeCount; rc++) {
                                         if (!firstTime)
