@@ -42,13 +42,6 @@ public class ResultExecutor extends CompletionQueueExecutor<Result> {
         return new ResultExecutor(executorPool, minThreadCount, maxThreadCount, keepAliveSecs, completionQueueSize);
     }
 
-    public static ResultExecutor newResultExecutor(final int minThreadCount,
-                                                   final int maxThreadCount,
-                                                   final long keepAliveSecs,
-                                                   final int completionQueueSize) throws HBqlException {
-        return new ResultExecutor(null, minThreadCount, maxThreadCount, keepAliveSecs, completionQueueSize);
-    }
-
     public boolean threadsReadResults() {
         return true;
     }

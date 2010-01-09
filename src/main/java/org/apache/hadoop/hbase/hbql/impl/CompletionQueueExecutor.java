@@ -44,7 +44,7 @@ public abstract class CompletionQueueExecutor<T> implements PoolableElement {
     private final ExecutorService submitterThread = Executors.newSingleThreadExecutor();
     private final LocalThreadPoolExecutor threadPoolExecutor;
     private final CompletionQueue<T> completionQueue;
-    private ElementPool executorPool;
+    private QueryExecutorPool executorPool;
 
     private static class LocalCallerRunsPolicy extends ThreadPoolExecutor.CallerRunsPolicy {
 
@@ -121,11 +121,11 @@ public abstract class CompletionQueueExecutor<T> implements PoolableElement {
         return this.workSubmittedCounter;
     }
 
-    private ElementPool getExecutorPool() {
+    private QueryExecutorPool getExecutorPool() {
         return this.executorPool;
     }
 
-    public void setExecutorPool(final ElementPool executorPool) {
+    public void setExecutorPool(final QueryExecutorPool executorPool) {
         this.executorPool = executorPool;
     }
 
@@ -167,19 +167,13 @@ public abstract class CompletionQueueExecutor<T> implements PoolableElement {
         this.getThreadPoolExecutor().execute(job);
     }
 
-    private boolean isPooled() {
-        return this.getExecutorPool() != null;
-    }
-
     public void close() {
         this.reset();
         this.release();
     }
 
     public void release() {
-        // Release if it is a pool element
-        if (this.isPooled())
-            this.getExecutorPool().release(this);
+        this.getExecutorPool().release(this);
     }
 
     private AtomicBoolean getAtomicShutdown() {

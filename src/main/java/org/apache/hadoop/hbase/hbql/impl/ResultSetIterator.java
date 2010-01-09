@@ -60,8 +60,12 @@ public abstract class ResultSetIterator<T, R> implements Iterator<T> {
         this.nextObject = nextObject;
     }
 
-    protected AtomicBoolean getIteratorComplete() {
+    private AtomicBoolean getIteratorComplete() {
         return this.iteratorComplete;
+    }
+
+    protected void markIteratorComplete() {
+        this.getIteratorComplete().set(true);
     }
 
     private boolean isIteratorComplete() {
@@ -75,7 +79,7 @@ public abstract class ResultSetIterator<T, R> implements Iterator<T> {
     public boolean hasNext() {
 
         if (this.getResultSet() != null && this.getResultSet().returnedRecordLimitMet())
-            this.getIteratorComplete().set(true);
+            this.markIteratorComplete();
 
         if (this.isIteratorComplete())
             this.iteratorCompleteAction();
@@ -181,7 +185,7 @@ public abstract class ResultSetIterator<T, R> implements Iterator<T> {
             return rs.getQuery().callOnEachRow((T)retval);
         }
 
-        this.getIteratorComplete().set(true);
+        this.markIteratorComplete();
         return null;
     }
 }

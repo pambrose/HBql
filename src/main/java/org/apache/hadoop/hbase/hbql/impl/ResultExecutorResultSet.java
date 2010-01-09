@@ -47,8 +47,8 @@ public class ResultExecutorResultSet<T> extends HResultSetImpl<T, Result> {
         for (final RowRequest rowRequest : rowRequestList) {
             this.getCompletionQueueExecutor().submitWorkToThreadPool(new Runnable() {
                 public void run() {
+                    Exception outerException = null;
                     try {
-
                         final ResultScanner scanner = rowRequest.getResultScanner(getMappingContext().getMapping(),
                                                                                   getWithArgs(),
                                                                                   getTableWrapper().getHTable());
@@ -65,15 +65,17 @@ public class ResultExecutorResultSet<T> extends HResultSetImpl<T, Result> {
                             catch (NullColumnValueException e) {
                                 continue;
                             }
+                            catch (HBqlException e) {
+                                e.printStackTrace();
+                            }
 
                             getCompletionQueueExecutor().putElement(result);
                         }
 
                         scanner.close();
                     }
-
                     catch (HBqlException e) {
-                        e.printStackTrace();
+                        outerException = e;
                     }
                     finally {
                         getCompletionQueueExecutor().putCompletion();
@@ -139,7 +141,7 @@ public class ResultExecutorResultSet<T> extends HResultSetImpl<T, Result> {
                         return getQuery().callOnEachRow((T)retval);
                     }
 
-                    this.getIteratorComplete().set(true);
+                    this.markIteratorComplete();
                     return null;
                 }
             };

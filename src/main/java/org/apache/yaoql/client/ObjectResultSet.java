@@ -92,7 +92,7 @@ public class ObjectResultSet<T> implements Iterable<T> {
                         }
                     }
 
-                    this.getIteratorComplete().set(true);
+                    this.markIteratorComplete();
                     return null;
                 }
 
