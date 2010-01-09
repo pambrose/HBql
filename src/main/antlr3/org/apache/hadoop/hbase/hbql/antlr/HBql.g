@@ -97,7 +97,8 @@ consoleStatement returns [HBqlStatement retval]
 options {backtrack=true;}	
 	: keySHOW keyTABLES 		 		{retval = new ShowTablesStatement();}
 	| keySHOW keyMAPPINGS 		 		{retval = new ShowMappingsStatement();}
-	| keySHOW keyQUERY? keyEXECUTOR keyPOOLS 	{retval = new ShowQueryExecutorPoolsStatement();}
+	| keySHOW keyQUERY keyEXECUTOR keyPOOLS 	{retval = new ShowQueryExecutorPoolsStatement();}
+	| keySHOW keyASYNC keyEXECUTOR keyPOOLS 	{retval = new ShowAsyncExecutorPoolsStatement();}
 	| keyIMPORT val=QSTRING				{retval = new ImportStatement($val.text);}
 	| keyPARSE c=consoleStatement			{retval = new ParseStatement($c.retval);}
 	| keyEVAL te=exprValue				{retval = new EvalStatement($te.retval);}
@@ -140,10 +141,14 @@ options {backtrack=true;}
 					 		{retval = new DescribeIndexForMappingStatement($t.text, $t2.text);}
 	| keyDESCRIBE keyINDEX t=simpleId keyON keyTABLE t2=simpleId
 					 		{retval = new DescribeIndexForTableStatement($t.text, $t2.text);}
-	| keyCREATE keyQUERY? keyEXECUTOR keyPOOL t=simpleId pl=executorPoolPropertyList?  p=pred?
+	| keyCREATE keyQUERY keyEXECUTOR keyPOOL t=simpleId pl=queryExecPoolPropertyList?  p=pred?
 							{retval = new CreateQueryExecutorPoolStatement($p.retval, new QueryExecutorPoolDefinition($t.text, $pl.retval));}
-	| keyDROP keyQUERY? keyEXECUTOR keyPOOL t=simpleId p=pred?
+	| keyDROP keyQUERY keyEXECUTOR keyPOOL t=simpleId p=pred?
 							{retval = new DropQueryExecutorPoolStatement($p.retval, $t.text);}
+	| keyCREATE keyASYNC keyEXECUTOR keyPOOL t=simpleId pl=asyncExecPoolPropertyList?  p=pred?
+							{retval = new CreateAsyncExecutorPoolStatement($p.retval, new AsyncExecutorPoolDefinition($t.text, $pl.retval));}
+	| keyDROP keyASYNC keyEXECUTOR keyPOOL t=simpleId p=pred?
+							{retval = new DropAsyncExecutorPoolStatement($p.retval, $t.text);}
 	;
 
 indexColumnList returns [List<String> retval]
@@ -196,11 +201,23 @@ familyDefinitionList returns [List<FamilyDefinition> retval]
 familyDefinition returns [FamilyDefinition retval]
 	: t=simpleId LPAREN p=familyPropertyList? RPAREN{retval = new FamilyDefinition($t.text, $p.retval);};
 
-executorPoolPropertyList returns [List<ExecutorPoolProperty> retval]
+asyncExecPoolPropertyList returns [List<ExecutorPoolProperty> retval]
 @init {retval = Lists.newArrayList();}
-	: LPAREN a1=executorPoolProperty {retval.add($a1.retval);} (COMMA a2=executorPoolProperty {retval.add($a2.retval);})* RPAREN;
+	: LPAREN a1=asyncExecPoolProperty {retval.add($a1.retval);} (COMMA a2=asyncExecPoolProperty {retval.add($a2.retval);})* RPAREN;
 
-executorPoolProperty returns [ExecutorPoolProperty retval]
+asyncExecPoolProperty returns [ExecutorPoolProperty retval]
+options {backtrack=true;}	
+	: k=keyMAX_EXECUTOR_POOL_SIZE COLON v=exprValue	{retval = new ExecutorPoolProperty($k.retval, $v.retval);}
+	| k=keyMIN_THREAD_COUNT COLON v=exprValue	{retval = new ExecutorPoolProperty($k.retval, $v.retval);}
+	| k=keyMAX_THREAD_COUNT COLON v=exprValue	{retval = new ExecutorPoolProperty($k.retval, $v.retval);}
+	| k=keyKEEP_ALIVE_SECS COLON v=exprValue	{retval = new ExecutorPoolProperty($k.retval, $v.retval);}
+	;
+
+queryExecPoolPropertyList returns [List<ExecutorPoolProperty> retval]
+@init {retval = Lists.newArrayList();}
+	: LPAREN a1=queryExecPoolProperty {retval.add($a1.retval);} (COMMA a2=queryExecPoolProperty {retval.add($a2.retval);})* RPAREN;
+
+queryExecPoolProperty returns [ExecutorPoolProperty retval]
 options {backtrack=true;}	
 	: k=keyMAX_EXECUTOR_POOL_SIZE COLON v=exprValue	{retval = new ExecutorPoolProperty($k.retval, $v.retval);}
 	| k=keyMIN_THREAD_COUNT COLON v=exprValue	{retval = new ExecutorPoolProperty($k.retval, $v.retval);}
@@ -594,6 +611,7 @@ keyALL                          : {isKeyword(input, "ALL")}? ID;
 keyALTER                        : {isKeyword(input, "ALTER")}? ID;
 keyAND                          : {isKeyword(input, "AND")}? ID;
 keyAS                           : {isKeyword(input, "AS")}? ID;
+keyASYNC                        : {isKeyword(input, "ASYNC")}? ID;
 keyBETWEEN                      : {isKeyword(input, "BETWEEN")}? ID;
 keyCASE                         : {isKeyword(input, "CASE")}? ID;
 keyCLIENT                       : {isKeyword(input, "CLIENT")}? ID;

@@ -64,7 +64,7 @@ public class QueryExecutorPoolManager {
         return executorPool;
     }
 
-    public static boolean dropExecutorPool(final String name) {
+    public static boolean dropQueryExecutorPool(final String name) {
 
         if (Utils.isValidString(name) && getExecutorPoolMap().containsKey(name)) {
             final QueryExecutorPool queryExecutorPool = getExecutorPoolMap().remove(name);

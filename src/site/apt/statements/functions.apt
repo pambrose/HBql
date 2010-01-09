@@ -84,6 +84,8 @@ Boolean Functions
 *--+--+--+--+
 | IndexExistsForMapping(string, string) | boolean  | Returns true if table referenced by mapping has index | indexExistsForMapping('idx1', 'foomap') | true if table foo has index idx1 |
 *--+--+--+--+
+| AsyncExecutorPoolExists(string) | boolean  | Returns true if named async executor pool exists | asyncExecutorPoolExists('execPool') | true if async executor pool execPool is declared |
+*--+--+--+--+
 | QueryExecutorPoolExists(string) | boolean  | Returns true if named query executor pool exists | queryExecutorPoolExists('execPool') | true if query executor pool execPool is declared |
 *--+--+--+--+
 
@@ -120,7 +122,7 @@ Interval Functions
 *--+--+--+--+
 | Day(long)| interval | Returns interval equal to long days | day(3) |  3 day interval |
 *--+--+--+--+
-| Eeek(long)| interval | Returns interval equal to long weeks | week(3) |  3 week interval |
+| Week(long)| interval | Returns interval equal to long weeks | week(3) |  3 week interval |
 *--+--+--+--+
 | Year(long)| interval | Returns interval equal to long years | year(3) |  3 year interval |
 *--+--+--+--+

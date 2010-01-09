@@ -10,7 +10,7 @@ DROP QUERY EXECUTOR POOL
 
 ---------------------------
 
-DROP [QUERY] EXECUTOR POOL pool_name [IF bool_expr]
+DROP QUERY EXECUTOR POOL pool_name [IF bool_expr]
 
 ---------------------------
 
@@ -20,4 +20,4 @@ DROP [QUERY] EXECUTOR POOL pool_name [IF bool_expr]
 
 *Example
 
-%{snippet|id=drop-executor-pool|file=src/test/java/org/apache/hadoop/hbase/hbql/ExamplesTest.java}
+%{snippet|id=drop-query-executor-pool|file=src/test/java/org/apache/hadoop/hbase/hbql/ExamplesTest.java}

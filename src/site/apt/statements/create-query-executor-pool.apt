@@ -10,7 +10,7 @@ CREATE QUERY EXECUTOR POOL
 
 ---------------------------
 
-CREATE [QUERY] EXECUTOR POOL pool_name ['(' executorArg [, ...] ')'] [IF bool_expr]
+CREATE QUERY EXECUTOR POOL pool_name ['(' executorArg [, ...] ')'] [IF bool_expr]
 
 executorArg:
     MAX_EXECUTOR_POOL_SIZE ':' int_expr

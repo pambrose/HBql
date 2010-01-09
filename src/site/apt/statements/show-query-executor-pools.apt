@@ -9,7 +9,7 @@ SHOW QUERY EXECUTOR POOLS
 
 ---------------------------
 
-SHOW [QUERY] EXECUTOR POOLS
+SHOW QUERY EXECUTOR POOLS
 
 ---------------------------
 

@@ -20,30 +20,28 @@
 
 package org.apache.hadoop.hbase.hbql.statement;
 
+import org.apache.hadoop.hbase.hbql.client.AsyncExecutorPool;
+import org.apache.hadoop.hbase.hbql.client.AsyncExecutorPoolManager;
 import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.client.QueryExecutorPool;
-import org.apache.hadoop.hbase.hbql.client.QueryExecutorPoolManager;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 
-public class ShowQueryExecutorPoolsStatement extends GenericStatement implements ConnectionStatement {
+public class ShowAsyncExecutorPoolsStatement extends GenericStatement implements ConnectionStatement {
 
-    public ShowQueryExecutorPoolsStatement() {
+    public ShowAsyncExecutorPoolsStatement() {
         super(null);
     }
 
     protected ExecutionResults execute(final HConnectionImpl conn) throws HBqlException {
 
         final ExecutionResults retval = new ExecutionResults();
-        retval.out.println("Query Executor Pools: ");
-        for (final QueryExecutorPool executorPool : QueryExecutorPoolManager.getQueryExecutorPools())
+        retval.out.println("Async Executor Pools: ");
+        for (final AsyncExecutorPool executorPool : AsyncExecutorPoolManager.getAsyncExecutorPools())
             retval.out.println("\t" + executorPool.getName() + "(" +
                                "MAX_EXECUTOR_POOL_SIZE: " + executorPool.getMaxPoolSize()
                                + ", MIN_THREAD_COUNT: " + executorPool.getMinThreadCount()
                                + ", MAX_THREAD_COUNT: " + executorPool.getMaxThreadCount()
                                + ", KEEP_ALIVE_SECS: " + executorPool.getKeepAliveSecs()
-                               + ", THREADS_READ_RESULTS: " + executorPool.getThreadsReadResults()
-                               + ", COMPLETION_QUEUE_SIZE: " + executorPool.getCompletionQueueSize()
                                + ")");
 
         retval.out.flush();
@@ -51,6 +49,6 @@ public class ShowQueryExecutorPoolsStatement extends GenericStatement implements
     }
 
     public static String usage() {
-        return "SHOW QUERY EXECUTOR POOLS";
+        return "SHOW ASYNC EXECUTOR POOLS";
     }
 }

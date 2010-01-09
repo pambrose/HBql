@@ -45,7 +45,7 @@ public class DropQueryExecutorPoolStatement extends GenericStatement implements 
             msg = "Executor pool " + this.getPoolName() + " does not exist";
         }
         else {
-            QueryExecutorPoolManager.dropExecutorPool(this.getPoolName());
+            QueryExecutorPoolManager.dropQueryExecutorPool(this.getPoolName());
             msg = "Executor pool " + this.getPoolName() + " dropped.";
         }
         return new ExecutionResults(msg);
@@ -53,6 +53,6 @@ public class DropQueryExecutorPoolStatement extends GenericStatement implements 
 
 
     public static String usage() {
-        return "DROP [QUERY] EXECUTOR POOL pool_name [IF bool_expr]";
+        return "DROP QUERY EXECUTOR POOL pool_name [IF bool_expr]";
     }
 }

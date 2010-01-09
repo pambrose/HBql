@@ -20,23 +20,23 @@
 
 package org.apache.hadoop.hbase.hbql.statement;
 
+import org.apache.hadoop.hbase.hbql.client.AsyncExecutorPoolManager;
 import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.client.QueryExecutorPoolManager;
-import org.apache.hadoop.hbase.hbql.executor.QueryExecutorPoolDefinition;
+import org.apache.hadoop.hbase.hbql.executor.AsyncExecutorPoolDefinition;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 
-public class CreateQueryExecutorPoolStatement extends GenericStatement implements ConnectionStatement {
+public class CreateAsyncExecutorPoolStatement extends GenericStatement implements ConnectionStatement {
 
-    private final QueryExecutorPoolDefinition args;
+    private final AsyncExecutorPoolDefinition args;
 
-    public CreateQueryExecutorPoolStatement(final StatementPredicate predicate,
-                                            final QueryExecutorPoolDefinition args) {
+    public CreateAsyncExecutorPoolStatement(final StatementPredicate predicate,
+                                            final AsyncExecutorPoolDefinition args) {
         super(predicate);
         this.args = args;
     }
 
-    private QueryExecutorPoolDefinition getArgs() {
+    private AsyncExecutorPoolDefinition getArgs() {
         return this.args;
     }
 
@@ -44,19 +44,17 @@ public class CreateQueryExecutorPoolStatement extends GenericStatement implement
 
         this.getArgs().validateExecutorPoolPropertyList();
 
-        QueryExecutorPoolManager.newQueryExecutorPool(this.getArgs().getPoolName(),
+        AsyncExecutorPoolManager.newAsyncExecutorPool(this.getArgs().getPoolName(),
                                                       this.getArgs().getMaxExecutorPoolSize(),
                                                       this.getArgs().getMinThreadCount(),
                                                       this.getArgs().getMaxThreadCount(),
-                                                      this.getArgs().getKeepAliveSecs(),
-                                                      this.getArgs().getThreadsReadResults(),
-                                                      this.getArgs().getCompletionQueueSize());
+                                                      this.getArgs().getKeepAliveSecs());
 
         return new ExecutionResults("Executor pool " + this.getArgs().getPoolName() + " created.");
     }
 
 
     public static String usage() {
-        return "CREATE QUERY EXECUTOR POOL pool_name (MAX_EXECUTOR_POOL_SIZE: int_expr, MIN_THREAD_COUNT: int_expr, MAX_THREAD_COUNT: int_expr, THREADS_READ_RESULTS: bool_expr, COMPLETION_QUEUE_SIZE: int_expr) [IF bool_expr]";
+        return "CREATE ASYNC EXECUTOR POOL pool_name (MAX_EXECUTOR_POOL_SIZE: int_expr, MIN_THREAD_COUNT: int_expr, MAX_THREAD_COUNT: int_expr, THREADS_READ_RESULTS: bool_expr, COMPLETION_QUEUE_SIZE: int_expr) [IF bool_expr]";
     }
 }

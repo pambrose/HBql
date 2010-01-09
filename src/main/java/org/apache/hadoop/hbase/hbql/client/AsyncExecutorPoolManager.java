@@ -28,6 +28,11 @@ import java.util.Map;
 
 public class AsyncExecutorPoolManager {
 
+    public static int defaultMaxExecutorPoolSize = 5;
+    public static int defaultMinThreadCount = 1;
+    public static int defaultMaxThreadCount = 10;
+    public static long defaultKeepAliveSecs = Long.MAX_VALUE;
+
     private static Map<String, AsyncExecutorPool> executorPoolMap = Maps.newConcurrentHashMap();
 
     private static Map<String, AsyncExecutorPool> getExecutorPoolMap() {
@@ -53,7 +58,7 @@ public class AsyncExecutorPoolManager {
         return executorPool;
     }
 
-    public static boolean dropExecutorPool(final String name) {
+    public static boolean dropAsyncExecutorPool(final String name) {
 
         if (Utils.isValidString(name) && getExecutorPoolMap().containsKey(name)) {
             final AsyncExecutorPool asyncExecutorPool = getExecutorPoolMap().remove(name);
