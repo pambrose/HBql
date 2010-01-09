@@ -20,6 +20,7 @@
 
 package org.apache.hadoop.hbase.hbql.impl;
 
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.QueryFuture;
 
 import java.util.concurrent.CountDownLatch;
@@ -27,7 +28,7 @@ import java.util.concurrent.CountDownLatch;
 public class QueryFutureImpl implements QueryFuture {
 
     private final CountDownLatch latch = new CountDownLatch(1);
-    private Exception caughtException = null;
+    private HBqlException caughtException = null;
     private long startTime = -1L;
     private long completeTime = -1L;
 
@@ -35,7 +36,7 @@ public class QueryFutureImpl implements QueryFuture {
         return this.caughtException;
     }
 
-    public void setCaughtException(final Exception exception) {
+    public void setCaughtException(final HBqlException exception) {
         this.caughtException = exception;
     }
 

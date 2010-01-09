@@ -24,9 +24,11 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.QueryExecutorPool;
 import org.apache.hadoop.hbase.hbql.util.ArrayBlockingQueues;
 import org.apache.hadoop.hbase.hbql.util.CompletionQueue;
+import org.apache.hadoop.hbase.hbql.util.Lists;
 import org.apache.hadoop.hbase.hbql.util.NamedThreadFactory;
 import org.apache.hadoop.hbase.hbql.util.PoolableElement;
 
+import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -42,9 +44,10 @@ public abstract class CompletionQueueExecutor<T> implements PoolableElement {
     private final AtomicBoolean atomicShutdown = new AtomicBoolean(false);
     private final AtomicInteger workSubmittedCounter = new AtomicInteger(0);
     private final ExecutorService submitterThread = Executors.newSingleThreadExecutor();
+    private final List<HBqlException> exceptionList = Lists.newArrayList();
     private final LocalThreadPoolExecutor threadPoolExecutor;
     private final CompletionQueue<T> completionQueue;
-    private QueryExecutorPool executorPool;
+    private final QueryExecutorPool executorPool;
 
     private static class LocalCallerRunsPolicy extends ThreadPoolExecutor.CallerRunsPolicy {
 
@@ -90,7 +93,7 @@ public abstract class CompletionQueueExecutor<T> implements PoolableElement {
                                       final int maxThreadCount,
                                       final long keepAliveSecs,
                                       final int completionQueueSize) throws HBqlException {
-        this.setExecutorPool(executorPool);
+        this.executorPool = executorPool;
         final BlockingQueue<Runnable> backingQueue = ArrayBlockingQueues.newArrayBlockingQueue(maxThreadCount * 5);
         final String name = executorPool == null ? "Non query exec pool" : "Query exec pool " + executorPool.getName();
         this.threadPoolExecutor = new LocalThreadPoolExecutor(minThreadCount,
@@ -125,10 +128,6 @@ public abstract class CompletionQueueExecutor<T> implements PoolableElement {
         return this.executorPool;
     }
 
-    public void setExecutorPool(final QueryExecutorPool executorPool) {
-        this.executorPool = executorPool;
-    }
-
     public void putElement(final T val) throws HBqlException {
         this.getCompletionQueue().putElement(val);
     }
@@ -138,6 +137,9 @@ public abstract class CompletionQueueExecutor<T> implements PoolableElement {
     }
 
     public CompletionQueue.Element<T> takeElement() throws HBqlException {
+        if (this.getExceptionList().size() > 0)
+            throw this.getExceptionList().remove(0);
+
         return this.getCompletionQueue().takeElement();
     }
 
@@ -145,16 +147,18 @@ public abstract class CompletionQueueExecutor<T> implements PoolableElement {
         return this.getThreadPoolExecutor().getRejectionCount();
     }
 
+    private List<HBqlException> getExceptionList() {
+        return this.exceptionList;
+    }
+
+    public void addException(final HBqlException exception) {
+        this.getExceptionList().add(exception);
+    }
+
     public boolean moreResultsPending() {
         final int completionCount = this.getCompletionQueue().getCompletionCount();
         final int submittedCount = this.getWorkSubmittedCounter().get();
         return completionCount < submittedCount;
-    }
-
-    public void reset() {
-        this.getWorkSubmittedCounter().set(0);
-        this.getCompletionQueue().reset();
-        this.getThreadPoolExecutor().reset();
     }
 
     public void submitWorkToSubmitterThread(final Runnable job) {
@@ -165,6 +169,13 @@ public abstract class CompletionQueueExecutor<T> implements PoolableElement {
     public void submitWorkToThreadPool(final Runnable job) {
         this.getWorkSubmittedCounter().incrementAndGet();
         this.getThreadPoolExecutor().execute(job);
+    }
+
+    public void reset() {
+        this.getWorkSubmittedCounter().set(0);
+        this.getExceptionList().clear();
+        this.getCompletionQueue().reset();
+        this.getThreadPoolExecutor().reset();
     }
 
     public void close() {

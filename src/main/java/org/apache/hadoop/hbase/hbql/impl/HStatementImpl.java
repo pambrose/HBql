@@ -116,7 +116,7 @@ public class HStatementImpl implements HStatement {
                             }
                             rs.close();
                         }
-                        catch (Exception e) {
+                        catch (HBqlException e) {
                             e.printStackTrace();
                             this.getQueryFuture().setCaughtException(e);
                         }
