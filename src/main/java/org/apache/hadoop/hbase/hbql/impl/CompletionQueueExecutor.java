@@ -38,7 +38,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public abstract class CompletionQueueExecutor<T> implements PoolableElement {
+public abstract class CompletionQueueExecutor<T> extends PoolableElement<CompletionQueueExecutor> {
 
     private final AtomicBoolean atomicShutdown = new AtomicBoolean(false);
     private final AtomicInteger workSubmittedCounter = new AtomicInteger(0);
@@ -46,7 +46,6 @@ public abstract class CompletionQueueExecutor<T> implements PoolableElement {
     private final List<HBqlException> exceptionList = Lists.newArrayList();
     private final LocalThreadPoolExecutor threadPoolExecutor;
     private final CompletionQueue<T> completionQueue;
-    private final QueryExecutorPoolImpl executorPool;
 
     private static class LocalCallerRunsPolicy extends ThreadPoolExecutor.CallerRunsPolicy {
 
@@ -92,7 +91,7 @@ public abstract class CompletionQueueExecutor<T> implements PoolableElement {
                                       final int maxThreadCount,
                                       final long keepAliveSecs,
                                       final int completionQueueSize) throws HBqlException {
-        this.executorPool = executorPool;
+        super(executorPool);
         final BlockingQueue<Runnable> backingQueue = ArrayBlockingQueues.newArrayBlockingQueue(maxThreadCount * 5);
         final String name = executorPool == null ? "Non query exec pool" : "Query exec pool " + executorPool.getName();
         this.threadPoolExecutor = new LocalThreadPoolExecutor(minThreadCount,
@@ -121,10 +120,6 @@ public abstract class CompletionQueueExecutor<T> implements PoolableElement {
 
     private AtomicInteger getWorkSubmittedCounter() {
         return this.workSubmittedCounter;
-    }
-
-    private QueryExecutorPoolImpl getExecutorPool() {
-        return this.executorPool;
     }
 
     public void putElement(final T val) throws HBqlException {
@@ -170,7 +165,7 @@ public abstract class CompletionQueueExecutor<T> implements PoolableElement {
         this.getThreadPoolExecutor().execute(job);
     }
 
-    public void reset() {
+    public void resetElement() {
         this.getWorkSubmittedCounter().set(0);
         this.getExceptionList().clear();
         this.getCompletionQueue().reset();
@@ -178,12 +173,12 @@ public abstract class CompletionQueueExecutor<T> implements PoolableElement {
     }
 
     public void close() {
-        this.reset();
-        this.release();
+        this.resetElement();
+        this.releaseElement();
     }
 
-    public void release() {
-        this.getExecutorPool().release(this);
+    public void releaseElement() {
+        this.getElementPool().release(this);
     }
 
     private AtomicBoolean getAtomicShutdown() {

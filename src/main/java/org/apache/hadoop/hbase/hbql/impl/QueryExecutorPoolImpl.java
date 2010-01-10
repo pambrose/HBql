@@ -66,14 +66,6 @@ public class QueryExecutorPoolImpl extends ElementPool<CompletionQueueExecutor> 
         return this.completionQueueSize;
     }
 
-    public CompletionQueueExecutor takeQueryExecutor() throws HBqlException {
-        return this.take();
-    }
-
-    public void releaseQueryExecutor(final CompletionQueueExecutor element) {
-        this.release(element);
-    }
-
     protected CompletionQueueExecutor newElement() throws HBqlException {
         return this.getThreadsReadResults()
                ? ResultExecutor.newPooledResultExecutor(this,
@@ -86,5 +78,11 @@ public class QueryExecutorPoolImpl extends ElementPool<CompletionQueueExecutor> 
                                                                       this.getMaxThreadCount(),
                                                                       this.getKeepAliveSecs(),
                                                                       this.getCompletionQueueSize());
+    }
+
+    public void shutdown() {
+        for (final CompletionQueueExecutor val : this.getElementPool()) {
+            val.shutdown();
+        }
     }
 }

@@ -59,7 +59,7 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class HConnectionImpl implements HConnection, PoolableElement {
+public class HConnectionImpl extends PoolableElement<HConnectionImpl> implements HConnection {
 
     public static final String MAXTABLEREFS = "maxtablerefs";
     public static final String MASTER = "hbase.master";
@@ -67,7 +67,6 @@ public class HConnectionImpl implements HConnection, PoolableElement {
     private final AtomicBoolean atomicClosed = new AtomicBoolean(false);
     private final HBaseConfiguration hbaseConfig;
     private final HTablePool tablePool;
-    private final HConnectionPoolImpl connectionPool;
     private final int maxTablePoolReferencesPerTable;
     private final MappingManager mappingManager;
 
@@ -81,8 +80,8 @@ public class HConnectionImpl implements HConnection, PoolableElement {
     public HConnectionImpl(final HBaseConfiguration hbaseConfig,
                            final HConnectionPoolImpl connectionPool,
                            final int maxTablePoolReferencesPerTable) throws HBqlException {
+        super(connectionPool);
         this.hbaseConfig = (hbaseConfig == null) ? new HBaseConfiguration() : hbaseConfig;
-        this.connectionPool = connectionPool;
         this.maxTablePoolReferencesPerTable = maxTablePoolReferencesPerTable;
         this.tablePool = new HTablePool(this.getHBaseConfiguration(), this.getMaxTablePoolReferencesPerTable());
         this.mappingManager = new MappingManager(this);
@@ -100,7 +99,7 @@ public class HConnectionImpl implements HConnection, PoolableElement {
         return this.atomicAnnoMapping;
     }
 
-    public void reset() {
+    public void resetElement() {
 
         try {
             this.getAtomicClosed().set(false);
@@ -117,11 +116,7 @@ public class HConnectionImpl implements HConnection, PoolableElement {
     }
 
     public boolean isPooled() {
-        return this.getConnectionPool() != null;
-    }
-
-    private HConnectionPoolImpl getConnectionPool() {
-        return this.connectionPool;
+        return this.getElementPool() != null;
     }
 
     public HBaseConfiguration getHBaseConfiguration() {
@@ -285,13 +280,8 @@ public class HConnectionImpl implements HConnection, PoolableElement {
         return new HPreparedStatementImpl(this, sql);
     }
 
-    public void release() {
-        if (this.isPooled())
-            this.getConnectionPool().releaseConnection(this);
-    }
-
-    public void shutdown() {
-        // No op
+    public void releaseElement() {
+        this.getElementPool().release(this);
     }
 
     private AtomicBoolean getAtomicClosed() {
@@ -307,7 +297,7 @@ public class HConnectionImpl implements HConnection, PoolableElement {
             this.getAtomicClosed().set(true);
             // If it is a pool conection, just give it back to pool (reset() will be called on release)
             if (this.isPooled())
-                this.release();
+                this.releaseElement();
         }
     }
 
@@ -494,7 +484,7 @@ public class HConnectionImpl implements HConnection, PoolableElement {
         final CompletionQueueExecutor executorQueue = this.takeQueryExecutorFromPool();
 
         // Reset it prior to handing it out
-        executorQueue.reset();
+        executorQueue.resetElement();
         return executorQueue;
     }
 
@@ -508,20 +498,20 @@ public class HConnectionImpl implements HConnection, PoolableElement {
         final UnboundedAsyncExecutor executor = this.takeAsyncExecutorFromPool();
 
         // Reset it prior to handing it out
-        executor.reset();
+        executor.resetElement();
         return executor;
     }
 
     private CompletionQueueExecutor takeQueryExecutorFromPool() throws HBqlException {
         this.validateQueryExecutorPoolNameExists(this.getQueryExecutorPoolName());
         final QueryExecutorPoolImpl pool = (QueryExecutorPoolImpl)QueryExecutorPoolManager.getQueryExecutorPool(this.getQueryExecutorPoolName());
-        return pool.takeQueryExecutor();
+        return pool.take();
     }
 
     private UnboundedAsyncExecutor takeAsyncExecutorFromPool() throws HBqlException {
         this.validateAsyncExecutorPoolNameExists(this.getAsyncExecutorPoolName());
         final AsyncExecutorPoolImpl pool = (AsyncExecutorPoolImpl)AsyncExecutorPoolManager.getAsyncExecutorPool(this.getAsyncExecutorPoolName());
-        return pool.takeAsyncExecutor();
+        return pool.take();
     }
 
     public boolean usesQueryExecutor() {

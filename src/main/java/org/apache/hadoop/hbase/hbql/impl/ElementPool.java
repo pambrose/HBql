@@ -87,7 +87,7 @@ public abstract class ElementPool<T extends PoolableElement> {
 
         try {
             final T retval = this.getElementPool().take();
-            retval.reset();
+            retval.resetElement();
             this.getTakenElementCounter().incrementAndGet();
             return retval;
         }
@@ -97,14 +97,8 @@ public abstract class ElementPool<T extends PoolableElement> {
     }
 
     public void release(final T element) {
-        element.reset();
+        element.resetElement();
         this.getElementPool().add(element);
         this.getTakenElementCounter().decrementAndGet();
-    }
-
-    public void shutdown() {
-        for (final T val : this.getElementPool()) {
-            val.shutdown();
-        }
     }
 }

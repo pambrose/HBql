@@ -33,11 +33,10 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class UnboundedAsyncExecutor implements PoolableElement {
+public class UnboundedAsyncExecutor extends PoolableElement<UnboundedAsyncExecutor> {
 
     private final AtomicBoolean atomicShutdown = new AtomicBoolean(false);
     private final AtomicInteger workSubmittedCounter = new AtomicInteger(0);
-    private final AsyncExecutorPoolImpl executorPool;
     private final LocalThreadPoolExecutor threadPoolExecutor;
 
     private static class LocalThreadPoolExecutor extends ThreadPoolExecutor {
@@ -88,7 +87,7 @@ public class UnboundedAsyncExecutor implements PoolableElement {
                                   final int minThreadCount,
                                   final int maxThreadCount,
                                   final long keepAliveSecs) throws HBqlException {
-        this.executorPool = executorPool;
+        super(executorPool);
         final BlockingQueue<Runnable> backingQueue = new LinkedBlockingQueue<Runnable>();
         final String name = executorPool == null ? "Non async exec pool" : "Async exec pool " + executorPool.getName();
         this.threadPoolExecutor = new LocalThreadPoolExecutor(minThreadCount,
@@ -99,10 +98,6 @@ public class UnboundedAsyncExecutor implements PoolableElement {
                                                               new NamedThreadFactory(name));
     }
 
-    private AsyncExecutorPoolImpl getExecutorPool() {
-        return this.executorPool;
-    }
-
     private LocalThreadPoolExecutor getThreadPoolExecutor() {
         return this.threadPoolExecutor;
     }
@@ -111,7 +106,7 @@ public class UnboundedAsyncExecutor implements PoolableElement {
         return this.workSubmittedCounter;
     }
 
-    public void reset() {
+    public void resetElement() {
         this.getWorkSubmittedCounter().set(0);
         this.getThreadPoolExecutor().reset();
     }
@@ -123,12 +118,12 @@ public class UnboundedAsyncExecutor implements PoolableElement {
     }
 
     public void close() {
-        this.reset();
-        this.release();
+        this.resetElement();
+        this.releaseElement();
     }
 
-    public void release() {
-        this.getExecutorPool().releaseAsyncExecutor(this);
+    public void releaseElement() {
+        this.getElementPool().release(this);
     }
 
     private AtomicBoolean getAtomicShutdown() {

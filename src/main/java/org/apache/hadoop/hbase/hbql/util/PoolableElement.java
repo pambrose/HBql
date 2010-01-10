@@ -20,11 +20,21 @@
 
 package org.apache.hadoop.hbase.hbql.util;
 
-public interface PoolableElement {
+import org.apache.hadoop.hbase.hbql.impl.ElementPool;
 
-    void reset();
+public abstract class PoolableElement<T extends PoolableElement> {
 
-    void release();
+    private final ElementPool<T> elementPool;
 
-    void shutdown();
+    protected PoolableElement(final ElementPool<T> elementPool) {
+        this.elementPool = elementPool;
+    }
+
+    protected ElementPool<T> getElementPool() {
+        return this.elementPool;
+    }
+
+    public abstract void resetElement();
+
+    public abstract void releaseElement();
 }

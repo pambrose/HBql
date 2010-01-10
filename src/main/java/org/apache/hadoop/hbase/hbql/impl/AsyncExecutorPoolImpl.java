@@ -52,18 +52,16 @@ public class AsyncExecutorPoolImpl extends ElementPool<UnboundedAsyncExecutor> i
         return this.keepAliveSecs;
     }
 
-    public UnboundedAsyncExecutor takeAsyncExecutor() throws HBqlException {
-        return this.take();
-    }
-
-    public void releaseAsyncExecutor(final UnboundedAsyncExecutor element) {
-        this.release(element);
-    }
-
     protected UnboundedAsyncExecutor newElement() throws HBqlException {
         return new UnboundedAsyncExecutor(this,
                                           this.getMinThreadCount(),
                                           this.getMaxThreadCount(),
                                           this.getKeepAliveSecs());
+    }
+
+    public void shutdown() {
+        for (final UnboundedAsyncExecutor val : this.getElementPool()) {
+            val.shutdown();
+        }
     }
 }
