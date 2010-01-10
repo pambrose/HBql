@@ -513,13 +513,13 @@ public class HConnectionImpl implements HConnection, PoolableElement {
 
     private CompletionQueueExecutor takeQueryExecutorFromPool() throws HBqlException {
         this.validateQueryExecutorPoolNameExists(this.getQueryExecutorPoolName());
-        final QueryExecutorPoolImpl pool = QueryExecutorPoolManager.getExecutorPool(this.getQueryExecutorPoolName());
+        final QueryExecutorPoolImpl pool = (QueryExecutorPoolImpl)QueryExecutorPoolManager.getQueryExecutorPool(this.getQueryExecutorPoolName());
         return pool.takeQueryExecutor();
     }
 
     private UnboundedAsyncExecutor takeAsyncExecutorFromPool() throws HBqlException {
         this.validateAsyncExecutorPoolNameExists(this.getAsyncExecutorPoolName());
-        final AsyncExecutorPoolImpl pool = AsyncExecutorPoolManager.getExecutorPool(this.getAsyncExecutorPoolName());
+        final AsyncExecutorPoolImpl pool = (AsyncExecutorPoolImpl)AsyncExecutorPoolManager.getAsyncExecutorPool(this.getAsyncExecutorPoolName());
         return pool.takeAsyncExecutor();
     }
 

@@ -24,8 +24,8 @@ import org.apache.hadoop.hbase.hbql.impl.QueryExecutorPoolImpl;
 import org.apache.hadoop.hbase.hbql.impl.Utils;
 import org.apache.hadoop.hbase.hbql.util.Maps;
 
-import java.util.Collection;
 import java.util.Map;
+import java.util.Set;
 
 public class QueryExecutorPoolManager {
 
@@ -80,14 +80,14 @@ public class QueryExecutorPoolManager {
         return Utils.isValidString(name) && QueryExecutorPoolManager.getExecutorPoolMap().containsKey(name);
     }
 
-    public static QueryExecutorPoolImpl getExecutorPool(final String poolName) throws HBqlException {
+    public static QueryExecutorPool getQueryExecutorPool(final String poolName) throws HBqlException {
         if (!QueryExecutorPoolManager.getExecutorPoolMap().containsKey(poolName))
             throw new HBqlException("QueryExecutorPool does not exist: " + poolName);
 
         return QueryExecutorPoolManager.getExecutorPoolMap().get(poolName);
     }
 
-    public static Collection<QueryExecutorPoolImpl> getQueryExecutorPools() {
-        return QueryExecutorPoolManager.getExecutorPoolMap().values();
+    public static Set<String> getQueryExecutorPoolNames() {
+        return QueryExecutorPoolManager.getExecutorPoolMap().keySet();
     }
 }

@@ -29,8 +29,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public abstract class ElementPool<T extends PoolableElement> {
 
-    private final AtomicInteger createdElementCount = new AtomicInteger(0);
-    private final AtomicInteger takenElementCount = new AtomicInteger(0);
+    private final AtomicInteger createdElementCounter = new AtomicInteger(0);
+    private final AtomicInteger takenElementCounter = new AtomicInteger(0);
     private final BlockingQueue<T> elementPool;
     private final String name;
     private final int maxPoolSize;
@@ -55,23 +55,27 @@ public abstract class ElementPool<T extends PoolableElement> {
         return this.name;
     }
 
-    private AtomicInteger getCreatedElementCount() {
-        return this.createdElementCount;
+    private AtomicInteger getCreatedElementCounter() {
+        return this.createdElementCounter;
     }
 
-    private AtomicInteger getTakenElementCount() {
-        return this.takenElementCount;
+    private AtomicInteger getTakenElementCounter() {
+        return this.takenElementCounter;
     }
 
-    public int getElementsTaken() {
-        return this.getTakenElementCount().get();
+    public int getCreatedCount() {
+        return this.getCreatedElementCounter().get();
+    }
+
+    public int getTakenCount() {
+        return this.getTakenElementCounter().get();
     }
 
     protected void addElementToPool() throws HBqlException {
-        if (this.getCreatedElementCount().get() < this.getMaxPoolSize()) {
+        if (this.getCreatedElementCounter().get() < this.getMaxPoolSize()) {
             final T val = this.newElement();
             this.getElementPool().add(val);
-            this.getCreatedElementCount().incrementAndGet();
+            this.getCreatedElementCounter().incrementAndGet();
         }
     }
 
@@ -84,7 +88,7 @@ public abstract class ElementPool<T extends PoolableElement> {
         try {
             final T retval = this.getElementPool().take();
             retval.reset();
-            this.getTakenElementCount().incrementAndGet();
+            this.getTakenElementCounter().incrementAndGet();
             return retval;
         }
         catch (InterruptedException e) {
@@ -95,7 +99,7 @@ public abstract class ElementPool<T extends PoolableElement> {
     public void release(final T element) {
         element.reset();
         this.getElementPool().add(element);
-        this.getTakenElementCount().decrementAndGet();
+        this.getTakenElementCounter().decrementAndGet();
     }
 
     public void shutdown() {

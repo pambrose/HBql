@@ -24,8 +24,8 @@ import org.apache.hadoop.hbase.hbql.impl.AsyncExecutorPoolImpl;
 import org.apache.hadoop.hbase.hbql.impl.Utils;
 import org.apache.hadoop.hbase.hbql.util.Maps;
 
-import java.util.Collection;
 import java.util.Map;
+import java.util.Set;
 
 public class AsyncExecutorPoolManager {
 
@@ -74,14 +74,14 @@ public class AsyncExecutorPoolManager {
         return Utils.isValidString(name) && AsyncExecutorPoolManager.getExecutorPoolMap().containsKey(name);
     }
 
-    public static AsyncExecutorPoolImpl getExecutorPool(final String poolName) throws HBqlException {
+    public static AsyncExecutorPool getAsyncExecutorPool(final String poolName) throws HBqlException {
         if (!AsyncExecutorPoolManager.getExecutorPoolMap().containsKey(poolName))
             throw new HBqlException("AsyncExecutorPool does not exist: " + poolName);
 
         return AsyncExecutorPoolManager.getExecutorPoolMap().get(poolName);
     }
 
-    public static Collection<AsyncExecutorPoolImpl> getAsyncExecutorPools() {
-        return AsyncExecutorPoolManager.getExecutorPoolMap().values();
+    public static Set<String> getAsyncExecutorPoolNames() {
+        return AsyncExecutorPoolManager.getExecutorPoolMap().keySet();
     }
 }

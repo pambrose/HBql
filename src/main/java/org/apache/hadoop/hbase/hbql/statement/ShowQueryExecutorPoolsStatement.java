@@ -22,9 +22,9 @@ package org.apache.hadoop.hbase.hbql.statement;
 
 import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.client.QueryExecutorPool;
 import org.apache.hadoop.hbase.hbql.client.QueryExecutorPoolManager;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
-import org.apache.hadoop.hbase.hbql.impl.QueryExecutorPoolImpl;
 
 public class ShowQueryExecutorPoolsStatement extends GenericStatement implements ConnectionStatement {
 
@@ -36,7 +36,8 @@ public class ShowQueryExecutorPoolsStatement extends GenericStatement implements
 
         final ExecutionResults retval = new ExecutionResults();
         retval.out.println("Query Executor Pools: ");
-        for (final QueryExecutorPoolImpl executorPool : QueryExecutorPoolManager.getQueryExecutorPools())
+        for (final String name : QueryExecutorPoolManager.getQueryExecutorPoolNames()) {
+            final QueryExecutorPool executorPool = QueryExecutorPoolManager.getQueryExecutorPool(name);
             retval.out.println("\t" + executorPool.getName() + "(" +
                                "MAX_EXECUTOR_POOL_SIZE: " + executorPool.getMaxPoolSize()
                                + ", MIN_THREAD_COUNT: " + executorPool.getMinThreadCount()
@@ -45,7 +46,7 @@ public class ShowQueryExecutorPoolsStatement extends GenericStatement implements
                                + ", THREADS_READ_RESULTS: " + executorPool.getThreadsReadResults()
                                + ", COMPLETION_QUEUE_SIZE: " + executorPool.getCompletionQueueSize()
                                + ")");
-
+        }
         retval.out.flush();
         return retval;
     }

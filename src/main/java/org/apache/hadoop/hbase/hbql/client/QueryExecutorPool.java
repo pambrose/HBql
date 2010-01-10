@@ -22,6 +22,10 @@ package org.apache.hadoop.hbase.hbql.client;
 
 public interface QueryExecutorPool {
 
+    String getName();
+
+    int getMaxPoolSize();
+
     int getMinThreadCount();
 
     int getMaxThreadCount();
@@ -31,4 +35,8 @@ public interface QueryExecutorPool {
     boolean getThreadsReadResults();
 
     int getCompletionQueueSize();
+
+    int getCreatedCount();
+
+    int getTakenCount();
 }
