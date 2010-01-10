@@ -23,28 +23,34 @@ executorArg:
 
     Creates a named AsyncExecutor.
 
-    * An AsyncExecutor provides a thread pool for asynchronous query execution.  An AsyncExecutorPool is assigned
-    using HConncetion.setAsyncExecutorPoolName().  Multiple connections can share an AsyncExecutor.
+    * An AsyncExecutor provides a thread pool for asynchronous query execution.
 
-    * AsyncExecutors are used in asynchrous queries such that each async query is executed by a
-    different thread in the AsyncExecutor thread pool.
+    * An AsyncExecutor is assigned using HConncetion.setAsyncExecutorName().
+    Multiple connections can share a common AsyncExecutor name.
 
-    * The number of concurrent asynchronous queries executed by all
-    connections referenceing an AsyncExecutor is bound by the size of the AsyncExecutor thread pool.
+    * AsyncExecutor name assignments are reset when HConnection.close() is called.
+    So if an HConnection is taken from an HConnectionPool, the AsyncExecutor name assignments should be
+    made when an HConnection is retrieved from a pool.
 
-    * AsyncExecutors are not used with synchronous queries.
+    * AsyncExecutors are used in asynchronous queries such that each query is executed by a
+    thread in the AsyncExecutor thread pool.
 
-    * An async query will not block if all threads in an AsyncExecutor are taken.
-    An AsyncExecutor is released back to a pool on query completion (when the ResultSet
+    * The number of concurrent asynchronous queries executed (across all
+    connections referencing an AsyncExecutor name) is bound by the size of the AsyncExecutor thread pool.
+
+    * An asynchronous query call will not block if all threads in an AsyncExecutor thread pool
+    are busy, but execution will not occur until the thread pool has an available thread.
+    A thread is released back to the AsyncExecutor thread pool on query completion (when the ResultSet
     iterator is completed).
 
-    * If an HConnection is from an HConnectionPool, the AsyncExecutor assignments are reset when
-    HConnection.close() is called.  Thus, AsyncExecutorPool name assignments should be made when an
-    HConnection is retrieved from a pool.
+    * AsyncExecutors are not used by synchronous queries.
+
+    * AsyncExecutors work with and without QueryExecutorPools.
+
 
 * Parameters
 
-    * Each AsyncExecutorPool has a thread pool specified by these parameters:
+    * Each AsyncExecutor has a thread pool specified by these parameters:
 
         ** MIN_THREAD_COUNT - the number of threads to keep in a pool, even if they are idle.
 
@@ -56,11 +62,11 @@ executorArg:
 
     * All the executorArg parameters are optional.  If unspecified, the values default to:
 
-        ** AsyncExecutorPoolManager.defaultMinThreadCount (1)
+        ** AsyncExecutorManager.defaultMinThreadCount (1)
 
-        ** AsyncExecutorPoolManager.defaultMaxThreadCount (10)
+        ** AsyncExecutorManager.defaultMaxThreadCount (10)
 
-        ** AsyncExecutorPoolManager.defaultKeepAliveSecs (Long.MAX_VALUE)
+        ** AsyncExecutorManager.defaultKeepAliveSecs (Long.MAX_VALUE)
 
 
 *Example
