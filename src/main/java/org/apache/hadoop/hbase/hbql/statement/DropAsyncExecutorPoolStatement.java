@@ -20,7 +20,7 @@
 
 package org.apache.hadoop.hbase.hbql.statement;
 
-import org.apache.hadoop.hbase.hbql.client.AsyncExecutorPoolManager;
+import org.apache.hadoop.hbase.hbql.client.AsyncExecutorManager;
 import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
@@ -41,11 +41,11 @@ public class DropAsyncExecutorPoolStatement extends GenericStatement implements 
     protected ExecutionResults execute(final HConnectionImpl conn) throws HBqlException {
 
         final String msg;
-        if (!AsyncExecutorPoolManager.asyncExecutorPoolExists(this.getPoolName())) {
+        if (!AsyncExecutorManager.asyncExecutorExists(this.getPoolName())) {
             msg = "Async Executor pool " + this.getPoolName() + " does not exist";
         }
         else {
-            AsyncExecutorPoolManager.dropAsyncExecutorPool(this.getPoolName());
+            AsyncExecutorManager.dropAsyncExecutor(this.getPoolName());
             msg = "Async Executor pool " + this.getPoolName() + " dropped.";
         }
         return new ExecutionResults(msg);

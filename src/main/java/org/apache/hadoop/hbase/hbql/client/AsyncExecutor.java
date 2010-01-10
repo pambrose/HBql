@@ -20,7 +20,7 @@
 
 package org.apache.hadoop.hbase.hbql.client;
 
-public interface AsyncExecutorPool {
+public interface AsyncExecutor {
 
     String getName();
 

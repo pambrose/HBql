@@ -31,8 +31,8 @@ import org.apache.hadoop.hbase.client.tableindexed.IndexSpecification;
 import org.apache.hadoop.hbase.client.tableindexed.IndexedTable;
 import org.apache.hadoop.hbase.client.tableindexed.IndexedTableAdmin;
 import org.apache.hadoop.hbase.client.tableindexed.IndexedTableDescriptor;
-import org.apache.hadoop.hbase.hbql.client.AsyncExecutorPool;
-import org.apache.hadoop.hbase.hbql.client.AsyncExecutorPoolManager;
+import org.apache.hadoop.hbase.hbql.client.AsyncExecutor;
+import org.apache.hadoop.hbase.hbql.client.AsyncExecutorManager;
 import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
@@ -493,16 +493,16 @@ public class HConnectionImpl extends PoolableElement<HConnectionImpl> implements
     }
 
     // The value returned from this call must eventually be released.
-    public UnboundedAsyncExecutor getAsyncExecutorForConnection() throws HBqlException {
+    public AsyncExecutorImpl getAsyncExecutorForConnection() throws HBqlException {
 
         if (!Utils.isValidString(this.getAsyncExecutorPoolName()))
             throw new HBqlException("Connection not assigned an AsyncExecutorPool name");
 
         this.validateAsyncExecutorPoolNameExists(this.getAsyncExecutorPoolName());
 
-        final AsyncExecutorPool pool = AsyncExecutorPoolManager.getAsyncExecutorPool(this.getAsyncExecutorPoolName());
+        final AsyncExecutor executor = AsyncExecutorManager.getAsyncExecutor(this.getAsyncExecutorPoolName());
 
-        return ((AsyncExecutorPoolImpl)pool).getAsyncExecutor();
+        return ((AsyncExecutorImpl)executor);
     }
 
 
@@ -552,7 +552,7 @@ public class HConnectionImpl extends PoolableElement<HConnectionImpl> implements
     }
 
     public void validateAsyncExecutorPoolNameExists(final String poolName) throws HBqlException {
-        if (!AsyncExecutorPoolManager.asyncExecutorPoolExists(poolName))
+        if (!AsyncExecutorManager.asyncExecutorExists(poolName))
             throw new HBqlException("AsyncExecutorPool " + poolName + " does not exist.");
     }
 }

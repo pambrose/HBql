@@ -20,7 +20,7 @@
 
 package org.apache.hadoop.hbase.hbql.executor;
 
-import org.apache.hadoop.hbase.hbql.client.AsyncExecutorPoolManager;
+import org.apache.hadoop.hbase.hbql.client.AsyncExecutorManager;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 
 import java.util.List;
@@ -85,21 +85,21 @@ public class AsyncExecutorPoolDefinition {
         if (this.minThreadCount != null)
             return this.minThreadCount.getIntegerValue();
         else
-            return AsyncExecutorPoolManager.defaultMinThreadCount;
+            return AsyncExecutorManager.defaultMinThreadCount;
     }
 
     public int getMaxThreadCount() throws HBqlException {
         if (this.maxThreadCount != null)
             return this.maxThreadCount.getIntegerValue();
         else
-            return AsyncExecutorPoolManager.defaultMaxThreadCount;
+            return AsyncExecutorManager.defaultMaxThreadCount;
     }
 
     public long getKeepAliveSecs() throws HBqlException {
         if (this.keepAliveSecs != null)
             return this.keepAliveSecs.getIntegerValue();
         else
-            return AsyncExecutorPoolManager.defaultKeepAliveSecs;
+            return AsyncExecutorManager.defaultKeepAliveSecs;
     }
 
     public String asString() {

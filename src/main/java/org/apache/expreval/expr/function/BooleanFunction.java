@@ -26,7 +26,7 @@ import org.apache.expreval.expr.ExpressionTree;
 import org.apache.expreval.expr.node.BooleanValue;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.expreval.expr.var.DelegateColumn;
-import org.apache.hadoop.hbase.hbql.client.AsyncExecutorPoolManager;
+import org.apache.hadoop.hbase.hbql.client.AsyncExecutorManager;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.InvalidTypeException;
 import org.apache.hadoop.hbase.hbql.client.QueryExecutorPoolManager;
@@ -176,7 +176,7 @@ public class BooleanFunction extends GenericFunction implements BooleanValue {
 
             case ASYNCEXECUTORPOOLEXISTS: {
                 final String poolName = (String)this.getExprArg(0).getValue(null, null);
-                return AsyncExecutorPoolManager.asyncExecutorPoolExists(poolName);
+                return AsyncExecutorManager.asyncExecutorExists(poolName);
             }
 
             case QUERYEXECUTORPOOLEXISTS: {

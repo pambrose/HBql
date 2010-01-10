@@ -20,7 +20,7 @@
 
 package org.apache.hadoop.hbase.hbql.statement;
 
-import org.apache.hadoop.hbase.hbql.client.AsyncExecutorPoolManager;
+import org.apache.hadoop.hbase.hbql.client.AsyncExecutorManager;
 import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.executor.AsyncExecutorPoolDefinition;
@@ -44,10 +44,10 @@ public class CreateAsyncExecutorPoolStatement extends GenericStatement implement
 
         this.getArgs().validateExecutorPoolPropertyList();
 
-        AsyncExecutorPoolManager.newAsyncExecutorPool(this.getArgs().getPoolName(),
-                                                      this.getArgs().getMinThreadCount(),
-                                                      this.getArgs().getMaxThreadCount(),
-                                                      this.getArgs().getKeepAliveSecs());
+        AsyncExecutorManager.newAsyncExecutor(this.getArgs().getPoolName(),
+                                              this.getArgs().getMinThreadCount(),
+                                              this.getArgs().getMaxThreadCount(),
+                                              this.getArgs().getKeepAliveSecs());
 
         return new ExecutionResults("Executor pool " + this.getArgs().getPoolName() + " created.");
     }

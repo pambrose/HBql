@@ -20,6 +20,7 @@
 
 package org.apache.hadoop.hbase.hbql.impl;
 
+import org.apache.hadoop.hbase.hbql.client.AsyncExecutor;
 import org.apache.hadoop.hbase.hbql.client.QueryFuture;
 import org.apache.hadoop.hbase.hbql.util.NamedThreadFactory;
 
@@ -31,11 +32,16 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class UnboundedAsyncExecutor {
+public class AsyncExecutorImpl implements AsyncExecutor {
 
     private final AtomicBoolean atomicShutdown = new AtomicBoolean(false);
     private final AtomicInteger workSubmittedCounter = new AtomicInteger(0);
     private final LocalThreadPoolExecutor threadPoolExecutor;
+
+    private final String poolName;
+    private final int minThreadCount;
+    private final int maxThreadCount;
+    private final long keepAliveSecs;
 
     private static class LocalThreadPoolExecutor extends ThreadPoolExecutor {
 
@@ -81,12 +87,17 @@ public class UnboundedAsyncExecutor {
         }
     }
 
-    public UnboundedAsyncExecutor(final AsyncExecutorPoolImpl executorPool,
-                                  final int minThreadCount,
-                                  final int maxThreadCount,
-                                  final long keepAliveSecs) {
+    public AsyncExecutorImpl(final String poolName,
+                             final int minThreadCount,
+                             final int maxThreadCount,
+                             final long keepAliveSecs) {
+        this.poolName = poolName;
+        this.minThreadCount = minThreadCount;
+        this.maxThreadCount = maxThreadCount;
+        this.keepAliveSecs = keepAliveSecs;
+
         final BlockingQueue<Runnable> backingQueue = new LinkedBlockingQueue<Runnable>();
-        final String name = "Async exec pool " + executorPool.getName();
+        final String name = "Async exec pool " + this.getName();
         this.threadPoolExecutor = new LocalThreadPoolExecutor(minThreadCount,
                                                               maxThreadCount,
                                                               keepAliveSecs,
@@ -131,5 +142,21 @@ public class UnboundedAsyncExecutor {
                 }
             }
         }
+    }
+
+    public String getName() {
+        return this.poolName;
+    }
+
+    public int getMinThreadCount() {
+        return this.minThreadCount;
+    }
+
+    public int getMaxThreadCount() {
+        return this.maxThreadCount;
+    }
+
+    public long getKeepAliveSecs() {
+        return this.keepAliveSecs;
     }
 }

@@ -21,7 +21,7 @@
 package org.apache.hadoop.hbase.hbql;
 
 import org.apache.hadoop.hbase.HBaseConfiguration;
-import org.apache.hadoop.hbase.hbql.client.AsyncExecutorPoolManager;
+import org.apache.hadoop.hbase.hbql.client.AsyncExecutorManager;
 import org.apache.hadoop.hbase.hbql.client.HBatch;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
@@ -414,8 +414,8 @@ public class ExamplesTest extends TestSupport {
         conn.execute("CREATE ASYNC EXECUTOR POOL execPool (MAX_THREAD_COUNT: 10) IF NOT asyncExecutorPoolExists('execPool')");
 
         // Or, using the API
-        if (!AsyncExecutorPoolManager.asyncExecutorPoolExists("execPool"))
-            AsyncExecutorPoolManager.newAsyncExecutorPool("execPool", 5, 10, Long.MAX_VALUE);
+        if (!AsyncExecutorManager.asyncExecutorExists("execPool"))
+            AsyncExecutorManager.newAsyncExecutor("execPool", 5, 10, Long.MAX_VALUE);
 
         // Then assign the connection an async executor pool name to use for queries
         conn.setAsyncExecutorPoolName("execPool");
@@ -449,8 +449,8 @@ public class ExamplesTest extends TestSupport {
         conn.execute("DROP ASYNC EXECUTOR POOL execPool IF asyncExecutorPoolExists('execPool')");
 
         // Or, using the API
-        if (AsyncExecutorPoolManager.asyncExecutorPoolExists("execPool"))
-            AsyncExecutorPoolManager.dropAsyncExecutorPool("execPool");
+        if (AsyncExecutorManager.asyncExecutorExists("execPool"))
+            AsyncExecutorManager.dropAsyncExecutor("execPool");
 
         // END SNIPPET: drop-async-executor-pool
     }

@@ -20,8 +20,8 @@
 
 package org.apache.hadoop.hbase.hbql.statement;
 
-import org.apache.hadoop.hbase.hbql.client.AsyncExecutorPool;
-import org.apache.hadoop.hbase.hbql.client.AsyncExecutorPoolManager;
+import org.apache.hadoop.hbase.hbql.client.AsyncExecutor;
+import org.apache.hadoop.hbase.hbql.client.AsyncExecutorManager;
 import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
@@ -36,8 +36,8 @@ public class ShowAsyncExecutorPoolsStatement extends GenericStatement implements
 
         final ExecutionResults retval = new ExecutionResults();
         retval.out.println("Async Executor Pools: ");
-        for (final String name : AsyncExecutorPoolManager.getAsyncExecutorPoolNames()) {
-            final AsyncExecutorPool executorPool = AsyncExecutorPoolManager.getAsyncExecutorPool(name);
+        for (final String name : AsyncExecutorManager.getAsyncExecutorNames()) {
+            final AsyncExecutor executorPool = AsyncExecutorManager.getAsyncExecutor(name);
             retval.out.println("\t" + executorPool.getName() + "("
                                + "MIN_THREAD_COUNT: " + executorPool.getMinThreadCount()
                                + ", MAX_THREAD_COUNT: " + executorPool.getMaxThreadCount()
