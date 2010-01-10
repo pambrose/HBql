@@ -20,6 +20,7 @@
 
 package org.apache.hadoop.hbase.hbql.client;
 
+import org.apache.hadoop.hbase.hbql.impl.AsyncExecutorPoolImpl;
 import org.apache.hadoop.hbase.hbql.impl.Utils;
 import org.apache.hadoop.hbase.hbql.util.Maps;
 
@@ -33,9 +34,9 @@ public class AsyncExecutorPoolManager {
     public static int defaultMaxThreadCount = 10;
     public static long defaultKeepAliveSecs = Long.MAX_VALUE;
 
-    private static Map<String, AsyncExecutorPool> executorPoolMap = Maps.newConcurrentHashMap();
+    private static Map<String, AsyncExecutorPoolImpl> executorPoolMap = Maps.newConcurrentHashMap();
 
-    private static Map<String, AsyncExecutorPool> getExecutorPoolMap() {
+    private static Map<String, AsyncExecutorPoolImpl> getExecutorPoolMap() {
         return AsyncExecutorPoolManager.executorPoolMap;
     }
 
@@ -48,11 +49,11 @@ public class AsyncExecutorPoolManager {
         if (Utils.isValidString(poolName) && getExecutorPoolMap().containsKey(poolName))
             throw new HBqlException("AsyncExecutorPool already exists: " + poolName);
 
-        final AsyncExecutorPool executorPool = new AsyncExecutorPool(poolName,
-                                                                     maxExecutorPoolSize,
-                                                                     minThreadCount,
-                                                                     maxThreadCount,
-                                                                     keepAliveSecs);
+        final AsyncExecutorPoolImpl executorPool = new AsyncExecutorPoolImpl(poolName,
+                                                                             maxExecutorPoolSize,
+                                                                             minThreadCount,
+                                                                             maxThreadCount,
+                                                                             keepAliveSecs);
         AsyncExecutorPoolManager.getExecutorPoolMap().put(executorPool.getName(), executorPool);
 
         return executorPool;
@@ -61,7 +62,7 @@ public class AsyncExecutorPoolManager {
     public static boolean dropAsyncExecutorPool(final String name) {
 
         if (Utils.isValidString(name) && getExecutorPoolMap().containsKey(name)) {
-            final AsyncExecutorPool asyncExecutorPool = getExecutorPoolMap().remove(name);
+            final AsyncExecutorPoolImpl asyncExecutorPool = getExecutorPoolMap().remove(name);
             asyncExecutorPool.shutdown();
             return true;
         }
@@ -73,14 +74,14 @@ public class AsyncExecutorPoolManager {
         return Utils.isValidString(name) && AsyncExecutorPoolManager.getExecutorPoolMap().containsKey(name);
     }
 
-    public static AsyncExecutorPool getExecutorPool(final String poolName) throws HBqlException {
+    public static AsyncExecutorPoolImpl getExecutorPool(final String poolName) throws HBqlException {
         if (!AsyncExecutorPoolManager.getExecutorPoolMap().containsKey(poolName))
             throw new HBqlException("AsyncExecutorPool does not exist: " + poolName);
 
         return AsyncExecutorPoolManager.getExecutorPoolMap().get(poolName);
     }
 
-    public static Collection<AsyncExecutorPool> getAsyncExecutorPools() {
+    public static Collection<AsyncExecutorPoolImpl> getAsyncExecutorPools() {
         return AsyncExecutorPoolManager.getExecutorPoolMap().values();
     }
 }

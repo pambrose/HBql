@@ -20,7 +20,6 @@
 
 package org.apache.hadoop.hbase.hbql.impl;
 
-import org.apache.hadoop.hbase.hbql.client.AsyncExecutorPool;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.QueryFuture;
 import org.apache.hadoop.hbase.hbql.util.NamedThreadFactory;
@@ -38,7 +37,7 @@ public class UnboundedAsyncExecutor implements PoolableElement {
 
     private final AtomicBoolean atomicShutdown = new AtomicBoolean(false);
     private final AtomicInteger workSubmittedCounter = new AtomicInteger(0);
-    private final AsyncExecutorPool executorPool;
+    private final AsyncExecutorPoolImpl executorPool;
     private final LocalThreadPoolExecutor threadPoolExecutor;
 
     private static class LocalThreadPoolExecutor extends ThreadPoolExecutor {
@@ -85,7 +84,7 @@ public class UnboundedAsyncExecutor implements PoolableElement {
         }
     }
 
-    public UnboundedAsyncExecutor(final AsyncExecutorPool executorPool,
+    public UnboundedAsyncExecutor(final AsyncExecutorPoolImpl executorPool,
                                   final int minThreadCount,
                                   final int maxThreadCount,
                                   final long keepAliveSecs) throws HBqlException {
@@ -100,7 +99,7 @@ public class UnboundedAsyncExecutor implements PoolableElement {
                                                               new NamedThreadFactory(name));
     }
 
-    private AsyncExecutorPool getExecutorPool() {
+    private AsyncExecutorPoolImpl getExecutorPool() {
         return this.executorPool;
     }
 

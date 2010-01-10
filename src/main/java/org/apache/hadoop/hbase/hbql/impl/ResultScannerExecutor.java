@@ -22,11 +22,10 @@ package org.apache.hadoop.hbase.hbql.impl;
 
 import org.apache.hadoop.hbase.client.ResultScanner;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.client.QueryExecutorPool;
 
 public class ResultScannerExecutor extends CompletionQueueExecutor<ResultScanner> {
 
-    public ResultScannerExecutor(final QueryExecutorPool executorPool,
+    public ResultScannerExecutor(final QueryExecutorPoolImpl executorPool,
                                  final int minThreadCount,
                                  final int maxThreadCount,
                                  final long keepAliveSecs,
@@ -34,7 +33,7 @@ public class ResultScannerExecutor extends CompletionQueueExecutor<ResultScanner
         super(executorPool, minThreadCount, maxThreadCount, keepAliveSecs, completionQueueSize);
     }
 
-    public static ResultScannerExecutor newPooledResultScannerExecutor(final QueryExecutorPool executorPool,
+    public static ResultScannerExecutor newPooledResultScannerExecutor(final QueryExecutorPoolImpl executorPool,
                                                                        final int minThreadCount,
                                                                        final int maxThreadCount,
                                                                        final long keepAliveSecs,

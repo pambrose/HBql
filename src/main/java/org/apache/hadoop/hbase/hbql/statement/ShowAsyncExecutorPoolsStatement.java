@@ -20,10 +20,10 @@
 
 package org.apache.hadoop.hbase.hbql.statement;
 
-import org.apache.hadoop.hbase.hbql.client.AsyncExecutorPool;
 import org.apache.hadoop.hbase.hbql.client.AsyncExecutorPoolManager;
 import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.impl.AsyncExecutorPoolImpl;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 
 public class ShowAsyncExecutorPoolsStatement extends GenericStatement implements ConnectionStatement {
@@ -36,7 +36,7 @@ public class ShowAsyncExecutorPoolsStatement extends GenericStatement implements
 
         final ExecutionResults retval = new ExecutionResults();
         retval.out.println("Async Executor Pools: ");
-        for (final AsyncExecutorPool executorPool : AsyncExecutorPoolManager.getAsyncExecutorPools())
+        for (final AsyncExecutorPoolImpl executorPool : AsyncExecutorPoolManager.getAsyncExecutorPools())
             retval.out.println("\t" + executorPool.getName() + "(" +
                                "MAX_EXECUTOR_POOL_SIZE: " + executorPool.getMaxPoolSize()
                                + ", MIN_THREAD_COUNT: " + executorPool.getMinThreadCount()

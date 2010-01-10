@@ -20,6 +20,7 @@
 
 package org.apache.hadoop.hbase.hbql.client;
 
+import org.apache.hadoop.hbase.hbql.impl.QueryExecutorPoolImpl;
 import org.apache.hadoop.hbase.hbql.impl.Utils;
 import org.apache.hadoop.hbase.hbql.util.Maps;
 
@@ -35,9 +36,9 @@ public class QueryExecutorPoolManager {
     public static boolean defaultThreadsReadResults = true;
     public static int defaultCompletionQueueSize = 25;
 
-    private static Map<String, QueryExecutorPool> executorPoolMap = Maps.newConcurrentHashMap();
+    private static Map<String, QueryExecutorPoolImpl> executorPoolMap = Maps.newConcurrentHashMap();
 
-    private static Map<String, QueryExecutorPool> getExecutorPoolMap() {
+    private static Map<String, QueryExecutorPoolImpl> getExecutorPoolMap() {
         return QueryExecutorPoolManager.executorPoolMap;
     }
 
@@ -52,13 +53,13 @@ public class QueryExecutorPoolManager {
         if (Utils.isValidString(poolName) && getExecutorPoolMap().containsKey(poolName))
             throw new HBqlException("QueryExecutorPool already exists: " + poolName);
 
-        final QueryExecutorPool executorPool = new QueryExecutorPool(poolName,
-                                                                     maxExecutorPoolSize,
-                                                                     minThreadCount,
-                                                                     maxThreadCount,
-                                                                     keepAliveSecs,
-                                                                     threadsReadResults,
-                                                                     completionQueueSize);
+        final QueryExecutorPoolImpl executorPool = new QueryExecutorPoolImpl(poolName,
+                                                                             maxExecutorPoolSize,
+                                                                             minThreadCount,
+                                                                             maxThreadCount,
+                                                                             keepAliveSecs,
+                                                                             threadsReadResults,
+                                                                             completionQueueSize);
         QueryExecutorPoolManager.getExecutorPoolMap().put(executorPool.getName(), executorPool);
 
         return executorPool;
@@ -67,7 +68,7 @@ public class QueryExecutorPoolManager {
     public static boolean dropQueryExecutorPool(final String name) {
 
         if (Utils.isValidString(name) && getExecutorPoolMap().containsKey(name)) {
-            final QueryExecutorPool queryExecutorPool = getExecutorPoolMap().remove(name);
+            final QueryExecutorPoolImpl queryExecutorPool = getExecutorPoolMap().remove(name);
             queryExecutorPool.shutdown();
             return true;
         }
@@ -79,14 +80,14 @@ public class QueryExecutorPoolManager {
         return Utils.isValidString(name) && QueryExecutorPoolManager.getExecutorPoolMap().containsKey(name);
     }
 
-    public static QueryExecutorPool getExecutorPool(final String poolName) throws HBqlException {
+    public static QueryExecutorPoolImpl getExecutorPool(final String poolName) throws HBqlException {
         if (!QueryExecutorPoolManager.getExecutorPoolMap().containsKey(poolName))
             throw new HBqlException("QueryExecutorPool does not exist: " + poolName);
 
         return QueryExecutorPoolManager.getExecutorPoolMap().get(poolName);
     }
 
-    public static Collection<QueryExecutorPool> getQueryExecutorPools() {
+    public static Collection<QueryExecutorPoolImpl> getQueryExecutorPools() {
         return QueryExecutorPoolManager.getExecutorPoolMap().values();
     }
 }

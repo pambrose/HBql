@@ -21,7 +21,6 @@
 package org.apache.hadoop.hbase.hbql.impl;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.client.QueryExecutorPool;
 import org.apache.hadoop.hbase.hbql.util.ArrayBlockingQueues;
 import org.apache.hadoop.hbase.hbql.util.CompletionQueue;
 import org.apache.hadoop.hbase.hbql.util.Lists;
@@ -47,7 +46,7 @@ public abstract class CompletionQueueExecutor<T> implements PoolableElement {
     private final List<HBqlException> exceptionList = Lists.newArrayList();
     private final LocalThreadPoolExecutor threadPoolExecutor;
     private final CompletionQueue<T> completionQueue;
-    private final QueryExecutorPool executorPool;
+    private final QueryExecutorPoolImpl executorPool;
 
     private static class LocalCallerRunsPolicy extends ThreadPoolExecutor.CallerRunsPolicy {
 
@@ -88,7 +87,7 @@ public abstract class CompletionQueueExecutor<T> implements PoolableElement {
         }
     }
 
-    protected CompletionQueueExecutor(final QueryExecutorPool executorPool,
+    protected CompletionQueueExecutor(final QueryExecutorPoolImpl executorPool,
                                       final int minThreadCount,
                                       final int maxThreadCount,
                                       final long keepAliveSecs,
@@ -124,7 +123,7 @@ public abstract class CompletionQueueExecutor<T> implements PoolableElement {
         return this.workSubmittedCounter;
     }
 
-    private QueryExecutorPool getExecutorPool() {
+    private QueryExecutorPoolImpl getExecutorPool() {
         return this.executorPool;
     }
 

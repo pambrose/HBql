@@ -20,50 +20,11 @@
 
 package org.apache.hadoop.hbase.hbql.client;
 
-import org.apache.hadoop.hbase.hbql.impl.ElementPool;
-import org.apache.hadoop.hbase.hbql.impl.UnboundedAsyncExecutor;
+public interface AsyncExecutorPool {
 
-public class AsyncExecutorPool extends ElementPool<UnboundedAsyncExecutor> {
+    int getMinThreadCount();
 
-    private final int minThreadCount;
-    private final int maxThreadCount;
-    private final long keepAliveSecs;
+    int getMaxThreadCount();
 
-    public AsyncExecutorPool(final String poolName,
-                             final int maxExecutorPoolSize,
-                             final int minThreadCount,
-                             final int maxThreadCount,
-                             final long keepAliveSecs) {
-        super(poolName, maxExecutorPoolSize);
-        this.minThreadCount = minThreadCount;
-        this.maxThreadCount = maxThreadCount;
-        this.keepAliveSecs = keepAliveSecs;
-    }
-
-    public int getMinThreadCount() {
-        return this.minThreadCount;
-    }
-
-    public int getMaxThreadCount() {
-        return this.maxThreadCount;
-    }
-
-    public long getKeepAliveSecs() {
-        return this.keepAliveSecs;
-    }
-
-    public UnboundedAsyncExecutor takeAsyncExecutor() throws HBqlException {
-        return this.take();
-    }
-
-    public void releaseAsyncExecutor(final UnboundedAsyncExecutor element) {
-        this.release(element);
-    }
-
-    protected UnboundedAsyncExecutor newElement() throws HBqlException {
-        return new UnboundedAsyncExecutor(this,
-                                          this.getMinThreadCount(),
-                                          this.getMaxThreadCount(),
-                                          this.getKeepAliveSecs());
-    }
+    long getKeepAliveSecs();
 }
