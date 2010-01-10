@@ -28,26 +28,25 @@ Release Notes
 
     0.9.19-alpha -- 01/10/10
 
-        * Added support for asynchronous queries using AsyncExecutorPools
+        * Added support for asynchronous queries using AsyncExecutors
 
-        * Added {{{statements/create-async-executor-pool.html}CREATE ASYNC EXECUTOR POOL}} statement
+        * Added {{{statements/create-async-executor.html}CREATE ASYNC EXECUTOR}} statement
 
-        * Added {{{statements/drop-async-executor-pool.html}DROP ASYNC EXECUTOR POOL}} statement
+        * Added {{{statements/drop-async-executor.html}DROP ASYNC EXECUTOR}} statement
 
-        * Added {{{statements/show-async-executor-pools.html}SHOW ASYNC EXECUTOR POOLS}} statement
+        * Added {{{statements/show-async-executor.html}SHOW ASYNC EXECUTORS}} statement
 
-        * Added function asyncExecutorPoolExsits()
+        * Added function asyncExecutorExists()
 
         * Cleaned up QueryListener usage for sync and async usage
 
-
     0.9.18-alpha -- 01/05/10
 
-        * Misc cleanup.
+        * Misc cleanup
 
     0.9.17-alpha -- 01/03/10
 
-        * Misc cleanup.
+        * Misc cleanup
 
     0.9.16-alpha -- 12/31/09
 

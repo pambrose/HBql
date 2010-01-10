@@ -23,37 +23,36 @@ package org.apache.hadoop.hbase.hbql.statement;
 import org.apache.hadoop.hbase.hbql.client.AsyncExecutorManager;
 import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.executor.AsyncExecutorPoolDefinition;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 
-public class CreateAsyncExecutorPoolStatement extends GenericStatement implements ConnectionStatement {
+public class DropAsyncExecutorStatement extends GenericStatement implements ConnectionStatement {
 
-    private final AsyncExecutorPoolDefinition args;
+    private final String name;
 
-    public CreateAsyncExecutorPoolStatement(final StatementPredicate predicate,
-                                            final AsyncExecutorPoolDefinition args) {
+    public DropAsyncExecutorStatement(final StatementPredicate predicate, final String name) {
         super(predicate);
-        this.args = args;
+        this.name = name;
     }
 
-    private AsyncExecutorPoolDefinition getArgs() {
-        return this.args;
+    private String getName() {
+        return this.name;
     }
 
     protected ExecutionResults execute(final HConnectionImpl conn) throws HBqlException {
 
-        this.getArgs().validateExecutorPoolPropertyList();
-
-        AsyncExecutorManager.newAsyncExecutor(this.getArgs().getPoolName(),
-                                              this.getArgs().getMinThreadCount(),
-                                              this.getArgs().getMaxThreadCount(),
-                                              this.getArgs().getKeepAliveSecs());
-
-        return new ExecutionResults("Executor pool " + this.getArgs().getPoolName() + " created.");
+        final String msg;
+        if (!AsyncExecutorManager.asyncExecutorExists(this.getName())) {
+            msg = "Async Executor " + this.getName() + " does not exist";
+        }
+        else {
+            AsyncExecutorManager.dropAsyncExecutor(this.getName());
+            msg = "Async Executor " + this.getName() + " dropped.";
+        }
+        return new ExecutionResults(msg);
     }
 
 
     public static String usage() {
-        return "CREATE ASYNC EXECUTOR POOL pool_name (MIN_THREAD_COUNT: int_expr, MAX_THREAD_COUNT: int_expr, THREADS_READ_RESULTS: bool_expr, COMPLETION_QUEUE_SIZE: int_expr) [IF bool_expr]";
+        return "DROP ASYNC EXECUTOR name [IF bool_expr]";
     }
 }

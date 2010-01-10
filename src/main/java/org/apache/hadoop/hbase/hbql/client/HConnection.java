@@ -91,13 +91,13 @@ public interface HConnection {
 
     Set<HMapping> getAllMappings() throws HBqlException;
 
-    // Query Executor Routines
+    // QueryExecutor routines
     void setQueryExecutorPoolName(String name);
 
     String getQueryExecutorPoolName();
 
-    // Async Executor Routines
-    void setAsyncExecutorPoolName(String name);
+    // AsyncExecutor routines
+    void setAsyncExecutorName(String name);
 
-    String getAsyncExecutorPoolName();
+    String getAsyncExecutorName();
 }

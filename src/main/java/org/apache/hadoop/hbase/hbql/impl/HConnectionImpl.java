@@ -77,7 +77,7 @@ public class HConnectionImpl extends PoolableElement<HConnectionImpl> implements
     private final AtomicReference<IndexedTableAdmin> atomicIndexTableAdmin = AtomicReferences.newAtomicReference();
 
     private String queryExecutorPoolName = null;
-    private String asyncExecutorPoolName = null;
+    private String asyncExecutorName = null;
 
     public HConnectionImpl(final HBaseConfiguration hbaseConfig,
                            final HConnectionPoolImpl connectionPool,
@@ -495,12 +495,12 @@ public class HConnectionImpl extends PoolableElement<HConnectionImpl> implements
     // The value returned from this call must eventually be released.
     public AsyncExecutorImpl getAsyncExecutorForConnection() throws HBqlException {
 
-        if (!Utils.isValidString(this.getAsyncExecutorPoolName()))
-            throw new HBqlException("Connection not assigned an AsyncExecutorPool name");
+        if (!Utils.isValidString(this.getAsyncExecutorName()))
+            throw new HBqlException("Connection not assigned an AsyncExecutor name");
 
-        this.validateAsyncExecutorPoolNameExists(this.getAsyncExecutorPoolName());
+        this.validateAsyncExecutorNameExists(this.getAsyncExecutorName());
 
-        final AsyncExecutor executor = AsyncExecutorManager.getAsyncExecutor(this.getAsyncExecutorPoolName());
+        final AsyncExecutor executor = AsyncExecutorManager.getAsyncExecutor(this.getAsyncExecutorName());
 
         return ((AsyncExecutorImpl)executor);
     }
@@ -518,12 +518,12 @@ public class HConnectionImpl extends PoolableElement<HConnectionImpl> implements
         this.queryExecutorPoolName = poolName;
     }
 
-    public String getAsyncExecutorPoolName() {
-        return this.asyncExecutorPoolName;
+    public String getAsyncExecutorName() {
+        return this.asyncExecutorName;
     }
 
-    public void setAsyncExecutorPoolName(final String poolName) {
-        this.asyncExecutorPoolName = poolName;
+    public void setAsyncExecutorName(final String poolName) {
+        this.asyncExecutorName = poolName;
     }
 
     public void validateTableName(final String tableName) throws HBqlException {
@@ -551,8 +551,8 @@ public class HConnectionImpl extends PoolableElement<HConnectionImpl> implements
             throw new HBqlException("QueryExecutorPool " + poolName + " does not exist.");
     }
 
-    public void validateAsyncExecutorPoolNameExists(final String poolName) throws HBqlException {
-        if (!AsyncExecutorManager.asyncExecutorExists(poolName))
-            throw new HBqlException("AsyncExecutorPool " + poolName + " does not exist.");
+    public void validateAsyncExecutorNameExists(final String name) throws HBqlException {
+        if (!AsyncExecutorManager.asyncExecutorExists(name))
+            throw new HBqlException("AsyncExecutor " + name + " does not exist.");
     }
 }

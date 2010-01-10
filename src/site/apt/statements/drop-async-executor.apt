@@ -1,0 +1,23 @@
+    -----
+    DROP ASYNC EXECUTOR
+    -----
+    -----
+
+
+DROP ASYNC EXECUTOR
+
+*Syntax
+
+---------------------------
+
+DROP ASYNC EXECUTOR name [IF bool_expr]
+
+---------------------------
+
+*Description
+
+    Drops named AsyncExecutor.
+
+*Example
+
+%{snippet|id=drop-async-executor|file=src/test/java/org/apache/hadoop/hbase/hbql/ExamplesTest.java}

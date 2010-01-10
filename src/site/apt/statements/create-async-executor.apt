@@ -1,16 +1,16 @@
     -----
-    CREATE ASYNC EXECUTOR POOL
+    CREATE ASYNC EXECUTOR
     -----
     -----
 
 
-CREATE ASYNC EXECUTOR POOL
+CREATE ASYNC EXECUTOR
 
 *Syntax
 
 ---------------------------
 
-CREATE ASYNC EXECUTOR POOL pool_name ['(' executorArg [, ...] ')'] [IF bool_expr]
+CREATE ASYNC EXECUTOR name ['(' executorArg [, ...] ')'] [IF bool_expr]
 
 executorArg:
     MIN_THREAD_COUNT ':' int_expr
@@ -21,7 +21,7 @@ executorArg:
 
 *Description
 
-    Creates a named AsyncExecutor pool.
+    Creates a named AsyncExecutor.
 
     * An AsyncExecutor provides a thread pool for asynchronous query execution.  An AsyncExecutorPool is assigned
     using HConncetion.setAsyncExecutorPoolName().
@@ -66,4 +66,4 @@ executorArg:
 
 *Example
 
-%{snippet|id=create-async-executor-pool|file=src/test/java/org/apache/hadoop/hbase/hbql/ExamplesTest.java}
+%{snippet|id=create-async-executor|file=src/test/java/org/apache/hadoop/hbase/hbql/ExamplesTest.java}

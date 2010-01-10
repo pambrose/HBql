@@ -25,57 +25,57 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 
 import java.util.List;
 
-public class AsyncExecutorPoolDefinition {
+public class AsyncExecutorDefinition {
 
-    private final String poolName;
-    private final List<ExecutorPoolProperty> executorPoolPropertyList;
+    private final String name;
+    private final List<ExecutorProperty> executorPropertyList;
 
-    private ExecutorPoolProperty minThreadCount = null;
-    private ExecutorPoolProperty maxThreadCount = null;
-    private ExecutorPoolProperty keepAliveSecs = null;
+    private ExecutorProperty minThreadCount = null;
+    private ExecutorProperty maxThreadCount = null;
+    private ExecutorProperty keepAliveSecs = null;
 
-    public AsyncExecutorPoolDefinition(final String poolName, final List<ExecutorPoolProperty> executorPropertyList) {
-        this.poolName = poolName;
-        this.executorPoolPropertyList = executorPropertyList;
+    public AsyncExecutorDefinition(final String name, final List<ExecutorProperty> executorPropertyList) {
+        this.name = name;
+        this.executorPropertyList = executorPropertyList;
     }
 
-    public String getPoolName() {
-        return this.poolName;
+    public String getName() {
+        return this.name;
     }
 
-    private List<ExecutorPoolProperty> getExecutorPoolPropertyList() {
-        return this.executorPoolPropertyList;
+    private List<ExecutorProperty> getExecutorPropertyList() {
+        return this.executorPropertyList;
     }
 
-    private ExecutorPoolProperty validateProperty(final ExecutorPoolProperty assignee,
-                                                  final ExecutorPoolProperty value) throws HBqlException {
+    private ExecutorProperty validateProperty(final ExecutorProperty assignee,
+                                              final ExecutorProperty value) throws HBqlException {
         if (assignee != null)
             throw new HBqlException("Multiple " + value.getPropertyType().getDescription()
-                                    + " values for " + this.getPoolName() + " not allowed");
+                                    + " values for " + this.getName() + " not allowed");
         return value;
     }
 
-    public void validateExecutorPoolPropertyList() throws HBqlException {
+    public void validatePropertyList() throws HBqlException {
 
-        if (this.getExecutorPoolPropertyList() == null)
+        if (this.getExecutorPropertyList() == null)
             return;
 
-        for (final ExecutorPoolProperty executorPoolProperty : this.getExecutorPoolPropertyList()) {
+        for (final ExecutorProperty executorProperty : this.getExecutorPropertyList()) {
 
-            executorPoolProperty.validate();
+            executorProperty.validate();
 
-            switch (executorPoolProperty.getEnumType()) {
+            switch (executorProperty.getEnumType()) {
 
                 case MIN_THREAD_COUNT:
-                    this.minThreadCount = this.validateProperty(this.minThreadCount, executorPoolProperty);
+                    this.minThreadCount = this.validateProperty(this.minThreadCount, executorProperty);
                     break;
 
                 case MAX_THREAD_COUNT:
-                    this.maxThreadCount = this.validateProperty(this.maxThreadCount, executorPoolProperty);
+                    this.maxThreadCount = this.validateProperty(this.maxThreadCount, executorProperty);
                     break;
 
                 case KEEP_ALIVE_SECS:
-                    this.keepAliveSecs = this.validateProperty(this.keepAliveSecs, executorPoolProperty);
+                    this.keepAliveSecs = this.validateProperty(this.keepAliveSecs, executorProperty);
                     break;
             }
         }

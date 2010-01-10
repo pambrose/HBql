@@ -174,7 +174,7 @@ public class BooleanFunction extends GenericFunction implements BooleanValue {
                     }
                 }
 
-            case ASYNCEXECUTORPOOLEXISTS: {
+            case ASYNCEXECUTOREXISTS: {
                 final String poolName = (String)this.getExprArg(0).getValue(null, null);
                 return AsyncExecutorManager.asyncExecutorExists(poolName);
             }

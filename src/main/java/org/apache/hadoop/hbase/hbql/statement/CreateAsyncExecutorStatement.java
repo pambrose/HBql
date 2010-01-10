@@ -20,35 +20,40 @@
 
 package org.apache.hadoop.hbase.hbql.statement;
 
-import org.apache.hadoop.hbase.hbql.client.AsyncExecutor;
 import org.apache.hadoop.hbase.hbql.client.AsyncExecutorManager;
 import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.executor.AsyncExecutorDefinition;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 
-public class ShowAsyncExecutorPoolsStatement extends GenericStatement implements ConnectionStatement {
+public class CreateAsyncExecutorStatement extends GenericStatement implements ConnectionStatement {
 
-    public ShowAsyncExecutorPoolsStatement() {
-        super(null);
+    private final AsyncExecutorDefinition args;
+
+    public CreateAsyncExecutorStatement(final StatementPredicate predicate,
+                                        final AsyncExecutorDefinition args) {
+        super(predicate);
+        this.args = args;
+    }
+
+    private AsyncExecutorDefinition getArgs() {
+        return this.args;
     }
 
     protected ExecutionResults execute(final HConnectionImpl conn) throws HBqlException {
 
-        final ExecutionResults retval = new ExecutionResults();
-        retval.out.println("Async Executor Pools: ");
-        for (final String name : AsyncExecutorManager.getAsyncExecutorNames()) {
-            final AsyncExecutor executorPool = AsyncExecutorManager.getAsyncExecutor(name);
-            retval.out.println("\t" + executorPool.getName() + "("
-                               + "MIN_THREAD_COUNT: " + executorPool.getMinThreadCount()
-                               + ", MAX_THREAD_COUNT: " + executorPool.getMaxThreadCount()
-                               + ", KEEP_ALIVE_SECS: " + executorPool.getKeepAliveSecs()
-                               + ")");
-        }
-        retval.out.flush();
-        return retval;
+        this.getArgs().validatePropertyList();
+
+        AsyncExecutorManager.newAsyncExecutor(this.getArgs().getName(),
+                                              this.getArgs().getMinThreadCount(),
+                                              this.getArgs().getMaxThreadCount(),
+                                              this.getArgs().getKeepAliveSecs());
+
+        return new ExecutionResults("Async executor " + this.getArgs().getName() + " created.");
     }
 
+
     public static String usage() {
-        return "SHOW ASYNC EXECUTOR POOLS";
+        return "CREATE ASYNC EXECUTOR name (MIN_THREAD_COUNT: int_expr, MAX_THREAD_COUNT: int_expr, THREADS_READ_RESULTS: bool_expr, COMPLETION_QUEUE_SIZE: int_expr) [IF bool_expr]";
     }
 }

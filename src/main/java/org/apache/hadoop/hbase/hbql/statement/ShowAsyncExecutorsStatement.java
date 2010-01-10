@@ -20,39 +20,35 @@
 
 package org.apache.hadoop.hbase.hbql.statement;
 
+import org.apache.hadoop.hbase.hbql.client.AsyncExecutor;
 import org.apache.hadoop.hbase.hbql.client.AsyncExecutorManager;
 import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 
-public class DropAsyncExecutorPoolStatement extends GenericStatement implements ConnectionStatement {
+public class ShowAsyncExecutorsStatement extends GenericStatement implements ConnectionStatement {
 
-    private final String poolName;
-
-    public DropAsyncExecutorPoolStatement(final StatementPredicate predicate, final String poolName) {
-        super(predicate);
-        this.poolName = poolName;
-    }
-
-    private String getPoolName() {
-        return this.poolName;
+    public ShowAsyncExecutorsStatement() {
+        super(null);
     }
 
     protected ExecutionResults execute(final HConnectionImpl conn) throws HBqlException {
 
-        final String msg;
-        if (!AsyncExecutorManager.asyncExecutorExists(this.getPoolName())) {
-            msg = "Async Executor pool " + this.getPoolName() + " does not exist";
+        final ExecutionResults retval = new ExecutionResults();
+        retval.out.println("Async Executors: ");
+        for (final String name : AsyncExecutorManager.getAsyncExecutorNames()) {
+            final AsyncExecutor asyncExecutor = AsyncExecutorManager.getAsyncExecutor(name);
+            retval.out.println("\t" + asyncExecutor.getName() + "("
+                               + "MIN_THREAD_COUNT: " + asyncExecutor.getMinThreadCount()
+                               + ", MAX_THREAD_COUNT: " + asyncExecutor.getMaxThreadCount()
+                               + ", KEEP_ALIVE_SECS: " + asyncExecutor.getKeepAliveSecs()
+                               + ")");
         }
-        else {
-            AsyncExecutorManager.dropAsyncExecutor(this.getPoolName());
-            msg = "Async Executor pool " + this.getPoolName() + " dropped.";
-        }
-        return new ExecutionResults(msg);
+        retval.out.flush();
+        return retval;
     }
 
-
     public static String usage() {
-        return "DROP ASYNC EXECUTOR POOL pool_name [IF bool_expr]";
+        return "SHOW ASYNC EXECUTORS";
     }
 }

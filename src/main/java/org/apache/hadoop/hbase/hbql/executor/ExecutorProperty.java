@@ -28,7 +28,7 @@ import org.apache.expreval.expr.node.GenericValue;
 import org.apache.expreval.expr.node.IntegerValue;
 import org.apache.expreval.expr.node.LongValue;
 
-public class ExecutorPoolProperty extends ExpressionProperty {
+public class ExecutorProperty extends ExpressionProperty {
 
     public static enum Type implements PropertyType {
 
@@ -56,8 +56,8 @@ public class ExecutorPoolProperty extends ExpressionProperty {
         }
     }
 
-    public ExecutorPoolProperty(final String text, final GenericValue arg0) {
-        super(ExecutorPoolProperty.Type.valueOf(text.toUpperCase()), arg0);
+    public ExecutorProperty(final String text, final GenericValue arg0) {
+        super(ExecutorProperty.Type.valueOf(text.toUpperCase()), arg0);
     }
 
     public Type getEnumType() {

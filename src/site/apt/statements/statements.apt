@@ -54,13 +54,13 @@ HBql Statements
     **{{{./show-query-executor-pools.html}SHOW QUERY EXECUTOR POOLS}}
 
 
-* Async Executor Pools
+* Async Executors
 
-    **{{{./create-async-executor-pool.html}CREATE ASYNC EXECUTOR POOL}}
+    **{{{./create-async-executor.html}CREATE ASYNC EXECUTOR}}
 
-    **{{{./drop-async-executor-pool.html}DROP ASYNC EXECUTOR POOL}}
+    **{{{./drop-async-executor.html}DROP ASYNC EXECUTOR}}
 
-    **{{{./show-async-executor-pools.html}SHOW ASYNC EXECUTOR POOLS}}
+    **{{{./show-async-executor.html}SHOW ASYNC EXECUTORS}}
 
 
 * Data Manipulation

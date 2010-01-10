@@ -52,7 +52,7 @@ public class CreateQueryExecutorPoolStatement extends GenericStatement implement
                                                       this.getArgs().getThreadsReadResults(),
                                                       this.getArgs().getCompletionQueueSize());
 
-        return new ExecutionResults("Executor pool " + this.getArgs().getPoolName() + " created.");
+        return new ExecutionResults("Query executor pool " + this.getArgs().getPoolName() + " created.");
     }
 
 

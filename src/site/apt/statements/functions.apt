@@ -84,9 +84,9 @@ Boolean Functions
 *--+--+--+--+
 | IndexExistsForMapping(string, string) | boolean  | Returns true if table referenced by mapping has index | indexExistsForMapping('idx1', 'foomap') | true if table foo has index idx1 |
 *--+--+--+--+
-| AsyncExecutorPoolExists(string) | boolean  | Returns true if named async executor pool exists | asyncExecutorPoolExists('execPool') | true if async executor pool execPool is declared |
+| AsyncExecutorExists(string) | boolean  | Returns true if named AsyncExecutor exists | asyncExecutorExists('exec') | true if AsyncExecutor exec is declared |
 *--+--+--+--+
-| QueryExecutorPoolExists(string) | boolean  | Returns true if named query executor pool exists | queryExecutorPoolExists('execPool') | true if query executor pool execPool is declared |
+| QueryExecutorPoolExists(string) | boolean  | Returns true if named QueryExecutorPool exists | queryExecutorPoolExists('execPool') | true if QueryExecutorPool execPool is declared |
 *--+--+--+--+
 
 Date Functions

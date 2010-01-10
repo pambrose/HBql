@@ -406,23 +406,23 @@ public class ExamplesTest extends TestSupport {
 
     public void createAsynExecutorPool() throws HBqlException {
 
-        // START SNIPPET: create-async-executor-pool
+        // START SNIPPET: create-async-executor
 
         HConnection conn = HConnectionManager.newConnection();
 
-        // Create Async Executor Pool named execPool if it doesn't already exist.
-        conn.execute("CREATE ASYNC EXECUTOR POOL execPool (MAX_THREAD_COUNT: 10) IF NOT asyncExecutorPoolExists('execPool')");
+        // Create AsyncExecutor named exec1 if it doesn't already exist.
+        conn.execute("CREATE ASYNC EXECUTOR exec1 (MAX_THREAD_COUNT: 10) IF NOT asyncExecutorExists('exec1')");
 
         // Or, using the API
-        if (!AsyncExecutorManager.asyncExecutorExists("execPool"))
-            AsyncExecutorManager.newAsyncExecutor("execPool", 5, 10, Long.MAX_VALUE);
+        if (!AsyncExecutorManager.asyncExecutorExists("exec1"))
+            AsyncExecutorManager.newAsyncExecutor("exec1", 5, 10, Long.MAX_VALUE);
 
-        // Then assign the connection an async executor pool name to use for queries
-        conn.setAsyncExecutorPoolName("execPool");
+        // Then assign the connection an AsyncExecutor name to use for queries
+        conn.setAsyncExecutorName("execPool");
 
         // Now use connection in a query.
 
-        // END SNIPPET: create-async-executor-pool
+        // END SNIPPET: create-async-executor
     }
 
     public void dropQueryExecutorPool() throws HBqlException {
@@ -440,19 +440,19 @@ public class ExamplesTest extends TestSupport {
         // END SNIPPET: drop-query-executor-pool
     }
 
-    public void dropAsyncExecutorPool() throws HBqlException {
+    public void dropAsyncExecutor() throws HBqlException {
 
-        // START SNIPPET: drop-async-executor-pool
+        // START SNIPPET: drop-async-executor
 
         HConnection conn = HConnectionManager.newConnection();
 
-        conn.execute("DROP ASYNC EXECUTOR POOL execPool IF asyncExecutorPoolExists('execPool')");
+        conn.execute("DROP ASYNC EXECUTOR exec1 IF asyncExecutorExists('exec1')");
 
         // Or, using the API
-        if (AsyncExecutorManager.asyncExecutorExists("execPool"))
-            AsyncExecutorManager.dropAsyncExecutor("execPool");
+        if (AsyncExecutorManager.asyncExecutorExists("exec1"))
+            AsyncExecutorManager.dropAsyncExecutor("exec1");
 
-        // END SNIPPET: drop-async-executor-pool
+        // END SNIPPET: drop-async-executor
     }
 
     public void index1() throws HBqlException {

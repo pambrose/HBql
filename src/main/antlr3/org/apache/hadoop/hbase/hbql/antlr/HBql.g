@@ -98,7 +98,7 @@ options {backtrack=true;}
 	: keySHOW keyTABLES 		 		{retval = new ShowTablesStatement();}
 	| keySHOW keyMAPPINGS 		 		{retval = new ShowMappingsStatement();}
 	| keySHOW keyQUERY keyEXECUTOR keyPOOLS 	{retval = new ShowQueryExecutorPoolsStatement();}
-	| keySHOW keyASYNC keyEXECUTOR keyPOOLS 	{retval = new ShowAsyncExecutorPoolsStatement();}
+	| keySHOW keyASYNC keyEXECUTORS 		{retval = new ShowAsyncExecutorsStatement();}
 	| keyIMPORT val=QSTRING				{retval = new ImportStatement($val.text);}
 	| keyPARSE c=consoleStatement			{retval = new ParseStatement($c.retval);}
 	| keyEVAL te=exprValue				{retval = new EvalStatement($te.retval);}
@@ -145,10 +145,10 @@ options {backtrack=true;}
 							{retval = new CreateQueryExecutorPoolStatement($p.retval, new QueryExecutorPoolDefinition($t.text, $pl.retval));}
 	| keyDROP keyQUERY keyEXECUTOR keyPOOL t=simpleId p=pred?
 							{retval = new DropQueryExecutorPoolStatement($p.retval, $t.text);}
-	| keyCREATE keyASYNC keyEXECUTOR keyPOOL t=simpleId pl=asyncExecPoolPropertyList?  p=pred?
-							{retval = new CreateAsyncExecutorPoolStatement($p.retval, new AsyncExecutorPoolDefinition($t.text, $pl.retval));}
-	| keyDROP keyASYNC keyEXECUTOR keyPOOL t=simpleId p=pred?
-							{retval = new DropAsyncExecutorPoolStatement($p.retval, $t.text);}
+	| keyCREATE keyASYNC keyEXECUTOR t=simpleId pl=asyncExecutorPropertyList?  p=pred?
+							{retval = new CreateAsyncExecutorStatement($p.retval, new AsyncExecutorDefinition($t.text, $pl.retval));}
+	| keyDROP keyASYNC keyEXECUTOR t=simpleId p=pred?
+							{retval = new DropAsyncExecutorStatement($p.retval, $t.text);}
 	;
 
 indexColumnList returns [List<String> retval]
@@ -201,29 +201,29 @@ familyDefinitionList returns [List<FamilyDefinition> retval]
 familyDefinition returns [FamilyDefinition retval]
 	: t=simpleId LPAREN p=familyPropertyList? RPAREN{retval = new FamilyDefinition($t.text, $p.retval);};
 
-asyncExecPoolPropertyList returns [List<ExecutorPoolProperty> retval]
+asyncExecutorPropertyList returns [List<ExecutorProperty> retval]
 @init {retval = Lists.newArrayList();}
-	: LPAREN a1=asyncExecPoolProperty {retval.add($a1.retval);} (COMMA a2=asyncExecPoolProperty {retval.add($a2.retval);})* RPAREN;
+	: LPAREN a1=asyncExecutorProperty {retval.add($a1.retval);} (COMMA a2=asyncExecutorProperty {retval.add($a2.retval);})* RPAREN;
 
-asyncExecPoolProperty returns [ExecutorPoolProperty retval]
+asyncExecutorProperty returns [ExecutorProperty retval]
 options {backtrack=true;}	
-	: k=keyMIN_THREAD_COUNT COLON v=exprValue	{retval = new ExecutorPoolProperty($k.retval, $v.retval);}
-	| k=keyMAX_THREAD_COUNT COLON v=exprValue	{retval = new ExecutorPoolProperty($k.retval, $v.retval);}
-	| k=keyKEEP_ALIVE_SECS COLON v=exprValue	{retval = new ExecutorPoolProperty($k.retval, $v.retval);}
+	: k=keyMIN_THREAD_COUNT COLON v=exprValue	{retval = new ExecutorProperty($k.retval, $v.retval);}
+	| k=keyMAX_THREAD_COUNT COLON v=exprValue	{retval = new ExecutorProperty($k.retval, $v.retval);}
+	| k=keyKEEP_ALIVE_SECS COLON v=exprValue	{retval = new ExecutorProperty($k.retval, $v.retval);}
 	;
 
-queryExecPoolPropertyList returns [List<ExecutorPoolProperty> retval]
+queryExecPoolPropertyList returns [List<ExecutorProperty> retval]
 @init {retval = Lists.newArrayList();}
 	: LPAREN a1=queryExecPoolProperty {retval.add($a1.retval);} (COMMA a2=queryExecPoolProperty {retval.add($a2.retval);})* RPAREN;
 
-queryExecPoolProperty returns [ExecutorPoolProperty retval]
+queryExecPoolProperty returns [ExecutorProperty retval]
 options {backtrack=true;}	
-	: k=keyMAX_EXECUTOR_POOL_SIZE COLON v=exprValue	{retval = new ExecutorPoolProperty($k.retval, $v.retval);}
-	| k=keyMIN_THREAD_COUNT COLON v=exprValue	{retval = new ExecutorPoolProperty($k.retval, $v.retval);}
-	| k=keyMAX_THREAD_COUNT COLON v=exprValue	{retval = new ExecutorPoolProperty($k.retval, $v.retval);}
-	| k=keyKEEP_ALIVE_SECS COLON v=exprValue	{retval = new ExecutorPoolProperty($k.retval, $v.retval);}
-	| k=keyTHREADS_READ_RESULTS COLON v=exprValue	{retval = new ExecutorPoolProperty($k.retval, $v.retval);}
-	| k=keyCOMPLETION_QUEUE_SIZE COLON v=exprValue	{retval = new ExecutorPoolProperty($k.retval, $v.retval);}
+	: k=keyMAX_EXECUTOR_POOL_SIZE COLON v=exprValue	{retval = new ExecutorProperty($k.retval, $v.retval);}
+	| k=keyMIN_THREAD_COUNT COLON v=exprValue	{retval = new ExecutorProperty($k.retval, $v.retval);}
+	| k=keyMAX_THREAD_COUNT COLON v=exprValue	{retval = new ExecutorProperty($k.retval, $v.retval);}
+	| k=keyKEEP_ALIVE_SECS COLON v=exprValue	{retval = new ExecutorProperty($k.retval, $v.retval);}
+	| k=keyTHREADS_READ_RESULTS COLON v=exprValue	{retval = new ExecutorProperty($k.retval, $v.retval);}
+	| k=keyCOMPLETION_QUEUE_SIZE COLON v=exprValue	{retval = new ExecutorProperty($k.retval, $v.retval);}
 	;
 
 familyPropertyList returns [List<FamilyProperty> retval]							
@@ -626,6 +626,7 @@ keyENABLE                       : {isKeyword(input, "ENABLE")}? ID;
 keyEND                          : {isKeyword(input, "END")}? ID;
 keyEVAL                         : {isKeyword(input, "EVAL")}? ID;
 keyEXECUTOR                     : {isKeyword(input, "EXECUTOR")}? ID;
+keyEXECUTORS                    : {isKeyword(input, "EXECUTORS")}? ID;
 keyFALSE                        : {isKeyword(input, "FALSE")}? ID;
 keyFAMILY                       : {isKeyword(input, "FAMILY")}? ID;
 keyFILTER                       : {isKeyword(input, "FILTER")}? ID;

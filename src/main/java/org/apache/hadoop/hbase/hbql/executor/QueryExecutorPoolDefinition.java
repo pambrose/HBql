@@ -28,30 +28,30 @@ import java.util.List;
 public class QueryExecutorPoolDefinition {
 
     private final String poolName;
-    private final List<ExecutorPoolProperty> executorPoolPropertyList;
+    private final List<ExecutorProperty> executorPropertyList;
 
-    private ExecutorPoolProperty maxExecutorPoolSize = null;
-    private ExecutorPoolProperty minThreadCount = null;
-    private ExecutorPoolProperty maxThreadCount = null;
-    private ExecutorPoolProperty keepAliveSecs = null;
-    private ExecutorPoolProperty threadsReadResults = null;
-    private ExecutorPoolProperty completionQueueSize = null;
+    private ExecutorProperty maxExecutorPoolSize = null;
+    private ExecutorProperty minThreadCount = null;
+    private ExecutorProperty maxThreadCount = null;
+    private ExecutorProperty keepAliveSecs = null;
+    private ExecutorProperty threadsReadResults = null;
+    private ExecutorProperty completionQueueSize = null;
 
-    public QueryExecutorPoolDefinition(final String poolName, final List<ExecutorPoolProperty> executorPropertyList) {
+    public QueryExecutorPoolDefinition(final String poolName, final List<ExecutorProperty> executorPropertyList) {
         this.poolName = poolName;
-        this.executorPoolPropertyList = executorPropertyList;
+        this.executorPropertyList = executorPropertyList;
     }
 
     public String getPoolName() {
         return this.poolName;
     }
 
-    private List<ExecutorPoolProperty> getExecutorPoolPropertyList() {
-        return this.executorPoolPropertyList;
+    private List<ExecutorProperty> getExecutorPoolPropertyList() {
+        return this.executorPropertyList;
     }
 
-    private ExecutorPoolProperty validateProperty(final ExecutorPoolProperty assignee,
-                                                  final ExecutorPoolProperty value) throws HBqlException {
+    private ExecutorProperty validateProperty(final ExecutorProperty assignee,
+                                              final ExecutorProperty value) throws HBqlException {
         if (assignee != null)
             throw new HBqlException("Multiple " + value.getPropertyType().getDescription()
                                     + " values for " + this.getPoolName() + " not allowed");
@@ -63,34 +63,34 @@ public class QueryExecutorPoolDefinition {
         if (this.getExecutorPoolPropertyList() == null)
             return;
 
-        for (final ExecutorPoolProperty executorPoolProperty : this.getExecutorPoolPropertyList()) {
+        for (final ExecutorProperty executorProperty : this.getExecutorPoolPropertyList()) {
 
-            executorPoolProperty.validate();
+            executorProperty.validate();
 
-            switch (executorPoolProperty.getEnumType()) {
+            switch (executorProperty.getEnumType()) {
 
                 case MAX_EXECUTOR_POOL_SIZE:
-                    this.maxExecutorPoolSize = this.validateProperty(this.maxExecutorPoolSize, executorPoolProperty);
+                    this.maxExecutorPoolSize = this.validateProperty(this.maxExecutorPoolSize, executorProperty);
                     break;
 
                 case MIN_THREAD_COUNT:
-                    this.minThreadCount = this.validateProperty(this.minThreadCount, executorPoolProperty);
+                    this.minThreadCount = this.validateProperty(this.minThreadCount, executorProperty);
                     break;
 
                 case MAX_THREAD_COUNT:
-                    this.maxThreadCount = this.validateProperty(this.maxThreadCount, executorPoolProperty);
+                    this.maxThreadCount = this.validateProperty(this.maxThreadCount, executorProperty);
                     break;
 
                 case KEEP_ALIVE_SECS:
-                    this.keepAliveSecs = this.validateProperty(this.keepAliveSecs, executorPoolProperty);
+                    this.keepAliveSecs = this.validateProperty(this.keepAliveSecs, executorProperty);
                     break;
 
                 case THREADS_READ_RESULTS:
-                    this.threadsReadResults = this.validateProperty(this.threadsReadResults, executorPoolProperty);
+                    this.threadsReadResults = this.validateProperty(this.threadsReadResults, executorProperty);
                     break;
 
                 case COMPLETION_QUEUE_SIZE:
-                    this.completionQueueSize = this.validateProperty(this.completionQueueSize, executorPoolProperty);
+                    this.completionQueueSize = this.validateProperty(this.completionQueueSize, executorProperty);
                     break;
             }
         }

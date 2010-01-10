@@ -281,7 +281,7 @@ public class ServerFilterTest extends TestSupport {
         QueryExecutorPoolManager.newQueryExecutorPool("threadPool2", 5, 2, 5, 30, true, 100);
         AsyncExecutorManager.newAsyncExecutor("asyncPool2", 2, 4, 60);
         connection.setQueryExecutorPoolName("threadPool2");
-        connection.setAsyncExecutorPoolName("asyncPool2");
+        connection.setAsyncExecutorName("asyncPool2");
 
         final List<QueryFuture> futureList = Lists.newArrayList();
 
