@@ -25,19 +25,20 @@ executorArg:
     Creates a named AsyncExecutor pool.
 
     * An AsyncExecutor provides a thread pool for asynchronous query execution.  An AsyncExecutorPool is assigned
-    using HConncetion.setAsyncExecutorPoolName().  An asynchronous query uses one thread per AsyncExecutor thread pool.
-    So the maximum number of concurrent queries is bound by the number of threads in an AsyncExecutor thread pool.
+    using HConncetion.setAsyncExecutorPoolName().
+
+    * AsyncExecutors are used in asynchrous queries such that each async query on a connection is executed by a
+    different thread in the AsyncExecutor thread pool.
+
+    * The number of connections executing concurrent asynchronous queries is bound by the size
+    of the AsyncExecutorPool. The number of concurrent asynchronous queries executed by a single
+    connection is bound by the size of the AsyncExecutor thread pool.
+
+    * AsyncExecutors are not used with synchronous queries.
 
     * An AsyncExecutorPool  request will block if all elements in the pool are taken.
-    A QueryExecutor is released back to a pool when the query is complete (when the ResultSet
+    An AsyncExecutor is released back to a pool on query completion (when the ResultSet
     iterator is completed).
-
-    * QueryExecutors are used in queries such that each key or key range is processed by a different thread in the
-    QueryExecutor thread pool.  Keys and key ranges correspond to Gets and Scans in HBase.  QueryExecutors can
-    assume two behaviors for processing query data: the threads can make a Get or Scan request and return the
-    ResultScanner objects back to the main thread, which will then iterate through the Result values.
-    Or, the threads can iterate through the ResultScanner results and return the Result objects back to
-    the main thread.
 
     * If an HConnection is from an HConnectionPool, the AsyncExecutor assignments are reset when
     HConnection.close() is called.  Thus, AsyncExecutorPool name assignments should be made when an

@@ -488,7 +488,7 @@ public class HConnectionImpl extends PoolableElement<HConnectionImpl> implements
         return executorQueue;
     }
 
-    // The value returned from this call must be eventually released.
+    // The value returned from this call must eventually be released.
     public UnboundedAsyncExecutor getAsyncExecutorForConnection() throws HBqlException {
 
         if (!Utils.isValidString(this.getAsyncExecutorPoolName()))

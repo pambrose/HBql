@@ -28,7 +28,7 @@ Release Notes
 
     0.9.19-alpha -- 01/10/10
 
-        * Added support for asynchronous queries using AsyncExecutors and AsyncExecutorPools
+        * Added support for asynchronous queries using AsyncExecutorPools
 
         * Added {{{statements/create-async-executor-pool.html}CREATE ASYNC EXECUTOR POOL}} statement
 
@@ -38,7 +38,7 @@ Release Notes
 
         * Added function asyncExecutorPoolExsits()
 
-        * Cleaned up QueryListener usage
+        * Cleaned up QueryListener usage for sync and async usage
 
 
     0.9.18-alpha -- 01/05/10
@@ -55,7 +55,7 @@ Release Notes
 
     0.9.15-alpha -- 12/30/09
 
-        * Added support for QueryExecutors and QueryExecutorPools
+        * Added support concurrent gets and scans using QueryExecutorPools
 
         * Added {{{statements/create-query-executor-pool.html}CREATE QUERY EXECUTOR POOL}} statement
 

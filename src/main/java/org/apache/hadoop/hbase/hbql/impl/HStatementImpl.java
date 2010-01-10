@@ -102,9 +102,9 @@ public class HStatementImpl implements HStatement {
         if (!Utils.isSelectStatement(statement))
             throw new HBqlException("executeQueryAsync() requires a SELECT statement");
 
-        final Query<T> query = Query.newQuery(this.getHConnectionImpl(), (SelectStatement)statement, clazz, listeners);
-
         final UnboundedAsyncExecutor asyncExecutor = this.getHConnectionImpl().getAsyncExecutorForConnection();
+
+        final Query<T> query = Query.newQuery(this.getHConnectionImpl(), (SelectStatement)statement, clazz, listeners);
 
         return asyncExecutor.submit(
                 new AsyncRunnable() {
