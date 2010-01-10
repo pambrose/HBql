@@ -31,6 +31,7 @@ import org.apache.hadoop.hbase.client.tableindexed.IndexSpecification;
 import org.apache.hadoop.hbase.client.tableindexed.IndexedTable;
 import org.apache.hadoop.hbase.client.tableindexed.IndexedTableAdmin;
 import org.apache.hadoop.hbase.client.tableindexed.IndexedTableDescriptor;
+import org.apache.hadoop.hbase.hbql.client.AsyncExecutorPool;
 import org.apache.hadoop.hbase.hbql.client.AsyncExecutorPoolManager;
 import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
@@ -40,6 +41,7 @@ import org.apache.hadoop.hbase.hbql.client.HPreparedStatement;
 import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.client.HResultSet;
 import org.apache.hadoop.hbase.hbql.client.HStatement;
+import org.apache.hadoop.hbase.hbql.client.QueryExecutorPool;
 import org.apache.hadoop.hbase.hbql.client.QueryExecutorPoolManager;
 import org.apache.hadoop.hbase.hbql.mapping.AnnotationResultAccessor;
 import org.apache.hadoop.hbase.hbql.mapping.FamilyMapping;
@@ -504,14 +506,14 @@ public class HConnectionImpl extends PoolableElement<HConnectionImpl> implements
 
     private CompletionQueueExecutor takeQueryExecutorFromPool() throws HBqlException {
         this.validateQueryExecutorPoolNameExists(this.getQueryExecutorPoolName());
-        final QueryExecutorPoolImpl pool = (QueryExecutorPoolImpl)QueryExecutorPoolManager.getQueryExecutorPool(this.getQueryExecutorPoolName());
-        return pool.take();
+        final QueryExecutorPool pool = QueryExecutorPoolManager.getQueryExecutorPool(this.getQueryExecutorPoolName());
+        return ((QueryExecutorPoolImpl)pool).take();
     }
 
     private UnboundedAsyncExecutor takeAsyncExecutorFromPool() throws HBqlException {
         this.validateAsyncExecutorPoolNameExists(this.getAsyncExecutorPoolName());
-        final AsyncExecutorPoolImpl pool = (AsyncExecutorPoolImpl)AsyncExecutorPoolManager.getAsyncExecutorPool(this.getAsyncExecutorPoolName());
-        return pool.take();
+        final AsyncExecutorPool pool = AsyncExecutorPoolManager.getAsyncExecutorPool(this.getAsyncExecutorPoolName());
+        return ((AsyncExecutorPoolImpl)pool).take();
     }
 
     public boolean usesQueryExecutor() {
