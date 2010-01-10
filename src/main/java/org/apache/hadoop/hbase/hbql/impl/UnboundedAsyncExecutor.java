@@ -122,19 +122,13 @@ public class UnboundedAsyncExecutor implements PoolableElement {
         return job.getQueryFuture();
     }
 
-    public boolean isPooled() {
-        return this.getExecutorPool() != null;
-    }
-
     public void close() {
         this.reset();
         this.release();
     }
 
     public void release() {
-        // Release if it is a pool element
-        if (this.isPooled())
-            this.getExecutorPool().releaseAsyncExecutor(this);
+        this.getExecutorPool().releaseAsyncExecutor(this);
     }
 
     private AtomicBoolean getAtomicShutdown() {

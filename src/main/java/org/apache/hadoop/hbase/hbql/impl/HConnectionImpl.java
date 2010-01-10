@@ -286,7 +286,8 @@ public class HConnectionImpl implements HConnection, PoolableElement {
     }
 
     public void release() {
-        this.getConnectionPool().releaseConnection(this);
+        if (this.isPooled())
+            this.getConnectionPool().releaseConnection(this);
     }
 
     public void shutdown() {

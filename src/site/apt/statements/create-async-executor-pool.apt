@@ -24,13 +24,12 @@ executorArg:
 
     Creates a named AsyncExecutor pool.
 
-    * A QueryExecutor provides a thread pool for processing query results.  A QueryExecutorPool is assigned
-    using HConncetion.setQueryExecutorPoolName().  A ResultSet uses one QuerExecutor,
-    so if async queries are invoked, the maximum number of concurrent queries is equal to the number
-    of QueryExecutors in the assign QueryExecutorPool.
+    * An AsyncExecutor provides a thread pool for asynchronous query execution.  An AsyncExecutorPool is assigned
+    using HConncetion.setAsyncExecutorPoolName().  An asynchronous query uses one thread per AsyncExecutor thread pool.
+    So the maximum number of concurrent queries is bound by the number of threads in an AsyncExecutor thread pool.
 
-    * A QueryExecutor pool request will block if all elements in the pool have been already taken.
-    A pooled QueryExecutor is released back to a pool when the ResultSet is closed (when the ResultSet
+    * An AsyncExecutorPool  request will block if all elements in the pool are taken.
+    A QueryExecutor is released back to a pool when the query is complete (when the ResultSet
     iterator is completed).
 
     * QueryExecutors are used in queries such that each key or key range is processed by a different thread in the

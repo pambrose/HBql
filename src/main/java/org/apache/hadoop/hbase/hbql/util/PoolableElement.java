@@ -27,6 +27,4 @@ public interface PoolableElement {
     void release();
 
     void shutdown();
-
-    void close();
 }

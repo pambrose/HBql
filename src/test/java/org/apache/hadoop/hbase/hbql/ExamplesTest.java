@@ -452,7 +452,7 @@ public class ExamplesTest extends TestSupport {
         if (AsyncExecutorPoolManager.asyncExecutorPoolExists("execPool"))
             AsyncExecutorPoolManager.dropAsyncExecutorPool("execPool");
 
-        // END SNIPPET: drop-query-executor-pool
+        // END SNIPPET: drop-async-executor-pool
     }
 
     public void index1() throws HBqlException {
