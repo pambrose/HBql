@@ -385,7 +385,7 @@ public class ExamplesTest extends TestSupport {
 
     public void createQueryExecutorPool() throws HBqlException {
 
-        // START SNIPPET: create-executor-pool
+        // START SNIPPET: create-query-executor-pool
 
         HConnection conn = HConnectionManager.newConnection();
 
@@ -401,7 +401,28 @@ public class ExamplesTest extends TestSupport {
 
         // Now use connection in a query.
 
-        // END SNIPPET: create-executor-pool
+        // END SNIPPET: create-query-executor-pool
+    }
+
+    public void createAsynExecutorPool() throws HBqlException {
+
+        // START SNIPPET: create-async-executor-pool
+
+        HConnection conn = HConnectionManager.newConnection();
+
+        // Create Async Executor Pool named execPool if it doesn't already exist.
+        conn.execute("CREATE ASYNC EXECUTOR POOL execPool (MAX_EXECUTOR_POOL_SIZE: 5, MAX_THREAD_COUNT: 10) IF NOT asyncExecutorPoolExists('execPool')");
+
+        // Or, using the API
+        if (!AsyncExecutorPoolManager.asyncExecutorPoolExists("execPool"))
+            AsyncExecutorPoolManager.newAsyncExecutorPool("execPool", 5, 5, 10, Long.MAX_VALUE);
+
+        // Then assign the connection an async executor pool name to use for queries
+        conn.setAsyncExecutorPoolName("execPool");
+
+        // Now use connection in a query.
+
+        // END SNIPPET: create-async-executor-pool
     }
 
     public void dropQueryExecutorPool() throws HBqlException {

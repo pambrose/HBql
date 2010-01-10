@@ -76,7 +76,7 @@ public class QueryExecutorPoolManager {
     }
 
     public static boolean queryExecutorPoolExists(final String name) {
-        return Utils.isValidString(name) && getExecutorPoolMap().containsKey(name);
+        return Utils.isValidString(name) && QueryExecutorPoolManager.getExecutorPoolMap().containsKey(name);
     }
 
     public static QueryExecutorPool getExecutorPool(final String poolName) throws HBqlException {
@@ -87,6 +87,6 @@ public class QueryExecutorPoolManager {
     }
 
     public static Collection<QueryExecutorPool> getQueryExecutorPools() {
-        return getExecutorPoolMap().values();
+        return QueryExecutorPoolManager.getExecutorPoolMap().values();
     }
 }

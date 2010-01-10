@@ -70,7 +70,7 @@ public class AsyncExecutorPoolManager {
     }
 
     public static boolean asyncExecutorPoolExists(final String name) {
-        return Utils.isValidString(name) && getExecutorPoolMap().containsKey(name);
+        return Utils.isValidString(name) && AsyncExecutorPoolManager.getExecutorPoolMap().containsKey(name);
     }
 
     public static AsyncExecutorPool getExecutorPool(final String poolName) throws HBqlException {
@@ -81,6 +81,6 @@ public class AsyncExecutorPoolManager {
     }
 
     public static Collection<AsyncExecutorPool> getAsyncExecutorPools() {
-        return getExecutorPoolMap().values();
+        return AsyncExecutorPoolManager.getExecutorPoolMap().values();
     }
 }
