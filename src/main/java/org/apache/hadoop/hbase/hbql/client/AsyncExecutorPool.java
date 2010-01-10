@@ -24,15 +24,9 @@ public interface AsyncExecutorPool {
 
     String getName();
 
-    int getMaxPoolSize();
-
     int getMinThreadCount();
 
     int getMaxThreadCount();
 
     long getKeepAliveSecs();
-
-    int getCreatedCount();
-
-    int getTakenCount();
 }

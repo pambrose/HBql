@@ -45,7 +45,6 @@ public class CreateAsyncExecutorPoolStatement extends GenericStatement implement
         this.getArgs().validateExecutorPoolPropertyList();
 
         AsyncExecutorPoolManager.newAsyncExecutorPool(this.getArgs().getPoolName(),
-                                                      this.getArgs().getMaxExecutorPoolSize(),
                                                       this.getArgs().getMinThreadCount(),
                                                       this.getArgs().getMaxThreadCount(),
                                                       this.getArgs().getKeepAliveSecs());
@@ -55,6 +54,6 @@ public class CreateAsyncExecutorPoolStatement extends GenericStatement implement
 
 
     public static String usage() {
-        return "CREATE ASYNC EXECUTOR POOL pool_name (MAX_EXECUTOR_POOL_SIZE: int_expr, MIN_THREAD_COUNT: int_expr, MAX_THREAD_COUNT: int_expr, THREADS_READ_RESULTS: bool_expr, COMPLETION_QUEUE_SIZE: int_expr) [IF bool_expr]";
+        return "CREATE ASYNC EXECUTOR POOL pool_name (MIN_THREAD_COUNT: int_expr, MAX_THREAD_COUNT: int_expr, THREADS_READ_RESULTS: bool_expr, COMPLETION_QUEUE_SIZE: int_expr) [IF bool_expr]";
     }
 }

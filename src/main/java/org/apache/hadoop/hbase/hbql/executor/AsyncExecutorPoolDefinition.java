@@ -30,7 +30,6 @@ public class AsyncExecutorPoolDefinition {
     private final String poolName;
     private final List<ExecutorPoolProperty> executorPoolPropertyList;
 
-    private ExecutorPoolProperty maxExecutorPoolSize = null;
     private ExecutorPoolProperty minThreadCount = null;
     private ExecutorPoolProperty maxThreadCount = null;
     private ExecutorPoolProperty keepAliveSecs = null;
@@ -67,10 +66,6 @@ public class AsyncExecutorPoolDefinition {
 
             switch (executorPoolProperty.getEnumType()) {
 
-                case MAX_EXECUTOR_POOL_SIZE:
-                    this.maxExecutorPoolSize = this.validateProperty(this.maxExecutorPoolSize, executorPoolProperty);
-                    break;
-
                 case MIN_THREAD_COUNT:
                     this.minThreadCount = this.validateProperty(this.minThreadCount, executorPoolProperty);
                     break;
@@ -84,13 +79,6 @@ public class AsyncExecutorPoolDefinition {
                     break;
             }
         }
-    }
-
-    public int getMaxExecutorPoolSize() throws HBqlException {
-        if (this.maxExecutorPoolSize != null)
-            return this.maxExecutorPoolSize.getIntegerValue();
-        else
-            return AsyncExecutorPoolManager.defaultMaxExecutorPoolSize;
     }
 
     public int getMinThreadCount() throws HBqlException {
@@ -116,8 +104,7 @@ public class AsyncExecutorPoolDefinition {
 
     public String asString() {
         try {
-            return ", MAX_EXECUTOR_POOL_SIZE : " + this.getMaxExecutorPoolSize()
-                   + ", MIN_THREAD_COUNT : " + this.getMinThreadCount()
+            return " MIN_THREAD_COUNT : " + this.getMinThreadCount()
                    + ", MAX_THREAD_COUNT : " + this.getMaxThreadCount()
                    + ", KEEP_ALIVE_SECS : " + this.getKeepAliveSecs();
         }

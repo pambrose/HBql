@@ -120,9 +120,6 @@ public class HStatementImpl implements HStatement {
                             //e.printStackTrace();
                             this.getQueryFuture().setCaughtException(e);
                         }
-                        finally {
-                            asyncExecutor.close();
-                        }
                     }
                 });
     }

@@ -279,7 +279,7 @@ public class ServerFilterTest extends TestSupport {
     public void asyncSelect1() throws HBqlException {
 
         QueryExecutorPoolManager.newQueryExecutorPool("threadPool2", 5, 2, 5, 30, true, 100);
-        AsyncExecutorPoolManager.newAsyncExecutorPool("asyncPool2", 5, 2, 4, 60);
+        AsyncExecutorPoolManager.newAsyncExecutorPool("asyncPool2", 2, 4, 60);
         connection.setQueryExecutorPoolName("threadPool2");
         connection.setAsyncExecutorPoolName("asyncPool2");
 

@@ -482,8 +482,10 @@ public class HConnectionImpl extends PoolableElement<HConnectionImpl> implements
         if (!Utils.isValidString(this.getQueryExecutorPoolName()))
             throw new HBqlException("Connection not assigned a QueryExecutorPool name");
 
-        // If Connection is assigned an Executor, then just return it.  Otherwise, get one from the pool
-        final CompletionQueueExecutor executorQueue = this.takeQueryExecutorFromPool();
+        this.validateQueryExecutorPoolNameExists(this.getQueryExecutorPoolName());
+
+        final QueryExecutorPool pool = QueryExecutorPoolManager.getQueryExecutorPool(this.getQueryExecutorPoolName());
+        final CompletionQueueExecutor executorQueue = ((QueryExecutorPoolImpl)pool).take();
 
         // Reset it prior to handing it out
         executorQueue.resetElement();
@@ -496,25 +498,13 @@ public class HConnectionImpl extends PoolableElement<HConnectionImpl> implements
         if (!Utils.isValidString(this.getAsyncExecutorPoolName()))
             throw new HBqlException("Connection not assigned an AsyncExecutorPool name");
 
-        // If Connection is assigned an Executor, then just return it.  Otherwise, get one from the pool
-        final UnboundedAsyncExecutor executor = this.takeAsyncExecutorFromPool();
-
-        // Reset it prior to handing it out
-        executor.resetElement();
-        return executor;
-    }
-
-    private CompletionQueueExecutor takeQueryExecutorFromPool() throws HBqlException {
-        this.validateQueryExecutorPoolNameExists(this.getQueryExecutorPoolName());
-        final QueryExecutorPool pool = QueryExecutorPoolManager.getQueryExecutorPool(this.getQueryExecutorPoolName());
-        return ((QueryExecutorPoolImpl)pool).take();
-    }
-
-    private UnboundedAsyncExecutor takeAsyncExecutorFromPool() throws HBqlException {
         this.validateAsyncExecutorPoolNameExists(this.getAsyncExecutorPoolName());
+
         final AsyncExecutorPool pool = AsyncExecutorPoolManager.getAsyncExecutorPool(this.getAsyncExecutorPoolName());
-        return ((AsyncExecutorPoolImpl)pool).take();
+
+        return ((AsyncExecutorPoolImpl)pool).getAsyncExecutor();
     }
+
 
     public boolean usesQueryExecutor() {
         return Utils.isValidString(this.getQueryExecutorPoolName());

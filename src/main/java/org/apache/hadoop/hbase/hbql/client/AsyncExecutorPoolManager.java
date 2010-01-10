@@ -29,7 +29,6 @@ import java.util.Set;
 
 public class AsyncExecutorPoolManager {
 
-    public static int defaultMaxExecutorPoolSize = 5;
     public static int defaultMinThreadCount = 1;
     public static int defaultMaxThreadCount = 10;
     public static long defaultKeepAliveSecs = Long.MAX_VALUE;
@@ -41,7 +40,6 @@ public class AsyncExecutorPoolManager {
     }
 
     public static AsyncExecutorPool newAsyncExecutorPool(final String poolName,
-                                                         final int maxExecutorPoolSize,
                                                          final int minThreadCount,
                                                          final int maxThreadCount,
                                                          final long keepAliveSecs) throws HBqlException {
@@ -50,7 +48,6 @@ public class AsyncExecutorPoolManager {
             throw new HBqlException("AsyncExecutorPool already exists: " + poolName);
 
         final AsyncExecutorPoolImpl executorPool = new AsyncExecutorPoolImpl(poolName,
-                                                                             maxExecutorPoolSize,
                                                                              minThreadCount,
                                                                              maxThreadCount,
                                                                              keepAliveSecs);

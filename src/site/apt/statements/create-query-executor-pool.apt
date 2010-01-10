@@ -55,7 +55,7 @@ executorArg:
 
     * A QueryExecutorPool has a maximum size specified by the MAX_EXECUTOR_POOL_SIZE parameter.
 
-    * Each QueryExecutor in has a thread pool specified by these parameters:
+    * Each QueryExecutor has a thread pool specified by these parameters:
 
         ** MIN_THREAD_COUNT - the number of threads to keep in a pool, even if they are idle.
 

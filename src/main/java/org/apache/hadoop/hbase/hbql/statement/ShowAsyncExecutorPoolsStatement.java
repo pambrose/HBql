@@ -38,9 +38,8 @@ public class ShowAsyncExecutorPoolsStatement extends GenericStatement implements
         retval.out.println("Async Executor Pools: ");
         for (final String name : AsyncExecutorPoolManager.getAsyncExecutorPoolNames()) {
             final AsyncExecutorPool executorPool = AsyncExecutorPoolManager.getAsyncExecutorPool(name);
-            retval.out.println("\t" + executorPool.getName() + "(" +
-                               "MAX_EXECUTOR_POOL_SIZE: " + executorPool.getMaxPoolSize()
-                               + ", MIN_THREAD_COUNT: " + executorPool.getMinThreadCount()
+            retval.out.println("\t" + executorPool.getName() + "("
+                               + "MIN_THREAD_COUNT: " + executorPool.getMinThreadCount()
                                + ", MAX_THREAD_COUNT: " + executorPool.getMaxThreadCount()
                                + ", KEEP_ALIVE_SECS: " + executorPool.getKeepAliveSecs()
                                + ")");

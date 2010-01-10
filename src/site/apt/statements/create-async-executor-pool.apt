@@ -13,8 +13,7 @@ CREATE ASYNC EXECUTOR POOL
 CREATE ASYNC EXECUTOR POOL pool_name ['(' executorArg [, ...] ')'] [IF bool_expr]
 
 executorArg:
-    MAX_EXECUTOR_POOL_SIZE ':' int_expr
-    | MIN_THREAD_COUNT ':' int_expr
+    MIN_THREAD_COUNT ':' int_expr
     | MAX_THREAD_COUNT ':' int_expr
     | KEEP_ALIVE_SECS ':' long_expr
 
@@ -46,9 +45,7 @@ executorArg:
 
 * Parameters
 
-    * A AsyncExecutorPool has a maximum size specified by the MAX_EXECUTOR_POOL_SIZE parameter.
-
-    * Each AsyncExecutor in has a thread pool specified by these parameters:
+    * Each AsyncExecutorPool has a thread pool specified by these parameters:
 
         ** MIN_THREAD_COUNT - the number of threads to keep in a pool, even if they are idle.
 
@@ -59,8 +56,6 @@ executorArg:
         new tasks before terminating.
 
     * All the executorArg parameters are optional.  If unspecified, the values default to:
-
-        ** AsyncExecutorPoolManager.defaultMaxPoolSize (5)
 
         ** AsyncExecutorPoolManager.defaultMinThreadCount (1)
 

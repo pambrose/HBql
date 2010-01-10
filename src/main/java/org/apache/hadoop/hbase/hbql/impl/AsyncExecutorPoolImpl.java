@@ -21,23 +21,32 @@
 package org.apache.hadoop.hbase.hbql.impl;
 
 import org.apache.hadoop.hbase.hbql.client.AsyncExecutorPool;
-import org.apache.hadoop.hbase.hbql.client.HBqlException;
 
-public class AsyncExecutorPoolImpl extends ElementPool<UnboundedAsyncExecutor> implements AsyncExecutorPool {
+public class AsyncExecutorPoolImpl implements AsyncExecutorPool {
 
+    private final String poolName;
     private final int minThreadCount;
     private final int maxThreadCount;
     private final long keepAliveSecs;
+    private final UnboundedAsyncExecutor asyncExecutor;
 
     public AsyncExecutorPoolImpl(final String poolName,
-                                 final int maxExecutorPoolSize,
                                  final int minThreadCount,
                                  final int maxThreadCount,
                                  final long keepAliveSecs) {
-        super(poolName, maxExecutorPoolSize);
+        this.poolName = poolName;
         this.minThreadCount = minThreadCount;
         this.maxThreadCount = maxThreadCount;
         this.keepAliveSecs = keepAliveSecs;
+
+        this.asyncExecutor = new UnboundedAsyncExecutor(this,
+                                                        this.getMinThreadCount(),
+                                                        this.getMaxThreadCount(),
+                                                        this.getKeepAliveSecs());
+    }
+
+    public String getName() {
+        return this.poolName;
     }
 
     public int getMinThreadCount() {
@@ -52,16 +61,11 @@ public class AsyncExecutorPoolImpl extends ElementPool<UnboundedAsyncExecutor> i
         return this.keepAliveSecs;
     }
 
-    protected UnboundedAsyncExecutor newElement() throws HBqlException {
-        return new UnboundedAsyncExecutor(this,
-                                          this.getMinThreadCount(),
-                                          this.getMaxThreadCount(),
-                                          this.getKeepAliveSecs());
+    public void shutdown() {
+        this.getAsyncExecutor().shutdown();
     }
 
-    public void shutdown() {
-        for (final UnboundedAsyncExecutor val : this.getElementPool()) {
-            val.shutdown();
-        }
+    public UnboundedAsyncExecutor getAsyncExecutor() {
+        return this.asyncExecutor;
     }
 }

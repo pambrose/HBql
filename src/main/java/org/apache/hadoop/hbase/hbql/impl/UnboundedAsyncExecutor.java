@@ -20,10 +20,8 @@
 
 package org.apache.hadoop.hbase.hbql.impl;
 
-import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.QueryFuture;
 import org.apache.hadoop.hbase.hbql.util.NamedThreadFactory;
-import org.apache.hadoop.hbase.hbql.util.PoolableElement;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -33,7 +31,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class UnboundedAsyncExecutor extends PoolableElement<UnboundedAsyncExecutor> {
+public class UnboundedAsyncExecutor {
 
     private final AtomicBoolean atomicShutdown = new AtomicBoolean(false);
     private final AtomicInteger workSubmittedCounter = new AtomicInteger(0);
@@ -86,10 +84,9 @@ public class UnboundedAsyncExecutor extends PoolableElement<UnboundedAsyncExecut
     public UnboundedAsyncExecutor(final AsyncExecutorPoolImpl executorPool,
                                   final int minThreadCount,
                                   final int maxThreadCount,
-                                  final long keepAliveSecs) throws HBqlException {
-        super(executorPool);
+                                  final long keepAliveSecs) {
         final BlockingQueue<Runnable> backingQueue = new LinkedBlockingQueue<Runnable>();
-        final String name = executorPool == null ? "Non async exec pool" : "Async exec pool " + executorPool.getName();
+        final String name = "Async exec pool " + executorPool.getName();
         this.threadPoolExecutor = new LocalThreadPoolExecutor(minThreadCount,
                                                               maxThreadCount,
                                                               keepAliveSecs,
@@ -115,15 +112,6 @@ public class UnboundedAsyncExecutor extends PoolableElement<UnboundedAsyncExecut
         this.getWorkSubmittedCounter().incrementAndGet();
         this.getThreadPoolExecutor().execute(job);
         return job.getQueryFuture();
-    }
-
-    public void close() {
-        this.resetElement();
-        this.releaseElement();
-    }
-
-    public void releaseElement() {
-        this.getElementPool().release(this);
     }
 
     private AtomicBoolean getAtomicShutdown() {

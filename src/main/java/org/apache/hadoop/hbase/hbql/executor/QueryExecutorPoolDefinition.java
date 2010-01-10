@@ -140,7 +140,7 @@ public class QueryExecutorPoolDefinition {
 
     public String asString() {
         try {
-            return ", MAX_EXECUTOR_POOL_SIZE : " + this.getMaxExecutorPoolSize()
+            return " MAX_EXECUTOR_POOL_SIZE : " + this.getMaxExecutorPoolSize()
                    + ", MIN_THREAD_COUNT : " + this.getMinThreadCount()
                    + ", MAX_THREAD_COUNT : " + this.getMaxThreadCount()
                    + ", KEEP_ALIVE_SECS : " + this.getKeepAliveSecs()

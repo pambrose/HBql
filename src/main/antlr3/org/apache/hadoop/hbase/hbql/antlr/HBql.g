@@ -207,8 +207,7 @@ asyncExecPoolPropertyList returns [List<ExecutorPoolProperty> retval]
 
 asyncExecPoolProperty returns [ExecutorPoolProperty retval]
 options {backtrack=true;}	
-	: k=keyMAX_EXECUTOR_POOL_SIZE COLON v=exprValue	{retval = new ExecutorPoolProperty($k.retval, $v.retval);}
-	| k=keyMIN_THREAD_COUNT COLON v=exprValue	{retval = new ExecutorPoolProperty($k.retval, $v.retval);}
+	: k=keyMIN_THREAD_COUNT COLON v=exprValue	{retval = new ExecutorPoolProperty($k.retval, $v.retval);}
 	| k=keyMAX_THREAD_COUNT COLON v=exprValue	{retval = new ExecutorPoolProperty($k.retval, $v.retval);}
 	| k=keyKEEP_ALIVE_SECS COLON v=exprValue	{retval = new ExecutorPoolProperty($k.retval, $v.retval);}
 	;
