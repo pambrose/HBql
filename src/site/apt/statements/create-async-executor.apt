@@ -24,18 +24,17 @@ executorArg:
     Creates a named AsyncExecutor.
 
     * An AsyncExecutor provides a thread pool for asynchronous query execution.  An AsyncExecutorPool is assigned
-    using HConncetion.setAsyncExecutorPoolName().
+    using HConncetion.setAsyncExecutorPoolName().  Multiple connections can share an AsyncExecutor.
 
-    * AsyncExecutors are used in asynchrous queries such that each async query on a connection is executed by a
+    * AsyncExecutors are used in asynchrous queries such that each async query is executed by a
     different thread in the AsyncExecutor thread pool.
 
-    * The number of connections executing concurrent asynchronous queries is bound by the size
-    of the AsyncExecutorPool. The number of concurrent asynchronous queries executed by a single
-    connection is bound by the size of the AsyncExecutor thread pool.
+    * The number of concurrent asynchronous queries executed by all
+    connections referenceing an AsyncExecutor is bound by the size of the AsyncExecutor thread pool.
 
     * AsyncExecutors are not used with synchronous queries.
 
-    * An AsyncExecutorPool  request will block if all elements in the pool are taken.
+    * An async query will not block if all threads in an AsyncExecutor are taken.
     An AsyncExecutor is released back to a pool on query completion (when the ResultSet
     iterator is completed).
 
