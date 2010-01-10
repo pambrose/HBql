@@ -383,7 +383,7 @@ public class ExamplesTest extends TestSupport {
 
     }
 
-    public void createExecutorPool() throws HBqlException {
+    public void createQueryExecutorPool() throws HBqlException {
 
         // START SNIPPET: create-executor-pool
 

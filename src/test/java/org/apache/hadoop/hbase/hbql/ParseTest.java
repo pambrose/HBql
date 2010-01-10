@@ -75,12 +75,12 @@ public class ParseTest extends TestSupport {
 
     @Test
     public void parseTest2() throws HBqlException {
-        parseSQL("CREATE EXECUTOR POOL pool1", 1000, 1000);
+        parseSQL("CREATE QUERY EXECUTOR POOL pool1", 1000, 1000);
     }
 
     @Test
     public void parseTest3() throws HBqlException {
-        parseSQL("CREATE EXECUTOR POOL pool1 (MAX_EXECUTOR_POOL_SIZE: 100, MAX_THREAD_COUNT: 20, THREADS_READ_RESULTS: TRUE, COMPLETION_QUEUE_SIZE: 12 ) ", 1000, 1000);
+        parseSQL("CREATE QUERY EXECUTOR POOL pool1 (MAX_EXECUTOR_POOL_SIZE: 100, MAX_THREAD_COUNT: 20, THREADS_READ_RESULTS: TRUE, COMPLETION_QUEUE_SIZE: 12 ) ", 1000, 1000);
     }
 
 

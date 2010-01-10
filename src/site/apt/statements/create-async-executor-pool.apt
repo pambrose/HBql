@@ -1,0 +1,74 @@
+    -----
+    CREATE ASYNC EXECUTOR POOL
+    -----
+    -----
+
+
+CREATE ASYNC EXECUTOR POOL
+
+*Syntax
+
+---------------------------
+
+CREATE ASYNC EXECUTOR POOL pool_name ['(' executorArg [, ...] ')'] [IF bool_expr]
+
+executorArg:
+    MAX_EXECUTOR_POOL_SIZE ':' int_expr
+    | MIN_THREAD_COUNT ':' int_expr
+    | MAX_THREAD_COUNT ':' int_expr
+    | KEEP_ALIVE_SECS ':' long_expr
+
+---------------------------
+
+*Description
+
+    Creates a named AsyncExecutor pool.
+
+    * A QueryExecutor provides a thread pool for processing query results.  A QueryExecutorPool is assigned
+    using HConncetion.setQueryExecutorPoolName().  A ResultSet uses one QuerExecutor,
+    so if async queries are invoked, the maximum number of concurrent queries is equal to the number
+    of QueryExecutors in the assign QueryExecutorPool.
+
+    * A QueryExecutor pool request will block if all elements in the pool have been already taken.
+    A pooled QueryExecutor is released back to a pool when the ResultSet is closed (when the ResultSet
+    iterator is completed).
+
+    * QueryExecutors are used in queries such that each key or key range is processed by a different thread in the
+    QueryExecutor thread pool.  Keys and key ranges correspond to Gets and Scans in HBase.  QueryExecutors can
+    assume two behaviors for processing query data: the threads can make a Get or Scan request and return the
+    ResultScanner objects back to the main thread, which will then iterate through the Result values.
+    Or, the threads can iterate through the ResultScanner results and return the Result objects back to
+    the main thread.
+
+    * If an HConnection is from an HConnectionPool, the AsyncExecutor assignments are reset when
+    HConnection.close() is called.  Thus, AsyncExecutorPool name assignments should be made when an
+    HConnection is retrieved from a pool.
+
+* Parameters
+
+    * A AsyncExecutorPool has a maximum size specified by the MAX_EXECUTOR_POOL_SIZE parameter.
+
+    * Each AsyncExecutor in has a thread pool specified by these parameters:
+
+        ** MIN_THREAD_COUNT - the number of threads to keep in a pool, even if they are idle.
+
+        ** MAX_THREAD_COUNT - the maximum number of threads to allow in the pool.
+
+        ** KEEP_ALIVE_SECS - when the number of threads is greater than the minimum thread count,
+        KEEP_ALIVE_SECS is the maximum number of seconds that excess idle threads will wait for
+        new tasks before terminating.
+
+    * All the executorArg parameters are optional.  If unspecified, the values default to:
+
+        ** AsyncExecutorPoolManager.defaultMaxPoolSize (5)
+
+        ** AsyncExecutorPoolManager.defaultMinThreadCount (1)
+
+        ** AsyncExecutorPoolManager.defaultMaxThreadCount (10)
+
+        ** AsyncExecutorPoolManager.defaultKeepAliveSecs (Long.MAX_VALUE)
+
+
+*Example
+
+%{snippet|id=create-async-executor-pool|file=src/test/java/org/apache/hadoop/hbase/hbql/ExamplesTest.java}

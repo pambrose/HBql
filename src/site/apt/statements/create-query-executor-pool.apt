@@ -26,10 +26,10 @@ executorArg:
 
     Creates a named QueryExecutor pool.
 
-    * A QueryExecutor provides a thread pool for processing query results.  A QueryExecutorPool is assigned
-    using HConncetion.setQueryExecutorPoolName().  A ResultSet uses one QuerExecutor,
-    so if async queries are invoked, the maximum number of concurrent queries is equal to the number
-    of QueryExecutors in the assign QueryExecutorPool.
+    * A QueryExecutor provides a thread pool for concurrently processing query results.
+    A QueryExecutorPool is assigned using HConncetion.setQueryExecutorPoolName().  One QueryExecutor is
+    used by each ResultSet, so for async queries, the maximum number of concurrent queries is equal to the number
+    of QueryExecutors in the named QueryExecutorPool.
 
     * A QueryExecutor pool request will block if all elements in the pool have been already taken.
     A pooled QueryExecutor is released back to a pool when the ResultSet is closed (when the ResultSet
@@ -88,4 +88,4 @@ executorArg:
 
 *Example
 
-%{snippet|id=create-executor-pool|file=src/test/java/org/apache/hadoop/hbase/hbql/ExamplesTest.java}
+%{snippet|id=create-query-executor-pool|file=src/test/java/org/apache/hadoop/hbase/hbql/ExamplesTest.java}

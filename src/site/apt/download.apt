@@ -26,13 +26,20 @@ git clone git://github.com/pambrose/HBql.git
 
 Release Notes
 
-    0.9.19-alpha -- 01/07/10
+    0.9.19-alpha -- 01/10/10
 
         * Added support for asynchronous queries using AsyncExecutors and AsyncExecutorPools
 
+        * Added {{{statements/create-async-executor-pool.html}CREATE ASYNC EXECUTOR POOL}} statement
+
+        * Added {{{statements/drop-async-executor-pool.html}DROP ASYNC EXECUTOR POOL}} statement
+
+        * Added {{{statements/show-async-executor-pools.html}SHOW ASYNC EXECUTOR POOLS}} statement
+
+        * Added function asyncExecutorPoolExsits()
+
         * Cleaned up QueryListener usage
 
-        * Added Executor shutdown()
 
     0.9.18-alpha -- 01/05/10
 
@@ -50,11 +57,11 @@ Release Notes
 
         * Added support for QueryExecutors and QueryExecutorPools
 
-        * Added {{{statements/create-executor-pool.html}CREATE EXECUTOR POOL}} statement
+        * Added {{{statements/create-query-executor-pool.html}CREATE QUERY EXECUTOR POOL}} statement
 
-        * Added {{{statements/drop-executor-pool.html}DROP EXECUTOR POOL}} statement
+        * Added {{{statements/drop-query-executor-pool.html}DROP QUERY EXECUTOR POOL}} statement
 
-        * Added {{{statements/show-executor-pools.html}SHOW EXECUTOR POOLS}} statement
+        * Added {{{statements/show-query-executor-pools.html}SHOW QUERY EXECUTOR POOLS}} statement
 
         * Added function queryExecutorPoolExsits()
 
