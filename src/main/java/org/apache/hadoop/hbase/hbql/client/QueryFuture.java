@@ -20,7 +20,7 @@
 
 package org.apache.hadoop.hbase.hbql.client;
 
-import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 public interface QueryFuture {
 
@@ -36,5 +36,7 @@ public interface QueryFuture {
 
     long getElapsedTime();
 
-    public CountDownLatch getLatch();
+    public void await() throws InterruptedException;
+
+    public boolean await(long timeout, TimeUnit unit) throws InterruptedException;
 }

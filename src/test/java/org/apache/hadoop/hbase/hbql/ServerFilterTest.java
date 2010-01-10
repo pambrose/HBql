@@ -333,7 +333,7 @@ public class ServerFilterTest extends TestSupport {
 
             for (final QueryFuture future : futureList) {
                 try {
-                    future.getLatch().await();
+                    future.await();
                 }
                 catch (InterruptedException e) {
                     e.printStackTrace();

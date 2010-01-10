@@ -24,6 +24,7 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.QueryFuture;
 
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 public class QueryFutureImpl implements QueryFuture {
 
@@ -69,7 +70,15 @@ public class QueryFutureImpl implements QueryFuture {
         return this.getCompleteTime() - this.getStartTime();
     }
 
-    public CountDownLatch getLatch() {
+    private CountDownLatch getLatch() {
         return this.latch;
+    }
+
+    public void await() throws InterruptedException {
+        getLatch().await();
+    }
+
+    public boolean await(final long timeout, final TimeUnit unit) throws InterruptedException {
+        return getLatch().await(timeout, unit);
     }
 }
