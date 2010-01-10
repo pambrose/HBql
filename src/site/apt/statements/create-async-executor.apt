@@ -25,7 +25,7 @@ executorArg:
 
     * An AsyncExecutor provides a thread pool for asynchronous query execution.
 
-    * An AsyncExecutor is assigned using HConncetion.setAsyncExecutorName().
+    * An AsyncExecutor is assigned using HConnection.setAsyncExecutorName().
     Multiple connections can share a common AsyncExecutor name.
 
     * AsyncExecutor name assignments are reset when HConnection.close() is called.
@@ -52,7 +52,7 @@ executorArg:
 
     * Each AsyncExecutor has a thread pool specified by these parameters:
 
-        ** MIN_THREAD_COUNT - the number of threads to keep in a pool, even if they are idle.
+        ** MIN_THREAD_COUNT - the number of threads to keep in the pool, even if they are idle.
 
         ** MAX_THREAD_COUNT - the maximum number of threads to allow in the pool.
 

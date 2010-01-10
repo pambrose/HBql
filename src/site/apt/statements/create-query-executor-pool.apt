@@ -28,7 +28,7 @@ executorArg:
 
     * A QueryExecutor provides a thread pool for concurrent query result processing.
 
-    * A QueryExecutorPool is assigned using HConncetion.setQueryExecutorPoolName().
+    * A QueryExecutorPool is assigned using HConnection.setQueryExecutorPoolName().
     Multiple connections can share a common QueryExecutorPool name.
 
     * QueryExecutor assignments are reset when HConnection.close() is called.
@@ -39,10 +39,10 @@ executorArg:
     from the pool.  Thus the maximum number of concurrent queries is bound by the
     number of QueryExecutors in a QueryExecutorPool.
 
-    * QueryExecutors are used in queries such that each key or key range is processed by a
-    different thread in the QueryExecutor thread pool.  Keys and key ranges correspond to gets
-    and scans in HBase.  So, the size of a QueryExecutor thread pool determines the number
-    of concurrent gets or scans that can take place.
+    * Keys and key ranges correspond to gets and scans in HBase.
+    QueryExecutors are used in queries such that each key or key range is processed by a
+    different thread in the QueryExecutor thread pool. So, the size of a QueryExecutor thread
+    pool determines the number of concurrent gets or scans that can take place.
 
     * QueryExecutors can
     assume two behaviors for processing query data: the threads can make a Get or Scan request and return the
@@ -63,7 +63,7 @@ executorArg:
 
     * Each QueryExecutor has a thread pool specified by these parameters:
 
-        ** MIN_THREAD_COUNT - the number of threads to keep in a pool, even if they are idle.
+        ** MIN_THREAD_COUNT - the number of threads to keep in the pool, even if they are idle.
 
         ** MAX_THREAD_COUNT - the maximum number of threads to allow in the pool.
 
