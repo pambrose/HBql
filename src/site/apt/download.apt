@@ -38,7 +38,7 @@ Release Notes
 
         * Added function asyncExecutorExists()
 
-        * Cleaned up QueryListener usage for sync and async usage
+        * Cleaned up QueryListener usage for sync and async queries
 
     0.9.18-alpha -- 01/05/10
 
