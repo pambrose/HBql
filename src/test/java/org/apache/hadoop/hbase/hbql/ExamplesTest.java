@@ -707,8 +707,8 @@ public class ExamplesTest extends TestSupport {
                                                             System.out.println(", val2: " + val2);
                                                         }
 
-                                                        public void onHBqlException(final ExceptionSource source,
-                                                                                    final HBqlException e) {
+                                                        public void onException(final ExceptionSource source,
+                                                                                final HBqlException e) {
                                                             e.printStackTrace();
                                                         }
                                                     });

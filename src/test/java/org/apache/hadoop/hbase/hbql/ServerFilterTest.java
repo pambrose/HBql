@@ -324,7 +324,7 @@ public class ServerFilterTest extends TestSupport {
                         assertTrue(rec_cnt.get() == keyCount * 3);
                     }
 
-                    public void onHBqlException(final ExceptionSource source, final HBqlException e) {
+                    public void onException(final ExceptionSource source, final HBqlException e) {
                         e.printStackTrace();
                     }
                 });

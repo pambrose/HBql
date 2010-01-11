@@ -65,6 +65,7 @@ public class NonExecutorResultSet<T> extends HResultSetImpl<T, Object> {
         }
         catch (HBqlException e) {
             e.printStackTrace();
+            getQuery().callOnException(e);
             return new NullIterator<T>();
         }
     }

@@ -129,7 +129,7 @@ public class Query<T> {
                     listener.onQueryStart();
                 }
                 catch (HBqlException e) {
-                    listener.onHBqlException(QueryListener.ExceptionSource.QUERYSTART, e);
+                    listener.onException(QueryListener.ExceptionSource.QUERYSTART, e);
                 }
             }
         }
@@ -142,7 +142,7 @@ public class Query<T> {
                     listener.onEachRow(val);
                 }
                 catch (HBqlException e) {
-                    listener.onHBqlException(QueryListener.ExceptionSource.ONEACHROW, e);
+                    listener.onException(QueryListener.ExceptionSource.ONEACHROW, e);
                 }
             }
         }
@@ -156,8 +156,16 @@ public class Query<T> {
                     listener.onQueryComplete();
                 }
                 catch (HBqlException e) {
-                    listener.onHBqlException(QueryListener.ExceptionSource.QUERYCOMPLETE, e);
+                    listener.onException(QueryListener.ExceptionSource.QUERYCOMPLETE, e);
                 }
+            }
+        }
+    }
+
+    protected void callOnException(HBqlException e) {
+        if (this.getQueryListeners() != null) {
+            for (final QueryListener<T> listener : this.getQueryListeners()) {
+                listener.onException(QueryListener.ExceptionSource.ITERATOR, e);
             }
         }
     }

@@ -92,6 +92,7 @@ public class ResultScannerExecutorResultSet<T> extends HResultSetImpl<T, ResultS
         }
         catch (HBqlException e) {
             e.printStackTrace();
+            getQuery().callOnException(e);
             return new NullIterator<T>();
         }
     }

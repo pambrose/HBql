@@ -148,6 +148,7 @@ public class ResultExecutorResultSet<T> extends HResultSetImpl<T, Result> {
         }
         catch (HBqlException e) {
             e.printStackTrace();
+            getQuery().callOnException(e);
             return new NullIterator<T>();
         }
     }
