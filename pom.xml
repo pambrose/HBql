@@ -29,8 +29,8 @@
     <version>0.9.19-alpha</version>
 
     <scm>
-        <connection>scm:git:git://github.com/pambrose/HBql.git/</connection>
-        <developerConnection>scm:git:git://github.com/pambrose/HBql.git/</developerConnection>
+        <connection>scm:git://github.com/pambrose/HBql.git/</connection>
+        <developerConnection>scm:git://github.com/pambrose/HBql.git/</developerConnection>
     </scm>
 
     <url>http://www.hbql.com</url>

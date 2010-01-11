@@ -19,7 +19,7 @@ Expressions
 
     The CONTAINS AND LIKE statements are implemented with java.util.regex.Pattern. \
     So the the pattern string should use Java regex syntax, which is not the same as traditional SQL regex syntax. \
-    For example, instead of 'foo*bar' you would use 'foo.*bar'
+    For example, HBql uses 'foo.*bar' instead of 'foo*bar'. 
 
 * Value expressions
 

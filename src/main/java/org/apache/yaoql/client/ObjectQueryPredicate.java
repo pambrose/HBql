@@ -30,36 +30,46 @@ import org.apache.hadoop.hbase.hbql.parser.ParserUtil;
 import org.apache.yaoql.impl.ParameterBinding;
 import org.apache.yaoql.impl.ReflectionMapping;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 public class ObjectQueryPredicate<T> extends ParameterBinding implements Predicate<T> {
 
     private final String query;
-    private ExpressionTree expressionTree;
-    private boolean initialized = false;
+    private ExpressionTree expressionTree = null;
+    private AtomicBoolean initialized = new AtomicBoolean(false);
 
     public ObjectQueryPredicate(final String query) {
         this.query = query;
     }
 
     public void reset() {
-        this.initialized = false;
+        this.initialized.set(false);
     }
 
     public String getQuery() {
         return this.query;
     }
 
+    private ExpressionTree getExpressionTree() {
+        return this.expressionTree;
+    }
+
+    private boolean isInitialized() {
+        return this.initialized.get();
+    }
+
     public boolean apply(final T obj) {
 
         try {
-            if (!initialized) {
+            if (!this.isInitialized()) {
                 final ReflectionMapping mapping = ReflectionMapping.getReflectionMapping(obj);
                 final MappingContext mappingContext = new MappingContext(mapping);
                 this.expressionTree = ParserUtil.parseWhereExpression(this.query, mappingContext);
-                this.applyParameters(this.expressionTree);
-                initialized = true;
+                this.applyParameters(this.getExpressionTree());
+                this.initialized.set(true);
             }
 
-            return expressionTree.evaluate(null, obj);
+            return this.getExpressionTree().evaluate(null, obj);
         }
         catch (ResultMissingColumnException e) {
             // Not possible

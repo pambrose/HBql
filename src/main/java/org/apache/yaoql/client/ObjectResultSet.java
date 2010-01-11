@@ -37,6 +37,7 @@ public class ObjectResultSet<T> implements Iterable<T> {
     private final ObjectQueryImpl<T> objectQuery;
     private final Collection<T> objects;
     private final ExpressionTree expressionTree;
+
     private Iterator<T> objectIter = null;
 
     public ObjectResultSet(final ObjectQueryImpl<T> objectQuery, final Collection<T> objects) throws HBqlException {
@@ -45,7 +46,7 @@ public class ObjectResultSet<T> implements Iterable<T> {
 
         // In theory, this should be done only once and in ObjectQuery, but
         // since it requires the objects to get the mapping, I do it here
-        this.expressionTree = getObjectQuery().getExpressionTree(getObjects());
+        this.expressionTree = getObjectQuery().getExpressionTree(this.getObjects());
     }
 
     private ObjectQueryImpl<T> getObjectQuery() {
