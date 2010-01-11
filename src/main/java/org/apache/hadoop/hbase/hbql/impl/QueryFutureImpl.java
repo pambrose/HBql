@@ -33,7 +33,7 @@ public class QueryFutureImpl implements QueryFuture {
     private long startTime = -1L;
     private long completeTime = -1L;
 
-    public Exception getCaughtException() {
+    public HBqlException getHBqlException() {
         return this.caughtException;
     }
 

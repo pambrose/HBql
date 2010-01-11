@@ -22,9 +22,17 @@ package org.apache.hadoop.hbase.hbql.client;
 
 public interface QueryListener<T> {
 
-    void onQueryStart();
+    public enum ExceptionSource {
+        QUERYSTART, ONEACHROW, QUERYCOMPLETE
+    }
 
-    void onEachRow(T val);
+    ;
 
-    void onQueryComplete();
+    void onQueryStart() throws HBqlException;
+
+    void onEachRow(T val) throws HBqlException;
+
+    void onQueryComplete() throws HBqlException;
+
+    void onHBqlException(ExceptionSource source, HBqlException e);
 }

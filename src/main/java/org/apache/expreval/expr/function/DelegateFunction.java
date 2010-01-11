@@ -26,9 +26,9 @@ import org.apache.expreval.expr.DelegateStmt;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.client.InvalidFunctionException;
 import org.apache.hadoop.hbase.hbql.impl.AggregateValue;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
+import org.apache.hadoop.hbase.hbql.impl.InvalidFunctionException;
 
 import java.util.List;
 

@@ -18,11 +18,13 @@
  * limitations under the License.
  */
 
-package org.apache.hadoop.hbase.hbql.client;
+package org.apache.hadoop.hbase.hbql.impl;
 
-public class InvalidFunctionException extends HBqlException {
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
 
-    public InvalidFunctionException(final String s) {
+public class InvalidTypeException extends HBqlException {
+
+    public InvalidTypeException(final String s) {
         super(s);
     }
 }

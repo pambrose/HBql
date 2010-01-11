@@ -24,7 +24,7 @@ import java.util.concurrent.TimeUnit;
 
 public interface QueryFuture {
 
-    Exception getCaughtException();
+    HBqlException getHBqlException();
 
     boolean isStarted();
 

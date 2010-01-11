@@ -310,23 +310,22 @@ public class ServerFilterTest extends TestSupport {
                         //System.out.println("Starting query");
                     }
 
-                    public void onEachRow(final HRecord rec) {
-                        try {
-                            String keyval = (String)rec.getCurrentValue("keyval");
-                            String val1 = (String)rec.getCurrentValue("val1");
-                            int val2 = (Integer)rec.getCurrentValue("f1:val2");
-                            int val3 = (Integer)rec.getCurrentValue("val3");
-                            //System.out.println("Current Values: " + keyval + " : " + val1 + " : " + val2 + " : " + val3);
-                            this.rec_cnt.incrementAndGet();
-                        }
-                        catch (HBqlException e) {
-                            e.printStackTrace();
-                        }
+                    public void onEachRow(final HRecord rec) throws HBqlException {
+                        String keyval = (String)rec.getCurrentValue("keyval");
+                        String val1 = (String)rec.getCurrentValue("val1");
+                        int val2 = (Integer)rec.getCurrentValue("f1:val2");
+                        int val3 = (Integer)rec.getCurrentValue("val3");
+                        //System.out.println("Current Values: " + keyval + " : " + val1 + " : " + val2 + " : " + val3);
+                        this.rec_cnt.incrementAndGet();
                     }
 
                     public void onQueryComplete() {
                         System.out.println("Finished query with rec_cnt = " + rec_cnt.get() + " vs " + (keyCount * 3));
                         assertTrue(rec_cnt.get() == keyCount * 3);
+                    }
+
+                    public void onHBqlException(final ExceptionSource source, final HBqlException e) {
+                        e.printStackTrace();
                     }
                 });
                 futureList.add(future);

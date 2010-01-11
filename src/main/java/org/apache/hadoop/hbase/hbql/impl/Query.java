@@ -124,23 +124,41 @@ public class Query<T> {
 
     private void callOnQueryInit() {
         if (this.getQueryListeners() != null) {
-            for (final QueryListener<T> listener : this.getQueryListeners())
-                listener.onQueryStart();
+            for (final QueryListener<T> listener : this.getQueryListeners()) {
+                try {
+                    listener.onQueryStart();
+                }
+                catch (HBqlException e) {
+                    listener.onHBqlException(QueryListener.ExceptionSource.QUERYSTART, e);
+                }
+            }
         }
     }
 
     protected T callOnEachRow(T val) {
         if (this.getQueryListeners() != null) {
-            for (final QueryListener<T> listener : this.getQueryListeners())
-                listener.onEachRow(val);
+            for (final QueryListener<T> listener : this.getQueryListeners()) {
+                try {
+                    listener.onEachRow(val);
+                }
+                catch (HBqlException e) {
+                    listener.onHBqlException(QueryListener.ExceptionSource.ONEACHROW, e);
+                }
+            }
         }
         return val;
     }
 
     protected void callOnQueryComplete() {
         if (this.getQueryListeners() != null) {
-            for (final QueryListener<T> listener : this.getQueryListeners())
-                listener.onQueryComplete();
+            for (final QueryListener<T> listener : this.getQueryListeners()) {
+                try {
+                    listener.onQueryComplete();
+                }
+                catch (HBqlException e) {
+                    listener.onHBqlException(QueryListener.ExceptionSource.QUERYCOMPLETE, e);
+                }
+            }
         }
     }
 }

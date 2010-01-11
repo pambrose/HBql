@@ -22,12 +22,16 @@ package org.apache.hadoop.hbase.hbql.client;
 
 public abstract class QueryListenerAdapter<T> implements QueryListener<T> {
 
-    public void onQueryStart() {
+    public void onQueryStart() throws HBqlException {
     }
 
-    public void onEachRow(T val) {
+    public void onEachRow(T val) throws HBqlException {
     }
 
-    public void onQueryComplete() {
+    public void onQueryComplete() throws HBqlException {
+    }
+
+    public void onHBqlException(final HBqlException e) {
+
     }
 }

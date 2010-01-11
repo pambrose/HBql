@@ -695,21 +695,21 @@ public class ExamplesTest extends TestSupport {
 
         QueryFuture future = stmt.executeQueryAsync("select * from sch9",
                                                     new QueryListenerAdapter<HRecord>() {
-                                                        public void onEachRow(final HRecord rec) {
-                                                            try {
-                                                                int val5 = (Integer)rec.getCurrentValue("val5");
-                                                                int val6 = (Integer)rec.getCurrentValue("val6");
-                                                                String val1 = (String)rec.getCurrentValue("val1");
-                                                                String val2 = (String)rec.getCurrentValue("val2");
+                                                        public void onEachRow(final HRecord rec) throws HBqlException {
+                                                            int val5 = (Integer)rec.getCurrentValue("val5");
+                                                            int val6 = (Integer)rec.getCurrentValue("val6");
+                                                            String val1 = (String)rec.getCurrentValue("val1");
+                                                            String val2 = (String)rec.getCurrentValue("val2");
 
-                                                                System.out.print("val5: " + val5);
-                                                                System.out.print(", val6: " + val6);
-                                                                System.out.print(", val1: " + val1);
-                                                                System.out.println(", val2: " + val2);
-                                                            }
-                                                            catch (HBqlException e) {
-                                                                e.printStackTrace();
-                                                            }
+                                                            System.out.print("val5: " + val5);
+                                                            System.out.print(", val6: " + val6);
+                                                            System.out.print(", val1: " + val1);
+                                                            System.out.println(", val2: " + val2);
+                                                        }
+
+                                                        public void onHBqlException(final ExceptionSource source,
+                                                                                    final HBqlException e) {
+                                                            e.printStackTrace();
                                                         }
                                                     });
 

@@ -27,8 +27,8 @@ import org.apache.expreval.expr.MultipleExpressionContext;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.client.ColumnNotAllowedException;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.client.InvalidColumnException;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
+import org.apache.hadoop.hbase.hbql.impl.InvalidColumnException;
 import org.apache.hadoop.hbase.hbql.mapping.ColumnAttrib;
 
 public class DelegateColumn extends GenericColumn<GenericValue> {
