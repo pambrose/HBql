@@ -31,7 +31,7 @@ executorArg:
     * A QueryExecutorPool is assigned using HConnection.setQueryExecutorPoolName().
     Multiple connections can share a common QueryExecutorPool name.
 
-    * QueryExecutor assignments are reset when HConnection.close() is called.
+    * QueryExecutorPool name assignments are reset when HConnection.close() is called.
     So if an HConnection is taken from an HConnectionPool, the QueryExecutorPool
     name assignments should be made when an HConnection is retrieved from a pool.
 

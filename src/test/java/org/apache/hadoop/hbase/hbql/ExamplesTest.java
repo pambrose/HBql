@@ -34,6 +34,8 @@ import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.client.HResultSet;
 import org.apache.hadoop.hbase.hbql.client.HStatement;
 import org.apache.hadoop.hbase.hbql.client.QueryExecutorPoolManager;
+import org.apache.hadoop.hbase.hbql.client.QueryFuture;
+import org.apache.hadoop.hbase.hbql.client.QueryListenerAdapter;
 import org.apache.hadoop.hbase.hbql.client.Util;
 import org.apache.hadoop.hbase.hbql.util.TestSupport;
 import org.apache.hadoop.hbase.jdbc.ConnectionPool;
@@ -488,7 +490,6 @@ public class ExamplesTest extends TestSupport {
         for (HRecord record : records)
             System.out.println("Key = " + record.getCurrentValue("keyval"));
 
-        records.close();
         pstmt.close();
 
         // END SNIPPET: index1
@@ -526,7 +527,6 @@ public class ExamplesTest extends TestSupport {
             System.out.println("Key = " + record.getCurrentValue("keyval"));
         }
 
-        records.close();
         pstmt.close();
 
         // END SNIPPET: select1
@@ -588,7 +588,6 @@ public class ExamplesTest extends TestSupport {
             System.out.println("f1:val3 = " + rec.getCurrentValue("f1:val3"));
         }
 
-        records.close();
         stmt.close();
 
         // END SNIPPET: definedExample1
@@ -631,8 +630,6 @@ public class ExamplesTest extends TestSupport {
             System.out.println(", val2: " + val2);
         }
 
-        rs.close();
-
         stmt.execute("DISABLE TABLE table12");
         stmt.execute("DROP TABLE table12");
         stmt.close();
@@ -668,6 +665,66 @@ public class ExamplesTest extends TestSupport {
         conn.close();
 
         // END SNIPPET: hbqlapi2
+    }
+
+    public void hbqlapi3() throws HBqlException {
+
+        // START SNIPPET: hbqlapi3
+
+        HConnection conn = HConnectionManager.newConnection();
+
+        HStatement stmt = conn.createStatement();
+        stmt.execute("CREATE TABLE table12 (f1(), f3()) IF NOT tableexists('table12')");
+
+        stmt.execute("CREATE TEMP MAPPING sch9 FOR TABLE table12"
+                     + "("
+                     + "keyval key, "
+                     + "f1 ("
+                     + "    val1 string alias val1, "
+                     + "    val2 string alias val2 "
+                     + "), "
+                     + "f3 ("
+                     + "    val1 int alias val5, "
+                     + "    val2 int alias val6 "
+                     + "))");
+
+        if (!AsyncExecutorManager.asyncExecutorExists("async1"))
+            AsyncExecutorManager.newAsyncExecutor("async1", 1, 10, Long.MAX_VALUE);
+
+        conn.setAsyncExecutorName("async1");
+
+        QueryFuture future = stmt.executeQueryAsync("select * from sch9",
+                                                    new QueryListenerAdapter<HRecord>() {
+                                                        public void onEachRow(final HRecord rec) {
+                                                            try {
+                                                                int val5 = (Integer)rec.getCurrentValue("val5");
+                                                                int val6 = (Integer)rec.getCurrentValue("val6");
+                                                                String val1 = (String)rec.getCurrentValue("val1");
+                                                                String val2 = (String)rec.getCurrentValue("val2");
+
+                                                                System.out.print("val5: " + val5);
+                                                                System.out.print(", val6: " + val6);
+                                                                System.out.print(", val1: " + val1);
+                                                                System.out.println(", val2: " + val2);
+                                                            }
+                                                            catch (HBqlException e) {
+                                                                e.printStackTrace();
+                                                            }
+                                                        }
+                                                    });
+
+        try {
+            future.await();
+        }
+        catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        stmt.close();
+
+        conn.close();
+
+        // END SNIPPET: hbqlapi3
     }
 
     public void jdbc1() throws SQLException, ClassNotFoundException {
@@ -802,7 +859,7 @@ public class ExamplesTest extends TestSupport {
             System.out.println("f1:val3 = " + rec.val3);
         }
 
-        records.close();
+        conn.close();
 
         // END SNIPPET: annotatedExample2
     }

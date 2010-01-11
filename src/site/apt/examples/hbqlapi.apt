@@ -12,3 +12,8 @@ Using the HBql API
 *Using a Connection Pool and a QueryExecutorPool
 
 %{snippet|id=hbqlapi2|file=src/test/java/org/apache/hadoop/hbase/hbql/ExamplesTest.java}
+
+*Asynchronous Query
+
+%{snippet|id=hbqlapi3|file=src/test/java/org/apache/hadoop/hbase/hbql/ExamplesTest.java}
+

@@ -41,9 +41,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class HStatementImpl implements HStatement {
 
     private final AtomicBoolean atomicClosed = new AtomicBoolean(false);
+    private final AtomicBoolean ignoreQueryExecutor = new AtomicBoolean(false);
     private final HConnectionImpl connection;
     private HResultSet resultSet = null;
-    private boolean ignoreQueryExecutor = false;
 
     public HStatementImpl(final HConnectionImpl conn) {
         this.connection = conn;
@@ -58,11 +58,11 @@ public class HStatementImpl implements HStatement {
     }
 
     public boolean getIgnoreQueryExecutor() {
-        return this.ignoreQueryExecutor;
+        return this.ignoreQueryExecutor.get();
     }
 
     public void setIgnoreQueryExecutor(final boolean ignoreQueryExecutor) {
-        this.ignoreQueryExecutor = ignoreQueryExecutor;
+        this.ignoreQueryExecutor.set(ignoreQueryExecutor);
     }
 
     public ExecutionResults executeUpdate(final HBqlStatement statement) throws HBqlException {
@@ -114,10 +114,9 @@ public class HStatementImpl implements HStatement {
                             for (T rec : rs) {
                                 // Iterate through the results
                             }
-                            rs.close();
                         }
                         catch (HBqlException e) {
-                            //e.printStackTrace();
+                            e.printStackTrace();
                             this.getQueryFuture().setCaughtException(e);
                         }
                     }
