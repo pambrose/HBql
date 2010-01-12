@@ -18,9 +18,10 @@
  * limitations under the License.
  */
 
-package org.apache.hadoop.hbase.hbql.client;
+package org.apache.hadoop.hbase.hbql.impl;
 
 import org.antlr.runtime.RecognitionException;
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
 
 public class ParseException extends HBqlException {
     private final RecognitionException recognitionException;

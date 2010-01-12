@@ -18,7 +18,9 @@
  * limitations under the License.
  */
 
-package org.apache.hadoop.hbase.hbql.client;
+package org.apache.hadoop.hbase.hbql.impl;
+
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
 
 public class ColumnNotAllowedException extends HBqlException {
 
