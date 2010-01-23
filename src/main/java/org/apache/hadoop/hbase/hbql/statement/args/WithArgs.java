@@ -404,20 +404,19 @@ public class WithArgs {
         return retval;
     }
 
-    public void setGetArgs(final Get get, final Set<ColumnAttrib> columnAttribSet) throws HBqlException {
+    public void setGetArgs(final Get get, final Set<ColumnAttrib> columnAttribs) throws HBqlException {
 
         // Set column names
-        for (final ColumnAttrib attrib : columnAttribSet) {
-
-            // Do not bother to request because it will always be returned
-            if (attrib.isAKeyAttrib())
-                continue;
-
-            // If it is a map, then request all columns for family
-            if (attrib.isASelectFamilyAttrib())
-                get.addFamily(attrib.getFamilyNameAsBytes());
-            else
+        // First add the columns and then add the families -- the order matters!
+        // Do not bother to request key because it will always be returned
+        for (final ColumnAttrib attrib : columnAttribs) {
+            if (!attrib.isAKeyAttrib() && !attrib.isASelectFamilyAttrib())
                 get.addColumn(attrib.getFamilyNameAsBytes(), attrib.getColumnNameAsBytes());
+        }
+
+        for (final ColumnAttrib attrib : columnAttribs) {
+            if (!attrib.isAKeyAttrib() && attrib.isASelectFamilyAttrib())
+                get.addFamily(attrib.getFamilyNameAsBytes());
         }
 
         if (this.getTimestampArgs() != null)
@@ -435,16 +434,16 @@ public class WithArgs {
     public void setScanArgs(final Scan scan, final Set<ColumnAttrib> columnAttribs) throws HBqlException {
 
         // Set column names
+        // First add the columns and then add the families -- the order matters!
+        // Do not bother to request key because it will always be returned
         for (final ColumnAttrib attrib : columnAttribs) {
-
-            // Do not bother to request because it will always be returned
-            if (attrib.isAKeyAttrib())
-                continue;
-
-            if (attrib.isASelectFamilyAttrib())
-                scan.addFamily(attrib.getFamilyNameAsBytes());
-            else
+            if (!attrib.isAKeyAttrib() && !attrib.isASelectFamilyAttrib())
                 scan.addColumn(attrib.getFamilyNameAsBytes(), attrib.getColumnNameAsBytes());
+        }
+
+        for (final ColumnAttrib attrib : columnAttribs) {
+            if (!attrib.isAKeyAttrib() && attrib.isASelectFamilyAttrib())
+                scan.addFamily(attrib.getFamilyNameAsBytes());
         }
 
         if (this.getTimestampArgs() != null)
@@ -459,6 +458,7 @@ public class WithArgs {
         if (this.getServerExpressionTree() != null)
             scan.setFilter(this.getServerFilter());
     }
+
 
     private Filter getServerFilter() throws HBqlException {
 

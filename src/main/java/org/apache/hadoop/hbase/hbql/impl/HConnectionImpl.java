@@ -67,7 +67,7 @@ public class HConnectionImpl extends PoolableElement<HConnectionImpl> implements
     public static final String MASTER = "hbase.master";
 
     private final AtomicBoolean atomicClosed = new AtomicBoolean(false);
-    private final HBaseConfiguration hbaseConfig;
+    private final HBaseConfiguration hbaseConfiguration;
     private final HTablePool tablePool;
     private final int maxTablePoolReferencesPerTable;
     private final MappingManager mappingManager;
@@ -79,11 +79,11 @@ public class HConnectionImpl extends PoolableElement<HConnectionImpl> implements
     private String queryExecutorPoolName = null;
     private String asyncExecutorName = null;
 
-    public HConnectionImpl(final HBaseConfiguration hbaseConfig,
+    public HConnectionImpl(final HBaseConfiguration hbaseConfiguration,
                            final HConnectionPoolImpl connectionPool,
                            final int maxTablePoolReferencesPerTable) throws HBqlException {
         super(connectionPool);
-        this.hbaseConfig = (hbaseConfig == null) ? new HBaseConfiguration() : hbaseConfig;
+        this.hbaseConfiguration = (hbaseConfiguration == null) ? new HBaseConfiguration() : hbaseConfiguration;
         this.maxTablePoolReferencesPerTable = maxTablePoolReferencesPerTable;
         this.tablePool = new HTablePool(this.getHBaseConfiguration(), this.getMaxTablePoolReferencesPerTable());
         this.mappingManager = new MappingManager(this);
@@ -122,7 +122,7 @@ public class HConnectionImpl extends PoolableElement<HConnectionImpl> implements
     }
 
     public HBaseConfiguration getHBaseConfiguration() {
-        return this.hbaseConfig;
+        return this.hbaseConfiguration;
     }
 
     private HTablePool getTablePool() {
