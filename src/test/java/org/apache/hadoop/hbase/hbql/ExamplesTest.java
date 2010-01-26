@@ -412,15 +412,15 @@ public class ExamplesTest extends TestSupport {
 
         HConnection conn = HConnectionManager.newConnection();
 
-        // Create AsyncExecutor named asyncexec if it doesn't already exist.
-        conn.execute("CREATE ASYNC EXECUTOR asyncexec (MAX_THREAD_COUNT: 10) IF NOT asyncExecutorExists('asyncexec')");
+        // Create AsyncExecutor named asyncExec if it doesn't already exist.
+        conn.execute("CREATE ASYNC EXECUTOR asyncExec (MAX_THREAD_COUNT: 10) IF NOT asyncExecutorExists('asyncExec')");
 
         // Or, using the API
-        if (!AsyncExecutorManager.asyncExecutorExists("asyncexec"))
-            AsyncExecutorManager.newAsyncExecutor("asyncexec", 5, 10, Long.MAX_VALUE);
+        if (!AsyncExecutorManager.asyncExecutorExists("asyncExec"))
+            AsyncExecutorManager.newAsyncExecutor("asyncExec", 5, 10, Long.MAX_VALUE);
 
         // Then assign the connection an AsyncExecutor name to use for queries
-        conn.setAsyncExecutorName("execPool");
+        conn.setAsyncExecutorName("asyncExec");
 
         // Now use connection in a query.
 
@@ -448,11 +448,11 @@ public class ExamplesTest extends TestSupport {
 
         HConnection conn = HConnectionManager.newConnection();
 
-        conn.execute("DROP ASYNC EXECUTOR asyncexec IF asyncExecutorExists('asyncexec')");
+        conn.execute("DROP ASYNC EXECUTOR asyncExec IF asyncExecutorExists('asyncExec')");
 
         // Or, using the API
-        if (AsyncExecutorManager.asyncExecutorExists("asyncexec"))
-            AsyncExecutorManager.dropAsyncExecutor("asyncexec");
+        if (AsyncExecutorManager.asyncExecutorExists("asyncExec"))
+            AsyncExecutorManager.dropAsyncExecutor("asyncExec");
 
         // END SNIPPET: drop-async-executor
     }
