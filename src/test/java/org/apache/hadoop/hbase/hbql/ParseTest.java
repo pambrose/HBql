@@ -99,6 +99,6 @@ public class ParseTest extends TestSupport {
 
         query.append("SERVER FILTER where val1+'ss' BETWEEN '11ss' AND '13ss' ");
 
-        parseSQL(query.toString(), 100, 5000);
+        parseSQL(query.toString(), 100, 7500);
     }
 }

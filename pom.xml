@@ -95,6 +95,33 @@
     <dependencies>
 
         <dependency>
+            <groupId>org.apache.hbase</groupId>
+            <artifactId>hbase</artifactId>
+            <version>0.20.3</version>
+        </dependency>
+
+        <!--
+        This is a hack.
+        In order to get this to work, I renamed hbase-0.20.3-transactional.jar to hbase-transactional-0.20.3.jar
+        -->
+        <dependency>
+            <groupId>org.apache.hbase</groupId>
+            <artifactId>hbase-transactional</artifactId>
+            <version>0.20.3</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.hadoop.zookeeper</groupId>
+            <artifactId>zookeeper</artifactId>
+            <version>3.2.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.mahout.hadoop</groupId>
+            <artifactId>hadoop-core</artifactId>
+            <version>0.20.1</version>
+        </dependency>
+        <dependency>
             <groupId>org.antlr</groupId>
             <artifactId>antlr-runtime</artifactId>
             <version>3.2</version>
@@ -129,34 +156,6 @@
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
             <version>1.2.15</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.hadoop.zookeeper</groupId>
-            <artifactId>zookeeper</artifactId>
-            <version>3.2.1</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.mahout.hadoop</groupId>
-            <artifactId>hadoop-core</artifactId>
-            <version>0.20.1</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.hbase</groupId>
-            <artifactId>hbase</artifactId>
-            <version>0.20.2</version>
-        </dependency>
-
-        <!--
-        This is a hack.
-        In order to get this to work, I renamed hbase-0.20.2-transactional.jar to hbase-transactional-0.20.2.jar
-        -->
-        <dependency>
-            <groupId>org.apache.hbase</groupId>
-            <artifactId>hbase-transactional</artifactId>
-            <version>0.20.2</version>
         </dependency>
 
         <dependency>
