@@ -23,12 +23,10 @@ package org.apache.hadoop.hbase.hbql;
 import org.apache.hadoop.hbase.hbql.client.Column;
 import org.apache.hadoop.hbase.hbql.client.Mapping;
 
-import java.io.Serializable;
-
 // START SNIPPET: annotatedExample1
 
 @Mapping(name = "demo2")
-public class AnnotatedExample implements Serializable {
+public class AnnotatedExample {
 
     @Column
     public String keyval;
