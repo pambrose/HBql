@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-package org.apache.junk;
+package org.apache.misc;
 
 import org.apache.hadoop.hbase.hbql.client.Column;
 import org.apache.hadoop.hbase.hbql.client.ColumnVersionMap;
