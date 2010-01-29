@@ -138,13 +138,35 @@ public class RecordAllTypesTest extends TestSupport {
     }
 
     @Test
-    public void simpleLimitSelect() throws HBqlException {
+    public void simpleLimitSelect1() throws HBqlException {
 
         List<RecordAllTypes> vals = insertSomeData(cnt, true);
 
         assertTrue(vals.size() == cnt);
 
         HPreparedStatement stmt = connection.prepareStatement("select * from alltypes WITH LIMIT :limit");
+
+        stmt.setParameter("limit", cnt / 2);
+        HResultSet<HRecord> recs = stmt.executeQuery();
+
+        int reccnt = 0;
+        for (final HRecord rec : recs)
+            assertTrue((new RecordAllTypes(rec)).equals(vals.get(reccnt++)));
+
+        assertTrue(reccnt == cnt / 2);
+    }
+
+    @Test
+    public void simpleLimitSelect2() throws HBqlException {
+
+        List<RecordAllTypes> vals = insertSomeData(cnt, true);
+
+        assertTrue(vals.size() == cnt);
+
+        HPreparedStatement stmt = connection.prepareStatement("select * from alltypes " +
+                                                              "WITH " +
+                                                              "SERVER FILTER WHERE 1=1 " +
+                                                              "LIMIT :limit");
 
         stmt.setParameter("limit", cnt / 2);
         HResultSet<HRecord> recs = stmt.executeQuery();

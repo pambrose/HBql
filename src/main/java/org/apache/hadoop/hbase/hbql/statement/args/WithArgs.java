@@ -26,9 +26,11 @@ import org.apache.hadoop.hbase.client.Get;
 import org.apache.hadoop.hbase.client.Scan;
 import org.apache.hadoop.hbase.client.tableindexed.IndexSpecification;
 import org.apache.hadoop.hbase.filter.Filter;
+import org.apache.hadoop.hbase.filter.PageFilter;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.Util;
 import org.apache.hadoop.hbase.hbql.filter.RecordFilter;
+import org.apache.hadoop.hbase.hbql.filter.RecordFilterList;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 import org.apache.hadoop.hbase.hbql.impl.Utils;
 import org.apache.hadoop.hbase.hbql.mapping.ColumnAttrib;
@@ -427,8 +429,9 @@ public class WithArgs {
 
         // Do not call scanner cache args call for get
 
-        if (this.getServerExpressionTree() != null)
-            get.setFilter(this.getServerFilter());
+        final Filter filter = this.getServerFilter(false);
+        if (filter != null)
+            get.setFilter(filter);
     }
 
     public void setScanArgs(final Scan scan, final Set<ColumnAttrib> columnAttribs) throws HBqlException {
@@ -455,21 +458,41 @@ public class WithArgs {
         if (this.getScannerCacheArgs() != null)
             this.getScannerCacheArgs().setScannerCacheSize(scan);
 
-        if (this.getServerExpressionTree() != null)
-            scan.setFilter(this.getServerFilter());
+        final Filter filter = this.getServerFilter(true);
+        if (filter != null)
+            scan.setFilter(filter);
     }
 
+    private Filter getServerFilter(final boolean applyLimit) throws HBqlException {
 
-    private Filter getServerFilter() throws HBqlException {
-
-        try {
-            return this.getServerExpressionTree().getFilter();
+        if (this.getServerExpressionTree() == null) {
+            if (applyLimit && this.getLimit() > 0)
+                return new PageFilter(this.getLimit());
+            else
+                return null;
         }
-        catch (HBqlException e) {
-            // Try RecordFilter instead
-            if (this.getServerExpressionTree() != null)
-                this.getServerExpressionTree().setMappingContext(this.getMappingContext());
-            return RecordFilter.newRecordFilter(this.getServerExpressionTree());
+        else {
+            Filter exprFilter;
+            try {
+                exprFilter = this.getServerExpressionTree().getFilter();
+            }
+            catch (HBqlException e) {
+                // Use RecordFilter instead
+                if (this.getServerExpressionTree() != null)
+                    this.getServerExpressionTree().setMappingContext(this.getMappingContext());
+
+                exprFilter = RecordFilter.newRecordFilter(this.getServerExpressionTree());
+            }
+
+            // Now apply PageFilter if limit was specified
+            if (applyLimit && this.getLimit() > 0) {
+                final Filter limitFilter = new PageFilter(this.getLimit());
+                final List<Filter> filterList = Lists.newArrayList(limitFilter, exprFilter);
+                return new RecordFilterList(RecordFilterList.Operator.MUST_PASS_ALL, filterList);
+            }
+            else {
+                return exprFilter;
+            }
         }
     }
 
