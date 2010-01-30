@@ -9,7 +9,7 @@ WITH INDEX Clause
 
 ---------------------------
 
-WITH INDEX index_name {keys | indexFilter | clientFilter}*
+WITH INDEX index_name {keys | queryLimit | indexFilter | clientFilter}*
 
 keys:
     KEYS keyRange [, ...]
@@ -20,6 +20,9 @@ keyRange:
     | key_value TO LAST
     | key_value TO key_value
     | key_value
+
+queryLimit:
+    LIMIT limit_value
 
 indexFilter:
     INDEX FILTER WHERE where_clause
@@ -41,6 +44,10 @@ clientFilter:
         Indicates key values for query.  A key_value can be bound to a Collection of strings with a named
         parameter.
        
+    * limit_value is any valid long {{{./expressions.html}expression}} (cannot reference columns).
+
+        Indicates the maximum number of rows returned, i.e., evaluated as true, in a query.
+
     * where_clause is any valid boolean {{{./expressions.html}expression}} (can reference columns).
 
         The INDEX FILTER where_clause is evaluated on the server using the index columns,

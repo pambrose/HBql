@@ -153,6 +153,13 @@ public class IndexTest extends TestSupport {
     }
 
     @Test
+    public void simpleSelect3b() throws HBqlException {
+        final String q1 = "select * from tab4 WITH INDEX foo1 KEYS ALL LIMIT 4";
+        final int rec_cnt = showValues(q1, false);
+        assertTrue(rec_cnt == 4);
+    }
+
+    @Test
     public void simpleSelect4() throws HBqlException {
         final String q1 = "select * from tab4 WITH INDEX foo1 KEYS '000000000001200' TO '000000000001600'";
         final int rec_cnt = showValues(q1, false);

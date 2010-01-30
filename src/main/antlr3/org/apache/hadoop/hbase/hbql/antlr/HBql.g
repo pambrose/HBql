@@ -286,6 +286,7 @@ options {memoize=true;}
 indexElements[WithArgs withArgs] 
 options {memoize=true;}	
 	: (keyKEYS | keyKEY) k=keysRangeArgs		{withArgs.setKeyRangeArgs($k.retval);}
+	| keyLIMIT v=exprValue				{withArgs.setLimitArgs(new LimitArgs($v.retval));}
 	| keyINDEX keyFILTER keyWHERE s=serverFilter	{withArgs.setServerExpressionTree($s.retval);}
 	| keyCLIENT keyFILTER keyWHERE c=clientFilter	{withArgs.setClientExpressionTree($c.retval);}
 	;
