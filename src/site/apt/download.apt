@@ -5,14 +5,14 @@
 
 Releases
 
-    *{{{./downloads/hbql-0.9.20-alpha.zip}0.9.20-alpha.zip}}
+    *{{{./downloads/hbql-0.9.21-alpha.zip}0.9.21-alpha.zip}}
     
-    *{{{./downloads/hbql-0.9.20-alpha.tar.gz}0.9.20-alpha.tar.gz}}
+    *{{{./downloads/hbql-0.9.21-alpha.tar.gz}0.9.21-alpha.tar.gz}}
 
 
 Javadocs
 
-    *{{{./downloads/javadocs-0.9.20-alpha.zip}javadocs-0.9.20-alpha.zip}}
+    *{{{./downloads/javadocs-0.9.21-alpha.zip}javadocs-0.9.21-alpha.zip}}
     
 
 Source
@@ -25,6 +25,12 @@ git clone git://github.com/pambrose/HBql.git
 
 
 Release Notes
+
+    0.9.21-alpha -- 01/29/10
+
+        * Added LIMIT support for WITH INDEX clause
+
+        * Enforced LIMIT with PageFilter on scans
 
     0.9.20-alpha -- 01/11/10
 

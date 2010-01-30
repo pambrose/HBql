@@ -18,8 +18,8 @@
  * limitations under the License.
  */
 
-@VersionAnnotation(version = "0.9.20-alpha",
-                   date = "01/11/10",
+@VersionAnnotation(version = "0.9.21-alpha",
+                   date = "01/29/10",
                    user = "pambrose",
                    revision = "",
                    url = "http://www.hbql.com") package org.apache.hadoop.hbase.hbql.util;
