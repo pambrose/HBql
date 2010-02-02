@@ -46,7 +46,7 @@ public class CreateTableStatement extends GenericStatement implements Connection
         final HTableDescriptor tableDesc = new HTableDescriptor(this.tableName);
 
         for (final FamilyDefinition familyDefintion : this.familyList)
-            tableDesc.addFamily(familyDefintion.getHColumnDescriptor());
+            tableDesc.addFamily(familyDefintion.getColumnDescription());
 
         conn.createTable(tableDesc);
 

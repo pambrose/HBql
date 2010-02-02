@@ -126,6 +126,21 @@ public final class ColumnDefinition implements Serializable {
                                     setter);
     }
 
+    // For regular attribs
+    public static ColumnDefinition newIndexedColumn(final String columnName, final String typeName) {
+        final FieldType fieldType = getFieldType(typeName);
+        return new ColumnDefinition(null,
+                                    columnName,
+                                    null,
+                                    fieldType,
+                                    false,
+                                    null,
+                                    null,
+                                    null,
+                                    null);
+    }
+
+
     // For SelectFamilyAttrib columns
     public static ColumnDefinition newSelectFamilyAttribColumn(final String familyName) {
         return new ColumnDefinition(familyName, "", "", null, false, null, null, null, null);

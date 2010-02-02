@@ -105,11 +105,11 @@ options {backtrack=true;}
 	| keySET t=simpleId EQ? val=QSTRING	 	{retval = new SetStatement($t.text, $val.text);}
 	| keyVERSION					{retval = new VersionStatement();}
 	| keyHELP					{retval = new HelpStatement();}
-	| jdbc=hbqlStmt					{retval = $jdbc.retval;}
+	| h=hbqlStmt					{retval = $h.retval;}
 	;						
 
 hbqlStatement returns [HBqlStatement retval]
-	: j=hbqlStmt SEMI+				{retval = $j.retval;};
+	: h=hbqlStmt SEMI+				{retval = $h.retval;};
 	
 hbqlStmt returns [HBqlStatement retval]
 options {backtrack=true;}	
@@ -240,6 +240,7 @@ options {backtrack=true;}
 	| k=keyIN_MEMORY COLON v=exprValue		 {retval = new FamilyProperty($k.retval, $v.retval);}
 	| k=keyBLOOM_FILTER COLON v=exprValue		 {retval = new FamilyProperty($k.retval, $v.retval);}
 	| k=keyCOMPRESSION_TYPE COLON c=compressionType	 {retval = new CompressionTypeProperty($k.retval, $c.text);}
+	| k=keyINDEX keyON col=simpleId type=simpleId	 {retval = new IndexProperty($k.retval, $col.text, $type.text);}
 	;
 
 compressionType
@@ -598,6 +599,7 @@ keyIN_MEMORY returns [String retval]               : {isKeyword(input, "IN_MEMOR
 keyMAP_FILE_INDEX_INTERVAL returns [String retval] : {isKeyword(input, "MAP_FILE_INDEX_INTERVAL")}? id=ID {retval = $id.text;};
 keyMAX_VERSIONS returns [String retval] 	   : {isKeyword(input, "MAX_VERSIONS")}? id=ID {retval = $id.text;};
 keyTTL returns [String retval]     		   : {isKeyword(input, "TTL")}? id=ID {retval = $id.text;};
+keyINDEX returns [String retval]                   : {isKeyword(input, "INDEX")}? id=ID  {retval = $id.text;};
 
 // retval is used with these
 keyNOT returns [String retval]                     : {isKeyword(input, "NOT")}? id=ID {retval = $id.text;};
@@ -640,7 +642,6 @@ keyIF                           : {isKeyword(input, "IF")}? ID;
 keyIMPORT                       : {isKeyword(input, "IMPORT")}? ID;
 keyIN                           : {isKeyword(input, "IN")}? ID;
 keyINCLUDE                      : {isKeyword(input, "INCLUDE")}? ID;
-keyINDEX                        : {isKeyword(input, "INDEX")}? ID;
 keyINSERT                       : {isKeyword(input, "INSERT")}? ID;
 keyINTO                         : {isKeyword(input, "INTO")}? ID;
 keyIS                           : {isKeyword(input, "IS")}? ID;

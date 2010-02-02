@@ -110,6 +110,16 @@
             <version>0.20.3</version>
         </dependency>
 
+        <!--
+        This is a hack.
+        In order to get this to work, I renamed hbase-0.20.3-indexed.jar to hbase-indexed-0.20.3.jar
+        -->
+        <dependency>
+            <groupId>org.apache.hbase</groupId>
+            <artifactId>hbase-indexed</artifactId>
+            <version>0.20.3</version>
+        </dependency>
+
         <dependency>
             <groupId>org.apache.hadoop.zookeeper</groupId>
             <artifactId>zookeeper</artifactId>

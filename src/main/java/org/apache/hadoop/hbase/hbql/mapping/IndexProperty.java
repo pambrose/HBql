@@ -21,24 +21,22 @@
 package org.apache.hadoop.hbase.hbql.mapping;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.io.hfile.Compression;
 
-public class CompressionTypeProperty extends FamilyProperty {
+public class IndexProperty extends FamilyProperty {
 
+    final String column;
     final String type;
 
-    public CompressionTypeProperty(final String text, final String type) {
+    public IndexProperty(final String text, final String column, final String type) {
         super(text);
+        this.column = column;
         this.type = type;
     }
 
-    public Compression.Algorithm getCompressionValue() throws HBqlException {
-
-        try {
-            return Compression.Algorithm.valueOf(this.type.toUpperCase());
-        }
-        catch (Exception e) {
-            throw new HBqlException("Invalid compression type: " + this.type);
-        }
+    public ColumnDefinition getColumnDefinition() throws HBqlException {
+        final ColumnDefinition colDef = ColumnDefinition.newIndexedColumn(this.column, this.type);
+        if (colDef.getFieldType() == null || colDef.getFieldType().getIndexType() == null)
+            throw new HBqlException("Invalid index type: " + this.column + " " + this.type);
+        return colDef;
     }
 }

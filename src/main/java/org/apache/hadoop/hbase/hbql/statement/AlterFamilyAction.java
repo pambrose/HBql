@@ -51,7 +51,7 @@ public class AlterFamilyAction implements AlterTableAction {
                         final String tableName) throws HBqlException {
 
         conn.validateFamilyExistsForTable(this.getFamilyName(), tableName);
-        final HColumnDescriptor columnDescriptor = this.getFamilyDefinition().getHColumnDescriptor();
+        final HColumnDescriptor columnDescriptor = this.getFamilyDefinition().getColumnDescription();
 
         try {
             admin.modifyColumn(tableName, this.getFamilyName(), columnDescriptor);

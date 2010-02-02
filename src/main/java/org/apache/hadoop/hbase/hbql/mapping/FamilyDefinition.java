@@ -21,14 +21,18 @@
 package org.apache.hadoop.hbase.hbql.mapping;
 
 import org.apache.hadoop.hbase.HColumnDescriptor;
+import org.apache.hadoop.hbase.client.idx.IdxColumnDescriptor;
+import org.apache.hadoop.hbase.client.idx.IdxIndexDescriptor;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.util.Lists;
 
+import java.io.IOException;
 import java.util.List;
 
 public class FamilyDefinition {
 
     private final String familyName;
-    private final List<FamilyProperty> mappingPropertyList;
+    private final List<FamilyProperty> familyPropertyList;
 
     private FamilyProperty maxVersions = null;
     private FamilyProperty mapFileIndexInterval = null;
@@ -38,10 +42,11 @@ public class FamilyDefinition {
     private FamilyProperty bloomFilterEnabled = null;
     private FamilyProperty inMemoryEnabled = null;
     private CompressionTypeProperty compressionType = null;
+    private List<ColumnDefinition> indexDefinitionList = Lists.newArrayList();
 
-    public FamilyDefinition(final String familyName, final List<FamilyProperty> mappingPropertyList) {
+    public FamilyDefinition(final String familyName, final List<FamilyProperty> familyPropertyList) {
         this.familyName = familyName;
-        this.mappingPropertyList = mappingPropertyList;
+        this.familyPropertyList = familyPropertyList;
     }
 
     public String getFamilyName() {
@@ -49,14 +54,44 @@ public class FamilyDefinition {
     }
 
     private List<FamilyProperty> getFamilyPropertyList() {
-        return this.mappingPropertyList;
+        return this.familyPropertyList;
     }
 
-    public HColumnDescriptor getHColumnDescriptor() throws HBqlException {
+    private List<ColumnDefinition> getIndexDefinitionList() {
+        return indexDefinitionList;
+    }
+
+    public HColumnDescriptor getColumnDescription() throws HBqlException {
 
         this.validateFamilyPropertyList();
 
-        final HColumnDescriptor columnDesc = new HColumnDescriptor(this.getFamilyName());
+        final HColumnDescriptor columnDescriptor;
+
+        if (this.getIndexDefinitionList().size() == 0) {
+            columnDescriptor = new HColumnDescriptor(this.getFamilyName());
+        }
+        else {
+            final IdxColumnDescriptor idxColumnDescriptor = new IdxColumnDescriptor(this.getFamilyName());
+            for (final ColumnDefinition columnDefinition : this.getIndexDefinitionList()) {
+                final IdxIndexDescriptor indexDescriptor = new IdxIndexDescriptor();
+                indexDescriptor.setQualifierName(columnDefinition.getColumnName().getBytes());
+                indexDescriptor.setQualifierType(columnDefinition.getFieldType().getIndexType());
+                try {
+                    idxColumnDescriptor.addIndexDescriptor(indexDescriptor);
+                }
+                catch (IOException e) {
+                    throw new HBqlException("Invalid index for: " + columnDefinition.getColumnName()
+                                            + " " + columnDefinition.getFieldType());
+                }
+            }
+            columnDescriptor = idxColumnDescriptor;
+        }
+
+        this.assignFamilyProperties(columnDescriptor);
+        return columnDescriptor;
+    }
+
+    private void assignFamilyProperties(final HColumnDescriptor columnDesc) throws HBqlException {
 
         if (this.maxVersions != null)
             columnDesc.setMaxVersions(this.maxVersions.getIntegerValue());
@@ -73,9 +108,7 @@ public class FamilyDefinition {
         if (this.bloomFilterEnabled != null)
             columnDesc.setBloomfilter(this.bloomFilterEnabled.getBooleanValue());
         if (this.compressionType != null)
-            columnDesc.setCompressionType(this.compressionType.getValue());
-
-        return columnDesc;
+            columnDesc.setCompressionType(this.compressionType.getCompressionValue());
     }
 
     private FamilyProperty validateProperty(final FamilyProperty assignee,
@@ -91,42 +124,46 @@ public class FamilyDefinition {
         if (this.getFamilyPropertyList() == null)
             return;
 
-        for (final FamilyProperty mappingProperty : this.getFamilyPropertyList()) {
+        for (final FamilyProperty familyProperty : this.getFamilyPropertyList()) {
 
-            mappingProperty.validate();
+            familyProperty.validate();
 
-            switch (mappingProperty.getEnumType()) {
+            switch (familyProperty.getEnumType()) {
 
                 case MAX_VERSIONS:
-                    this.maxVersions = this.validateProperty(this.maxVersions, mappingProperty);
+                    this.maxVersions = this.validateProperty(this.maxVersions, familyProperty);
                     break;
 
                 case MAP_FILE_INDEX_INTERVAL:
-                    this.mapFileIndexInterval = this.validateProperty(this.mapFileIndexInterval, mappingProperty);
+                    this.mapFileIndexInterval = this.validateProperty(this.mapFileIndexInterval, familyProperty);
                     break;
 
                 case TTL:
-                    this.ttl = this.validateProperty(this.ttl, mappingProperty);
+                    this.ttl = this.validateProperty(this.ttl, familyProperty);
                     break;
 
                 case BLOCK_SIZE:
-                    this.blockSize = this.validateProperty(this.blockSize, mappingProperty);
+                    this.blockSize = this.validateProperty(this.blockSize, familyProperty);
                     break;
 
                 case BLOCK_CACHE_ENABLED:
-                    this.blockCacheEnabled = this.validateProperty(this.blockCacheEnabled, mappingProperty);
+                    this.blockCacheEnabled = this.validateProperty(this.blockCacheEnabled, familyProperty);
                     break;
 
                 case IN_MEMORY:
-                    this.inMemoryEnabled = this.validateProperty(this.inMemoryEnabled, mappingProperty);
+                    this.inMemoryEnabled = this.validateProperty(this.inMemoryEnabled, familyProperty);
                     break;
 
                 case BLOOM_FILTER:
-                    this.bloomFilterEnabled = this.validateProperty(this.bloomFilterEnabled, mappingProperty);
+                    this.bloomFilterEnabled = this.validateProperty(this.bloomFilterEnabled, familyProperty);
                     break;
 
                 case COMPRESSION_TYPE:
-                    this.compressionType = (CompressionTypeProperty)this.validateProperty(this.compressionType, mappingProperty);
+                    this.compressionType = (CompressionTypeProperty)this.validateProperty(this.compressionType, familyProperty);
+                    break;
+
+                case INDEX:
+                    this.getIndexDefinitionList().add(((IndexProperty)familyProperty).getColumnDefinition());
                     break;
             }
         }
