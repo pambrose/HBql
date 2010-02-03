@@ -25,6 +25,7 @@ import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.literal.BooleanLiteral;
 import org.apache.expreval.expr.node.BooleanValue;
 import org.apache.expreval.expr.node.GenericValue;
+import org.apache.hadoop.hbase.client.idx.exp.Expression;
 import org.apache.hadoop.hbase.filter.Filter;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
@@ -71,11 +72,15 @@ public class ExpressionTree extends MultipleExpressionContext {
     }
 
     public Filter getFilter() throws HBqlException {
-
         this.validateTypes(true, true);
         this.optimize();
-
         return this.getGenericValue().getFilter();
+    }
+
+    public Expression getIndexExpression() throws HBqlException {
+        this.validateTypes(true, true);
+        this.optimize();
+        return this.getGenericValue().getIndexExpression();
     }
 
     public String asString() {

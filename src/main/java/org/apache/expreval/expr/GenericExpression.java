@@ -34,13 +34,15 @@ import org.apache.expreval.expr.node.GenericValue;
 import org.apache.expreval.expr.node.NumberValue;
 import org.apache.expreval.expr.node.StringValue;
 import org.apache.hadoop.hbase.client.Result;
+import org.apache.hadoop.hbase.client.idx.exp.Expression;
 import org.apache.hadoop.hbase.filter.CompareFilter;
 import org.apache.hadoop.hbase.filter.Filter;
 import org.apache.hadoop.hbase.filter.SingleColumnValueFilter;
 import org.apache.hadoop.hbase.filter.WritableByteArrayComparable;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.impl.AggregateValue;
-import org.apache.hadoop.hbase.hbql.impl.InvalidServerFilterExpressionException;
+import org.apache.hadoop.hbase.hbql.impl.InvalidIndexExpressionException;
+import org.apache.hadoop.hbase.hbql.impl.InvalidServerFilterException;
 import org.apache.hadoop.hbase.hbql.impl.InvalidTypeException;
 import org.apache.hadoop.hbase.hbql.mapping.ColumnAttrib;
 import org.apache.hadoop.hbase.hbql.util.Lists;
@@ -226,7 +228,7 @@ public abstract class GenericExpression implements GenericValue {
 
         // Bail if expression uses a row key.
         if (attrib.isAKeyAttrib())
-            throw new InvalidServerFilterExpressionException("Cannot use a key attribute");
+            throw new InvalidServerFilterException("Cannot use a key attribute");
 
         final SingleColumnValueFilter filter = new SingleColumnValueFilter(attrib.getFamilyNameAsBytes(),
                                                                            attrib.getColumnNameAsBytes(),
@@ -430,6 +432,10 @@ public abstract class GenericExpression implements GenericValue {
     }
 
     public Filter getFilter() throws HBqlException {
-        throw new InvalidServerFilterExpressionException();
+        throw new InvalidServerFilterException();
+    }
+
+    public Expression getIndexExpression() throws HBqlException {
+        throw new InvalidIndexExpressionException();
     }
 }

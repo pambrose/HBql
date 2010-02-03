@@ -18,15 +18,17 @@
  * limitations under the License.
  */
 
-package org.apache.hadoop.hbase.hbql.client;
+package org.apache.hadoop.hbase.hbql.impl;
 
-import org.apache.hadoop.hbase.HBaseConfiguration;
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
 
-public interface HConnectionPool {
+public class InvalidServerFilterException extends HBqlException {
 
-    String getName();
+    public InvalidServerFilterException() {
+        super("");
+    }
 
-    HBaseConfiguration getHBaseConfiguration();
-
-    HConnection takeConnection() throws HBqlException;
+    public InvalidServerFilterException(final String s) {
+        super(s);
+    }
 }

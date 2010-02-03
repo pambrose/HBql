@@ -25,11 +25,15 @@ import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.Operator;
 import org.apache.expreval.expr.node.BooleanValue;
 import org.apache.expreval.expr.node.GenericValue;
+import org.apache.hadoop.hbase.client.idx.exp.And;
+import org.apache.hadoop.hbase.client.idx.exp.Expression;
+import org.apache.hadoop.hbase.client.idx.exp.Or;
 import org.apache.hadoop.hbase.filter.Filter;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.filter.RecordFilterList;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
-import org.apache.hadoop.hbase.hbql.impl.InvalidServerFilterExpressionException;
+import org.apache.hadoop.hbase.hbql.impl.InvalidIndexExpressionException;
+import org.apache.hadoop.hbase.hbql.impl.InvalidServerFilterException;
 import org.apache.hadoop.hbase.hbql.util.Lists;
 
 import java.util.List;
@@ -99,10 +103,43 @@ public class BooleanCompare extends GenericCompare implements BooleanValue {
                 return new RecordFilterList(RecordFilterList.Operator.MUST_PASS_ALL, filterList);
             }
             case EQ: {
-                throw new InvalidServerFilterExpressionException();
+                throw new InvalidServerFilterException();
             }
             case NOTEQ: {
-                throw new InvalidServerFilterExpressionException();
+                throw new InvalidServerFilterException();
+            }
+            default:
+                throw new HBqlException("Invalid operator: " + this.getOperator());
+        }
+    }
+
+    public Expression getIndexExpression() throws HBqlException {
+
+        final Expression expr0 = this.getExprArg(0).getIndexExpression();
+        final Expression expr1 = this.getExprArg(1).getIndexExpression();
+
+        switch (this.getOperator()) {
+            case OR: {
+                if (expr0 instanceof Or) {
+                    ((Or)expr0).or(expr1);
+                    return expr0;
+                }
+
+                return new Or(expr0, expr1);
+            }
+            case AND: {
+                if (expr0 instanceof And) {
+                    ((And)expr0).and(expr1);
+                    return expr0;
+                }
+
+                return new And(expr0, expr1);
+            }
+            case EQ: {
+                throw new InvalidIndexExpressionException();
+            }
+            case NOTEQ: {
+                throw new InvalidIndexExpressionException();
             }
             default:
                 throw new HBqlException("Invalid operator: " + this.getOperator());

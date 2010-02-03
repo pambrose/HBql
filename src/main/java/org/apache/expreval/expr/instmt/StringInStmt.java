@@ -31,7 +31,7 @@ import org.apache.expreval.expr.var.GenericColumn;
 import org.apache.hadoop.hbase.filter.CompareFilter;
 import org.apache.hadoop.hbase.filter.Filter;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.impl.InvalidServerFilterExpressionException;
+import org.apache.hadoop.hbase.hbql.impl.InvalidServerFilterException;
 import org.apache.hadoop.hbase.hbql.impl.Utils;
 import org.apache.hadoop.hbase.hbql.io.IO;
 import org.apache.hadoop.hbase.hbql.util.Lists;
@@ -87,10 +87,10 @@ public class StringInStmt extends GenericInStmt {
             }
         }
         catch (ResultMissingColumnException e) {
-            throw new InvalidServerFilterExpressionException();
+            throw new InvalidServerFilterException();
         }
         catch (NullColumnValueException e) {
-            throw new InvalidServerFilterExpressionException();
+            throw new InvalidServerFilterException();
         }
 
         return this.newSingleColumnValueFilter(column.getColumnAttrib(),

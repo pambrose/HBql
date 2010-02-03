@@ -37,11 +37,13 @@ import org.apache.expreval.expr.literal.StringLiteral;
 import org.apache.expreval.expr.literal.StringNullLiteral;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.hadoop.hbase.client.Result;
+import org.apache.hadoop.hbase.client.idx.exp.Expression;
 import org.apache.hadoop.hbase.filter.Filter;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.impl.AggregateValue;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
-import org.apache.hadoop.hbase.hbql.impl.InvalidServerFilterExpressionException;
+import org.apache.hadoop.hbase.hbql.impl.InvalidIndexExpressionException;
+import org.apache.hadoop.hbase.hbql.impl.InvalidServerFilterException;
 import org.apache.hadoop.hbase.hbql.impl.InvalidTypeException;
 import org.apache.hadoop.hbase.hbql.util.Lists;
 
@@ -264,10 +266,6 @@ public class NamedParameter implements GenericValue {
         return new NamedParameterComparator();
     }
 
-    public Filter getFilter() throws HBqlException {
-        throw new InvalidServerFilterExpressionException();
-    }
-
     public static class NamedParameterComparator implements Comparator<NamedParameter>, Serializable {
         public int compare(final NamedParameter param1, final NamedParameter param2) {
             if (param1.getPosition() < param2.getPosition())
@@ -277,5 +275,13 @@ public class NamedParameter implements GenericValue {
             else
                 return 0;
         }
+    }
+
+    public Filter getFilter() throws HBqlException {
+        throw new InvalidServerFilterException();
+    }
+
+    public Expression getIndexExpression() throws HBqlException {
+        throw new InvalidIndexExpressionException();
     }
 }

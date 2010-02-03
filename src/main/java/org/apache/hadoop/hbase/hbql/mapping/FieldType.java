@@ -47,7 +47,7 @@ public enum FieldType implements Serializable {
 
     KeyType(String.class, StringValue.class, -1, -1, null),  // No type synonyms for KEY
 
-    BooleanType(Boolean.TYPE, BooleanValue.class, 0, Bytes.SIZEOF_BOOLEAN, null, "BOOLEAN", "BOOL"),
+    BooleanType(Boolean.TYPE, BooleanValue.class, 0, Bytes.SIZEOF_BOOLEAN, IdxQualifierType.BYTE, "BOOLEAN", "BOOL"),
     ByteType(Byte.TYPE, ByteValue.class, 1, Bytes.SIZEOF_BYTE, IdxQualifierType.BYTE, "BYTE"),
     CharType(Character.TYPE, CharValue.class, 1, Bytes.SIZEOF_CHAR, IdxQualifierType.CHAR, "CHAR"),
 
@@ -57,7 +57,7 @@ public enum FieldType implements Serializable {
     FloatType(Float.TYPE, FloatValue.class, 5, Bytes.SIZEOF_FLOAT, IdxQualifierType.FLOAT, "FLOAT"),
     DoubleType(Double.TYPE, DoubleValue.class, 6, Bytes.SIZEOF_DOUBLE, IdxQualifierType.DOUBLE, "DOUBLE"),
 
-    StringType(String.class, StringValue.class, -1, -1, null, "STRING", "VARCHAR"),
+    StringType(String.class, StringValue.class, -1, -1, IdxQualifierType.BYTE_ARRAY, "STRING", "VARCHAR"),
     DateType(Date.class, DateValue.class, -1, -1, null, "DATE", "DATETIME"),
     ObjectType(Object.class, ObjectValue.class, -1, -1, null, "OBJECT", "OBJ");
 

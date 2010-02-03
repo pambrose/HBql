@@ -23,6 +23,7 @@ package org.apache.hadoop.hbase.hbql.mapping;
 import org.apache.hadoop.hbase.HColumnDescriptor;
 import org.apache.hadoop.hbase.client.idx.IdxColumnDescriptor;
 import org.apache.hadoop.hbase.client.idx.IdxIndexDescriptor;
+import org.apache.hadoop.hbase.client.idx.IdxQualifierType;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.util.Lists;
 
@@ -73,9 +74,9 @@ public class FamilyDefinition {
         else {
             final IdxColumnDescriptor idxColumnDescriptor = new IdxColumnDescriptor(this.getFamilyName());
             for (final ColumnDefinition columnDefinition : this.getIndexDefinitionList()) {
-                final IdxIndexDescriptor indexDescriptor = new IdxIndexDescriptor();
-                indexDescriptor.setQualifierName(columnDefinition.getColumnName().getBytes());
-                indexDescriptor.setQualifierType(columnDefinition.getFieldType().getIndexType());
+                final byte[] columnBytes = columnDefinition.getColumnName().getBytes();
+                final IdxQualifierType indexType = columnDefinition.getFieldType().getIndexType();
+                final IdxIndexDescriptor indexDescriptor = new IdxIndexDescriptor(columnBytes, indexType);
                 try {
                     idxColumnDescriptor.addIndexDescriptor(indexDescriptor);
                 }

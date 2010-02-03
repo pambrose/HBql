@@ -27,6 +27,8 @@ import org.apache.expreval.expr.TypeSupport;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.hadoop.hbase.client.Get;
 import org.apache.hadoop.hbase.client.Scan;
+import org.apache.hadoop.hbase.client.idx.IdxScan;
+import org.apache.hadoop.hbase.client.idx.exp.Expression;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.io.IO;
 import org.apache.hadoop.hbase.hbql.mapping.ColumnAttrib;
@@ -188,7 +190,29 @@ public class KeyRange extends SelectStatementArgs {
                                             final ColumnAttrib keyAttrib,
                                             final Set<ColumnAttrib> columnAttribs) throws HBqlException {
 
-        final Scan scan = new Scan();
+        final Scan scan;
+
+        if (withArgs.getIndexExpressionTree() == null) {
+            scan = new Scan();
+        }
+        else {
+            final IdxScan idxScan = new IdxScan();
+            final Expression indexExpr = withArgs.getIndexExpressionTree().getIndexExpression();
+            idxScan.setExpression(indexExpr);
+            scan = idxScan;
+        }
+
+        this.setStartStopRows(scan, keyAttrib);
+        withArgs.setScanArgs(scan, columnAttribs);
+
+        final RowRequest rowRequest = withArgs.hasAnIndex()
+                                      ? new IndexRequest(scan.getStartRow(), scan.getStopRow(), columnAttribs)
+                                      : new ScanRequest(scan);
+
+        return Lists.newArrayList(rowRequest);
+    }
+
+    private void setStartStopRows(final Scan scan, final ColumnAttrib keyAttrib) throws HBqlException {
 
         switch (this.getKeyRangeType()) {
             case ALL: {
@@ -222,14 +246,6 @@ public class KeyRange extends SelectStatementArgs {
             default:
                 throw new InternalErrorException("Invalid range type: " + this.getKeyRangeType().name());
         }
-
-        withArgs.setScanArgs(scan, columnAttribs);
-
-        final RowRequest rowRequest = withArgs.hasAnIndex()
-                                      ? new IndexRequest(scan.getStartRow(), scan.getStopRow(), columnAttribs)
-                                      : new ScanRequest(scan);
-
-        return Lists.newArrayList(rowRequest);
     }
 
     private void verifyRangeValueWidth(final ColumnAttrib keyAttrib, final String... rangeValues) throws HBqlException {

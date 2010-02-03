@@ -25,7 +25,7 @@ import org.apache.expreval.expr.NotValue;
 import org.apache.expreval.expr.node.BooleanValue;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.hadoop.hbase.filter.WritableByteArrayComparable;
-import org.apache.hadoop.hbase.hbql.impl.InvalidServerFilterExpressionException;
+import org.apache.hadoop.hbase.hbql.impl.InvalidServerFilterException;
 
 public abstract class GenericBetweenStmt extends NotValue<GenericBetweenStmt> implements BooleanValue {
 
@@ -64,13 +64,13 @@ public abstract class GenericBetweenStmt extends NotValue<GenericBetweenStmt> im
         }
     }
 
-    protected void validateArgsForBetweenFilter() throws InvalidServerFilterExpressionException {
+    protected void validateArgsForBetweenFilter() throws InvalidServerFilterException {
 
         if (this.getExprArg(0).isAColumnReference()
             && this.getExprArg(1).isAConstant()
             && this.getExprArg(2).isAConstant())
             return;
 
-        throw new InvalidServerFilterExpressionException("Filter requires a column reference and two constants");
+        throw new InvalidServerFilterException("Filter requires a column reference and two constants");
     }
 }

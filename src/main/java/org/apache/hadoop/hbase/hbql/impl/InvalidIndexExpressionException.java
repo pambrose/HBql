@@ -22,13 +22,13 @@ package org.apache.hadoop.hbase.hbql.impl;
 
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 
-public class InvalidServerFilterExpressionException extends HBqlException {
+public class InvalidIndexExpressionException extends HBqlException {
 
-    public InvalidServerFilterExpressionException() {
+    public InvalidIndexExpressionException() {
         super("");
     }
 
-    public InvalidServerFilterExpressionException(final String s) {
+    public InvalidIndexExpressionException(final String s) {
         super(s);
     }
 }

@@ -36,9 +36,11 @@ import org.apache.expreval.expr.node.LongValue;
 import org.apache.expreval.expr.node.NumberValue;
 import org.apache.expreval.expr.node.ShortValue;
 import org.apache.expreval.expr.node.StringValue;
+import org.apache.hadoop.hbase.client.idx.exp.Expression;
 import org.apache.hadoop.hbase.filter.Filter;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.impl.InvalidServerFilterExpressionException;
+import org.apache.hadoop.hbase.hbql.impl.InvalidIndexExpressionException;
+import org.apache.hadoop.hbase.hbql.impl.InvalidServerFilterException;
 import org.apache.hadoop.hbase.hbql.impl.InvalidTypeException;
 
 import java.util.List;
@@ -242,6 +244,10 @@ public abstract class GenericFunction extends GenericExpression {
     }
 
     public Filter getFilter() throws HBqlException {
-        throw new InvalidServerFilterExpressionException();
+        throw new InvalidServerFilterException();
+    }
+
+    public Expression getIndexExpression() throws HBqlException {
+        throw new InvalidIndexExpressionException();
     }
 }

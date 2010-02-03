@@ -106,7 +106,7 @@ public class IndexRequest implements RowRequest {
                                            startKey,
                                            stopKey,
                                            withArgs.getColumnsUsedInIndexWhereExpr(),
-                                           withArgs.getFilterForIndex(),
+                                           withArgs.getFilterForTableIndex(),
                                            getColumns());
         }
         catch (IOException e) {

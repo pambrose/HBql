@@ -280,16 +280,17 @@ options {memoize=true;}
 	| keyVERSIONS va=versionArgs			{withArgs.setVersionArgs($va.retval);}
 	| keySCANNER_CACHE_SIZE v=exprValue		{withArgs.setScannerCacheArgs(new ScannerCacheArgs($v.retval));}
 	| keyLIMIT v=exprValue				{withArgs.setLimitArgs(new LimitArgs($v.retval));}
-	| keySERVER keyFILTER keyWHERE s=serverFilter	{withArgs.setServerExpressionTree($s.retval);}
-	| keyCLIENT keyFILTER keyWHERE c=clientFilter	{withArgs.setClientExpressionTree($c.retval);}
+	| keyINDEX keyFILTER keyWHERE fe=filterExpr	{withArgs.setIndexExpressionTree($fe.retval);}
+	| keySERVER keyFILTER keyWHERE fe=filterExpr	{withArgs.setServerExpressionTree($fe.retval);}
+	| keyCLIENT keyFILTER keyWHERE fe=filterExpr	{withArgs.setClientExpressionTree($fe.retval);}
 	;
 	
 indexElements[WithArgs withArgs] 
 options {memoize=true;}	
 	: (keyKEYS | keyKEY) k=keysRangeArgs		{withArgs.setKeyRangeArgs($k.retval);}
 	| keyLIMIT v=exprValue				{withArgs.setLimitArgs(new LimitArgs($v.retval));}
-	| keyINDEX keyFILTER keyWHERE s=serverFilter	{withArgs.setServerExpressionTree($s.retval);}
-	| keyCLIENT keyFILTER keyWHERE c=clientFilter	{withArgs.setClientExpressionTree($c.retval);}
+	| keyINDEX keyFILTER keyWHERE fe=filterExpr	{withArgs.setServerExpressionTree($fe.retval);}
+	| keyCLIENT keyFILTER keyWHERE fe=filterExpr	{withArgs.setClientExpressionTree($fe.retval);}
 	;
 
 keysRangeArgs returns [KeyRangeArgs retval]
@@ -319,12 +320,9 @@ versionArgs returns [VersionArgs retval]
 	| keyMAX					{retval = new VersionArgs(new IntegerLiteral(Integer.MAX_VALUE));}
 	;
 			
-clientFilter returns [ExpressionTree retval]
+filterExpr returns [ExpressionTree retval]
 	: w=nodescWhereExpr				{retval = $w.retval;};
-	
-serverFilter returns [ExpressionTree retval]
-	: w=nodescWhereExpr				{retval = $w.retval;};
-	
+		
 nodescWhereExpr returns [ExpressionTree retval]
 	: e=exprValue					{retval = ExpressionTree.newExpressionTree(null, $e.retval);};
 

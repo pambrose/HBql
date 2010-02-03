@@ -29,6 +29,7 @@ import org.apache.expreval.expr.node.DateValue;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.expreval.expr.node.NumberValue;
 import org.apache.expreval.expr.node.StringValue;
+import org.apache.hadoop.hbase.client.idx.exp.Expression;
 import org.apache.hadoop.hbase.filter.Filter;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
@@ -52,13 +53,13 @@ public class DelegateCompare extends GenericCompare {
         final Class<? extends GenericValue> type1 = this.getExprArg(1).validateTypes(this, false);
 
         if (TypeSupport.isParentClass(StringValue.class, type0, type1))
-            typedExpr = new StringCompare(this.getExprArg(0), this.getOperator(), this.getExprArg(1));
+            this.typedExpr = new StringCompare(this.getExprArg(0), this.getOperator(), this.getExprArg(1));
         else if (TypeSupport.isParentClass(NumberValue.class, type0, type1))
-            typedExpr = new NumberCompare(this.getExprArg(0), this.getOperator(), this.getExprArg(1));
+            this.typedExpr = new NumberCompare(this.getExprArg(0), this.getOperator(), this.getExprArg(1));
         else if (TypeSupport.isParentClass(DateValue.class, type0, type1))
-            typedExpr = new DateCompare(this.getExprArg(0), this.getOperator(), this.getExprArg(1));
+            this.typedExpr = new DateCompare(this.getExprArg(0), this.getOperator(), this.getExprArg(1));
         else if (TypeSupport.isParentClass(BooleanValue.class, type0, type1))
-            typedExpr = new BooleanCompare(this.getExprArg(0), this.getOperator(), this.getExprArg(1));
+            this.typedExpr = new BooleanCompare(this.getExprArg(0), this.getOperator(), this.getExprArg(1));
         else
             this.throwInvalidTypeException(type0, type1);
 
@@ -78,5 +79,9 @@ public class DelegateCompare extends GenericCompare {
 
     public Filter getFilter() throws HBqlException {
         return this.getTypedExpr().getFilter();
+    }
+
+    public Expression getIndexExpression() throws HBqlException {
+        return this.getTypedExpr().getIndexExpression();
     }
 }

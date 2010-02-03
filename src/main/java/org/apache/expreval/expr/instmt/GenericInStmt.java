@@ -29,7 +29,7 @@ import org.apache.expreval.expr.node.GenericValue;
 import org.apache.hadoop.hbase.filter.WritableByteArrayComparable;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
-import org.apache.hadoop.hbase.hbql.impl.InvalidServerFilterExpressionException;
+import org.apache.hadoop.hbase.hbql.impl.InvalidServerFilterException;
 
 import java.util.List;
 
@@ -94,10 +94,10 @@ public abstract class GenericInStmt extends NotValue<GenericInStmt> implements B
         }
     }
 
-    protected void validateArgsForInFilter() throws InvalidServerFilterExpressionException {
+    protected void validateArgsForInFilter() throws InvalidServerFilterException {
         if (this.getExprArg(0).isAColumnReference() && this.inListIsConstant())
             return;
 
-        throw new InvalidServerFilterExpressionException("Filter requires a column reference and list of constants");
+        throw new InvalidServerFilterException("Filter requires a column reference and list of constants");
     }
 }

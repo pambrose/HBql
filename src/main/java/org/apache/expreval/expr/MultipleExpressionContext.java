@@ -182,8 +182,7 @@ public abstract class MultipleExpressionContext implements Serializable {
         }
     }
 
-    public void validateTypes(final boolean allowColumns,
-                              final boolean allowCollections) throws HBqlException {
+    public void validateTypes(final boolean allowColumns, final boolean allowCollections) throws HBqlException {
 
         if (this.needsTypeValidation()) {
 

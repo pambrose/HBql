@@ -33,7 +33,7 @@ import org.apache.expreval.expr.node.GenericValue;
 import org.apache.hadoop.hbase.filter.WritableByteArrayComparable;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
-import org.apache.hadoop.hbase.hbql.impl.InvalidServerFilterExpressionException;
+import org.apache.hadoop.hbase.hbql.impl.InvalidServerFilterException;
 import org.apache.hadoop.hbase.hbql.impl.InvalidTypeException;
 import org.apache.hadoop.hbase.hbql.impl.Utils;
 import org.apache.hadoop.hbase.hbql.io.IO;
@@ -63,13 +63,13 @@ public abstract class GenericCompare extends GenericExpression implements Boolea
         return this.getExprArg(pos).getValue(conn, object);
     }
 
-    protected void validateArgsForCompareFilter() throws InvalidServerFilterExpressionException {
+    protected void validateArgsForCompareFilter() throws InvalidServerFilterException {
         // One of the values must be a single column reference and the other a constant
         if ((this.getExprArg(0).isAColumnReference() && this.getExprArg(1).isAConstant())
             || this.getExprArg(1).isAColumnReference() && (this.getExprArg(0).isAConstant()))
             return;
 
-        throw new InvalidServerFilterExpressionException("Filter require a column reference and a constant");
+        throw new InvalidServerFilterException("Filter require a column reference and a constant");
     }
 
     public GenericValue getOptimizedValue() throws HBqlException {
