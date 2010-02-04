@@ -101,7 +101,7 @@ public class ConnectionImpl implements Connection, PooledConnection {
     }
 
     public boolean getAutoCommit() throws SQLException {
-        throw new SQLFeatureNotSupportedException();
+        return true;
     }
 
     public void commit() throws SQLException {

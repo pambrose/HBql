@@ -23,7 +23,6 @@ package org.apache.hadoop.hbase.hbql.impl;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.HColumnDescriptor;
-import org.apache.hadoop.hbase.HConstants;
 import org.apache.hadoop.hbase.HTableDescriptor;
 import org.apache.hadoop.hbase.MasterNotRunningException;
 import org.apache.hadoop.hbase.client.HBaseAdmin;
@@ -53,7 +52,6 @@ import org.apache.hadoop.hbase.hbql.util.AtomicReferences;
 import org.apache.hadoop.hbase.hbql.util.Maps;
 import org.apache.hadoop.hbase.hbql.util.PoolableElement;
 import org.apache.hadoop.hbase.hbql.util.Sets;
-import org.apache.hadoop.hbase.regionserver.IdxRegion;
 import org.apache.hadoop.hbase.util.Bytes;
 
 import java.io.IOException;
@@ -86,8 +84,6 @@ public class HConnectionImpl extends PoolableElement<HConnectionImpl> implements
                            final int maxTablePoolReferencesPerTable) throws HBqlException {
         super(connectionPool);
         this.hbaseConfiguration = (hbaseConfiguration == null) ? new HBaseConfiguration() : hbaseConfiguration;
-        this.getHBaseConfiguration().setClass(HConstants.REGION_IMPL, IdxRegion.class, IdxRegion.class);
-
         this.maxTablePoolReferencesPerTable = maxTablePoolReferencesPerTable;
         this.tablePool = new HTablePool(this.getHBaseConfiguration(), this.getMaxTablePoolReferencesPerTable());
         this.mappingManager = new MappingManager(this);
@@ -98,7 +94,6 @@ public class HConnectionImpl extends PoolableElement<HConnectionImpl> implements
     public static HBaseConfiguration getHBaseConfiguration(final String master) {
         final Configuration configuration = new Configuration();
         configuration.set(HConnectionImpl.MASTER, master);
-        configuration.setClass(HConstants.REGION_IMPL, IdxRegion.class, IdxRegion.class);
         return new HBaseConfiguration(configuration);
     }
 

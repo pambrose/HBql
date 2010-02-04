@@ -193,7 +193,6 @@ public class IndexedHBaseTest extends TestSupport {
         scan.setExpression(Expression.comparison("f1".getBytes(), "val2".getBytes(), Comparison.Operator.EQ, Bytes.toBytes(42)));
 
         HBaseConfiguration conf = new HBaseConfiguration();
-        conf.setClass(HConstants.REGION_IMPL, IdxRegion.class, IdxRegion.class);
 
         HTable table = new HTable(conf, "table22");
         ResultScanner scanner = table.getScanner(scan);

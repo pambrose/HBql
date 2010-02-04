@@ -21,11 +21,9 @@
 package org.apache.hadoop.hbase.hbql.impl;
 
 import org.apache.hadoop.hbase.HBaseConfiguration;
-import org.apache.hadoop.hbase.HConstants;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.client.HConnectionPool;
-import org.apache.hadoop.hbase.regionserver.IdxRegion;
 
 public class HConnectionPoolImpl extends ElementPool<HConnectionImpl> implements HConnectionPool {
 
@@ -38,9 +36,8 @@ public class HConnectionPoolImpl extends ElementPool<HConnectionImpl> implements
                                final HBaseConfiguration hbaseConfiguration,
                                final int maxPoolReferencesPerTablePerConnection) throws HBqlException {
         super(poolName, maxPoolSize);
-        this.hbaseConfiguration = (hbaseConfiguration == null) ? new HBaseConfiguration() : hbaseConfiguration;
-        this.getHBaseConfiguration().setClass(HConstants.REGION_IMPL, IdxRegion.class, IdxRegion.class);
 
+        this.hbaseConfiguration = (hbaseConfiguration == null) ? new HBaseConfiguration() : hbaseConfiguration;
         this.maxReferencesPerTable = maxPoolReferencesPerTablePerConnection;
 
         for (int i = 0; i < initPoolSize; i++)

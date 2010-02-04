@@ -22,14 +22,19 @@ package org.apache.hadoop.hbase.hbql.statement;
 
 import org.apache.hadoop.hbase.HColumnDescriptor;
 import org.apache.hadoop.hbase.HTableDescriptor;
+import org.apache.hadoop.hbase.client.idx.IdxColumnDescriptor;
+import org.apache.hadoop.hbase.client.idx.IdxIndexDescriptor;
 import org.apache.hadoop.hbase.client.tableindexed.IndexSpecification;
 import org.apache.hadoop.hbase.client.tableindexed.IndexedTableDescriptor;
 import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
+import org.apache.hadoop.hbase.io.ImmutableBytesWritable;
 import org.apache.hadoop.hbase.util.Bytes;
 
+import java.io.IOException;
 import java.util.Collection;
+import java.util.Map;
 
 public class DescribeTableStatement extends TableStatement {
 
@@ -55,15 +60,34 @@ public class DescribeTableStatement extends TableStatement {
                                + "\n    Bloom filter: " + columnDesc.isBloomfilter()
                                + "\n    In memory: " + columnDesc.isInMemory()
                                + "\n");
+
+            if (IdxColumnDescriptor.hasIndexDescriptors(columnDesc)) {
+                retval.out.println("    IHBase indexes:");
+
+                try {
+                    Map<ImmutableBytesWritable, IdxIndexDescriptor> idxs = IdxColumnDescriptor.getIndexDescriptors(columnDesc);
+                    for (final IdxIndexDescriptor idx : idxs.values()) {
+                        retval.out.println("      "
+                                           + new String(idx.getQualifierName())
+                                           + "  "
+                                           + idx.getQualifierType().name());
+                    }
+                }
+                catch (IOException e) {
+                    throw new HBqlException(e);
+                }
+
+                retval.out.println("\n");
+            }
         }
 
         final IndexedTableDescriptor indexDesc = conn.newIndexedTableDescriptor(this.getTableName());
         final Collection<IndexSpecification> indexes = indexDesc.getIndexes();
         if (indexes.isEmpty()) {
-            retval.out.println("No indexes.");
+            retval.out.println("No table indexes.");
         }
         else {
-            retval.out.println("Indexes:");
+            retval.out.println("Table indexes:");
             for (final IndexSpecification index : indexes) {
                 retval.out.println("  " + index.getIndexId());
                 final byte[][] columns = index.getIndexedColumns();
