@@ -1,0 +1,21 @@
+    -----
+    SPLIT TABLE
+    -----
+    -----
+
+
+SPLIT TABLE
+
+*Syntax
+
+---------------------------
+
+SPLIT TABLE table_name [IF bool_expr]
+
+---------------------------
+
+*Description
+
+    Splits named table (requires {{{./disable-table.html}disabling}} the table first).
+
+*Example

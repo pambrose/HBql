@@ -41,8 +41,10 @@ public class HelpStatement extends GenericStatement implements NonConnectionStat
 
         retval.out.println(CreateTableStatement.usage());
         retval.out.println(AlterTableStatement.usage());
-        retval.out.println(DisableTableStatement.usage());
         retval.out.println(EnableTableStatement.usage());
+        retval.out.println(DisableTableStatement.usage());
+        retval.out.println(SplitTableStatement.usage());
+        retval.out.println(CompactTableStatement.usage());
         retval.out.println(DropTableStatement.usage());
         retval.out.println(DescribeTableStatement.usage());
         retval.out.println(ShowTablesStatement.usage());

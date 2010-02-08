@@ -1,0 +1,21 @@
+    -----
+    COMPACT TABLE
+    -----
+    -----
+
+
+COMPACT TABLE
+
+*Syntax
+
+---------------------------
+
+[MAJOR] COMPACT TABLE table_name [IF bool_expr]
+
+---------------------------
+
+*Description
+
+    Compacts named table (requires {{{./disable-table.html}disabling}} the table first).
+
+*Example

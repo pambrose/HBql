@@ -129,8 +129,11 @@ options {backtrack=true;}
 	| keyDROP keyTABLE t=simpleId p=pred? 		{retval = new DropTableStatement($p.retval, $t.text);}
 	| keyALTER keyTABLE t=simpleId aal=alterActionList p=pred?	
 							{retval = new AlterTableStatement($p.retval, $t.text, $aal.retval);}
-	| keyDISABLE keyTABLE t=simpleId p=pred?	{retval = new DisableTableStatement($p.retval, $t.text);}
 	| keyENABLE keyTABLE t=simpleId p=pred?		{retval = new EnableTableStatement($p.retval, $t.text);}
+	| keyDISABLE keyTABLE t=simpleId p=pred?	{retval = new DisableTableStatement($p.retval, $t.text);}
+	| keySPLIT keyTABLE t=simpleId p=pred?		{retval = new SplitTableStatement($p.retval, $t.text);}
+	|(maj=keyMAJOR)? keyCOMPACT keyTABLE t=simpleId p=pred?	
+							{retval = new CompactTableStatement($p.retval,$maj.retval!=null, $t.text);}
 	| keyCREATE keyINDEX t=simpleId keyON keyMAPPING? t2=simpleId LPAREN t3=indexColumnList RPAREN (keyINCLUDE LPAREN t4=indexColumnList RPAREN)? p=pred?		
 							{retval = new CreateIndexStatement($p.retval, $t.text, $t2.text, $t3.retval, $t4.retval);}
 	| keyDROP keyINDEX t=simpleId keyON keyMAPPING? t2=simpleId p=pred?		
@@ -600,6 +603,7 @@ keyTTL returns [String retval]     		   : {isKeyword(input, "TTL")}? id=ID {retv
 keyINDEX returns [String retval]                   : {isKeyword(input, "INDEX")}? id=ID  {retval = $id.text;};
 
 // retval is used with these
+keyMAJOR returns [String retval]                   : {isKeyword(input, "MAJOR")}?id=ID {retval = $id.text;};
 keyNOT returns [String retval]                     : {isKeyword(input, "NOT")}? id=ID {retval = $id.text;};
 keySYSTEM returns [String retval]                  : {isKeyword(input, "SYSTEM")}? id=ID {retval = $id.text;};
 keyTEMP returns [String retval]                    : {isKeyword(input, "TEMP")}? id=ID {retval = $id.text;};
@@ -615,6 +619,7 @@ keyASYNC                        : {isKeyword(input, "ASYNC")}? ID;
 keyBETWEEN                      : {isKeyword(input, "BETWEEN")}? ID;
 keyCASE                         : {isKeyword(input, "CASE")}? ID;
 keyCLIENT                       : {isKeyword(input, "CLIENT")}? ID;
+keyCOMPACT                      : {isKeyword(input, "COMPACT")}? ID;
 keyCONTAINS                     : {isKeyword(input, "CONTAINS")}? ID;
 keyCREATE                       : {isKeyword(input, "CREATE")}? ID;
 keyDEFAULT                      : {isKeyword(input, "DEFAULT")}? ID;
@@ -666,6 +671,7 @@ keySELECT                       : {isKeyword(input, "SELECT")}? ID;
 keySERVER                       : {isKeyword(input, "SERVER")}? ID;
 keySET                          : {isKeyword(input, "SET")}? ID;
 keySHOW                         : {isKeyword(input, "SHOW")}? ID;
+keySPLIT                        : {isKeyword(input, "SPLIT")}? ID;
 keyTABLE                        : {isKeyword(input, "TABLE")}? ID;
 keyTABLES                       : {isKeyword(input, "TABLES")}? ID;
 keyTHEN                         : {isKeyword(input, "THEN")}? ID;

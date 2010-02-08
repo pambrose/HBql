@@ -22,6 +22,10 @@ HBql Statements
 
     **{{{./disable-table.html}DISABLE TABLE}}
 
+    **{{{./split-table.html}SPLIT TABLE}}
+
+    **{{{./compact-table.html}COMPACT TABLE}}
+
     **{{{./show-tables.html}SHOW TABLES}}
 
     **{{{./describe-table.html}DESCRIBE TABLE}}
