@@ -119,7 +119,7 @@ options {backtrack=true;}
 							{retval = new DeleteStatement($p.retval, $di.retval, $t.text, $w.retval);}
 	| keyINSERT keyINTO keyMAPPING? t=simpleId LPAREN e=exprList RPAREN ins=insertValues p=pred?
 							{retval = new InsertStatement($p.retval, $t.text, $e.retval, $ins.retval);}
-	| keyCREATE (tmp=keyTEMP)? (sys=keySYSTEM)? keyMAPPING t=simpleId (keyFOR keyTABLE a=simpleId)? (am=attribMapping)? p=pred? 
+	| keyCREATE tmp=keyTEMP? sys=keySYSTEM? keyMAPPING t=simpleId (keyFOR keyTABLE a=simpleId)? am=attribMapping? p=pred? 
 							{retval = new CreateMappingStatement($p.retval, $tmp.retval!=null,  $sys.retval!=null, $t.text, $a.text, $am.retval);}
 	| keyDROP keyMAPPING t=simpleId p=pred?		{retval = new DropMappingStatement($p.retval, $t.text);}
 	| keyDESCRIBE keyMAPPING t=simpleId 		{retval = new DescribeMappingStatement($t.text);}
@@ -129,11 +129,13 @@ options {backtrack=true;}
 	| keyDROP keyTABLE t=simpleId p=pred? 		{retval = new DropTableStatement($p.retval, $t.text);}
 	| keyALTER keyTABLE t=simpleId aal=alterActionList p=pred?	
 							{retval = new AlterTableStatement($p.retval, $t.text, $aal.retval);}
+	| keyCOMPACT keyTABLE t=simpleId p=pred?	{retval = new CompactTableStatement($p.retval, false, $t.text);}
+	| keyMAJOR keyCOMPACT keyTABLE t=simpleId p=pred?	
+							{retval = new CompactTableStatement($p.retval, true, $t.text);}
 	| keyENABLE keyTABLE t=simpleId p=pred?		{retval = new EnableTableStatement($p.retval, $t.text);}
 	| keyDISABLE keyTABLE t=simpleId p=pred?	{retval = new DisableTableStatement($p.retval, $t.text);}
 	| keySPLIT keyTABLE t=simpleId p=pred?		{retval = new SplitTableStatement($p.retval, $t.text);}
-	|(maj=keyMAJOR)? keyCOMPACT keyTABLE t=simpleId p=pred?	
-							{retval = new CompactTableStatement($p.retval,$maj.retval!=null, $t.text);}
+	| keyFLUSH keyTABLE t=simpleId p=pred?		{retval = new FlushTableStatement($p.retval, $t.text);}
 	| keyCREATE keyINDEX t=simpleId keyON keyMAPPING? t2=simpleId LPAREN t3=indexColumnList RPAREN (keyINCLUDE LPAREN t4=indexColumnList RPAREN)? p=pred?		
 							{retval = new CreateIndexStatement($p.retval, $t.text, $t2.text, $t3.retval, $t4.retval);}
 	| keyDROP keyINDEX t=simpleId keyON keyMAPPING? t2=simpleId p=pred?		
@@ -603,7 +605,6 @@ keyTTL returns [String retval]     		   : {isKeyword(input, "TTL")}? id=ID {retv
 keyINDEX returns [String retval]                   : {isKeyword(input, "INDEX")}? id=ID  {retval = $id.text;};
 
 // retval is used with these
-keyMAJOR returns [String retval]                   : {isKeyword(input, "MAJOR")}?id=ID {retval = $id.text;};
 keyNOT returns [String retval]                     : {isKeyword(input, "NOT")}? id=ID {retval = $id.text;};
 keySYSTEM returns [String retval]                  : {isKeyword(input, "SYSTEM")}? id=ID {retval = $id.text;};
 keyTEMP returns [String retval]                    : {isKeyword(input, "TEMP")}? id=ID {retval = $id.text;};
@@ -637,6 +638,7 @@ keyFALSE                        : {isKeyword(input, "FALSE")}? ID;
 keyFAMILY                       : {isKeyword(input, "FAMILY")}? ID;
 keyFILTER                       : {isKeyword(input, "FILTER")}? ID;
 keyFIRST                        : {isKeyword(input, "FIRST")}? ID;
+keyFLUSH                        : {isKeyword(input, "FLUSH")}? ID;
 keyFOR                          : {isKeyword(input, "FOR")}? ID;
 keyFROM                         : {isKeyword(input, "FROM")}? ID;
 keyGZ                           : {isKeyword(input, "GZ")}? ID;
@@ -654,6 +656,7 @@ keyLAST                         : {isKeyword(input, "LAST")}? ID;
 keyLIKE                         : {isKeyword(input, "LIKE")}? ID;
 keyLIMIT                        : {isKeyword(input, "LIMIT")}? ID;
 keyLZO                          : {isKeyword(input, "LZO")}? ID;
+keyMAJOR 	                : {isKeyword(input, "MAJOR")}? ID;
 keyMAPPING                      : {isKeyword(input, "MAPPING")}? ID;
 keyMAPPINGS                     : {isKeyword(input, "MAPPINGS")}? ID;
 keyMAX                          : {isKeyword(input, "MAX")}? ID;

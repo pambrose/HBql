@@ -1,0 +1,21 @@
+    -----
+    FLUSH TABLE
+    -----
+    -----
+
+
+FLUSH TABLE
+
+*Syntax
+
+---------------------------
+
+FLUSH TABLE table_name [IF bool_expr]
+
+---------------------------
+
+*Description
+
+    Flushes named table (requires {{{./disable-table.html}disabling}} the table first).
+
+*Example

@@ -26,9 +26,11 @@ HBql Statements
 
     **{{{./compact-table.html}COMPACT TABLE}}
 
-    **{{{./show-tables.html}SHOW TABLES}}
+    **{{{./flush-table.html}FLUSH TABLE}}
 
     **{{{./describe-table.html}DESCRIBE TABLE}}
+
+    **{{{./show-tables.html}SHOW TABLES}}
 
 * Index Management
 
