@@ -12,7 +12,7 @@ DELETE
 DELETE [deleteItem [, ...]] FROM [MAPPING] mapping_name with_clause [IF bool_expr]
 
 deleteItem:
-    family_name ':*'
+      family_name ':*'
     | family_name ':' column_name
     | alias_name
 

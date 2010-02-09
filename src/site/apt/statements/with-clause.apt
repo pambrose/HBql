@@ -12,21 +12,21 @@ WITH Clause
 WITH {keys | timestamp | versions | scannerCacheSize | queryLimit | serverFilter | clientFilter}+
 
 keys:
-    KEYS key_Range [, ...]
+      KEYS key_Range [, ...]
     | KEYS ALL
 
 keyRange:
-    FIRST TO key_value
+      FIRST TO key_value
     | key_value TO LAST
     | key_value TO key_value
     | key_value
 
 timestamp:
-    TIMESTAMP RANGE timestamp_value TO timestamp_value
+      TIMESTAMP RANGE timestamp_value TO timestamp_value
     | TIMESTAMP timestamp_value
 
 versions:
-    VERSIONS version_value
+      VERSIONS version_value
     | VERSIONS MAX
 
 scannerCacheSize:

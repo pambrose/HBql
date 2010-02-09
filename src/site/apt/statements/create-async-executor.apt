@@ -13,7 +13,7 @@ CREATE ASYNC EXECUTOR
 CREATE ASYNC EXECUTOR name ['(' executorArg [, ...] ')'] [IF bool_expr]
 
 executorArg:
-    MIN_THREAD_COUNT ':' int_expr
+      MIN_THREAD_COUNT ':' int_expr
     | MAX_THREAD_COUNT ':' int_expr
     | KEEP_ALIVE_SECS ':' long_expr
 

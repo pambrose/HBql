@@ -22,7 +22,7 @@ column_Description:
     column_name type ['['']'] [WIDTH int_expr] [ALIAS alias_name] [DEFAULT constant_expr]
 
 type:
-    BOOLEAN   (BOOL)
+      BOOLEAN   (BOOL)
     | BYTE
     | CHAR
     | SHORT

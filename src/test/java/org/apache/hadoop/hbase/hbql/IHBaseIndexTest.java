@@ -52,11 +52,13 @@ public class IHBaseIndexTest extends TestSupport {
                            + "f1 ("
                            + "  val1 string alias val1, "
                            + "  val2 int alias val2, "
-                           + "  val3 int alias val3 "
+                           + "  val3 int alias val3, "
+                           + "  val4 boolean alias val4 "
                            + "))");
 
         if (!connection.tableExists("table22"))
-            System.out.println(connection.execute("create table table22 (f1(INDEX ON val2 int))"));
+            System.out
+                    .println(connection.execute("create table table22 (f1(INDEX ON val2 int, INDEX ON val4 boolean))"));
         else {
             System.out.println(connection.execute("delete from tab4"));
         }
@@ -68,8 +70,8 @@ public class IHBaseIndexTest extends TestSupport {
                                       final int cnt) throws HBqlException {
 
         HPreparedStatement stmt = connection.prepareStatement("insert into tab4 " +
-                                                              "(keyval, val1, val2, val3) values " +
-                                                              "(:key, :val1, :val2, :val3)");
+                                                              "(keyval, val1, val2, val3, val4) values " +
+                                                              "(:key, :val1, :val2, :val3, :val4)");
 
         for (int i = 0; i < cnt; i++) {
 
@@ -79,6 +81,7 @@ public class IHBaseIndexTest extends TestSupport {
             stmt.setParameter("val1", Util.getZeroPaddedNonNegativeNumber(val * 100, 15));
             stmt.setParameter("val2", val);
             stmt.setParameter("val3", randomVal.nextInt());
+            stmt.setParameter("val4", (i % 2) == 0);
             stmt.execute();
         }
     }
@@ -99,8 +102,10 @@ public class IHBaseIndexTest extends TestSupport {
                 String val1 = (String)rec.getCurrentValue("val1");
                 int val2 = (Integer)rec.getCurrentValue("f1:val2");
                 int val3 = (Integer)rec.getCurrentValue("f1:val3");
+                boolean val4 = (Boolean)rec.getCurrentValue("f1:val4");
 
-                System.out.println("Current Values: " + keyval + " : " + val1 + " : " + val2 + " : " + val3);
+                System.out.println("Current Values: " + keyval + " : " + val1
+                                   + " : " + val2 + " : " + val3 + " : " + val4);
                 rec_cnt++;
             }
 
@@ -190,6 +195,28 @@ public class IHBaseIndexTest extends TestSupport {
         final String q1 = "select * from tab4 WITH " +
                           "KEYS '000000000000005' TO LAST " +
                           "SERVER FILTER WHERE val2 = 17 USING INDEX WHERE val2 = 17";
+
+        final int rec_cnt = showValues(q1, false);
+        assertTrue(rec_cnt == 1);
+    }
+
+    @Test
+    public void simpleSelect9() throws HBqlException, IOException {
+
+        final String q1 = "select * from tab4 WITH " +
+                          "KEYS '000000000000005' TO LAST " +
+                          "SERVER FILTER WHERE val4 = false USING INDEX WHERE val4 = false";
+
+        final int rec_cnt = showValues(q1, false);
+        assertTrue(rec_cnt == 3);
+    }
+
+    @Test
+    public void simpleSelect10() throws HBqlException, IOException {
+
+        final String q1 = "select * from tab4 WITH " +
+                          "KEYS '000000000000005' TO LAST " +
+                          "SERVER FILTER WHERE val2 = 17 AND val4 = false USING INDEX WHERE val4 = false";
 
         final int rec_cnt = showValues(q1, false);
         assertTrue(rec_cnt == 1);

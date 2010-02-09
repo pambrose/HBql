@@ -12,11 +12,11 @@ WITH INDEX Clause
 WITH INDEX index_name {keys | queryLimit | indexFilter | clientFilter}*
 
 keys:
-    KEYS keyRange [, ...]
+      KEYS keyRange [, ...]
     | KEYS ALL
 
 keyRange:
-    FIRST TO key_value
+      FIRST TO key_value
     | key_value TO LAST
     | key_value TO key_value
     | key_value

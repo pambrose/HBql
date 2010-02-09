@@ -25,15 +25,19 @@ import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.Operator;
 import org.apache.expreval.expr.node.BooleanValue;
 import org.apache.expreval.expr.node.GenericValue;
+import org.apache.expreval.expr.var.DelegateColumn;
+import org.apache.expreval.expr.var.GenericColumn;
 import org.apache.hadoop.hbase.client.idx.exp.And;
+import org.apache.hadoop.hbase.client.idx.exp.Comparison;
 import org.apache.hadoop.hbase.client.idx.exp.Expression;
 import org.apache.hadoop.hbase.client.idx.exp.Or;
 import org.apache.hadoop.hbase.filter.Filter;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.filter.RecordFilterList;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
-import org.apache.hadoop.hbase.hbql.impl.InvalidIndexExpressionException;
 import org.apache.hadoop.hbase.hbql.impl.InvalidServerFilterException;
+import org.apache.hadoop.hbase.hbql.io.IO;
+import org.apache.hadoop.hbase.hbql.mapping.FieldType;
 import org.apache.hadoop.hbase.hbql.util.Lists;
 
 import java.util.List;
@@ -115,11 +119,12 @@ public class BooleanCompare extends GenericCompare implements BooleanValue {
 
     public Expression getIndexExpression() throws HBqlException {
 
-        final Expression expr0 = this.getExprArg(0).getIndexExpression();
-        final Expression expr1 = this.getExprArg(1).getIndexExpression();
+        if (this.getOperator() == Operator.OR || this.getOperator() == Operator.AND) {
 
-        switch (this.getOperator()) {
-            case OR: {
+            final Expression expr0 = this.getExprArg(0).getIndexExpression();
+            final Expression expr1 = this.getExprArg(1).getIndexExpression();
+
+            if (this.getOperator() == Operator.OR) {
                 if (expr0 instanceof Or) {
                     ((Or)expr0).or(expr1);
                     return expr0;
@@ -127,7 +132,7 @@ public class BooleanCompare extends GenericCompare implements BooleanValue {
 
                 return new Or(expr0, expr1);
             }
-            case AND: {
+            else {
                 if (expr0 instanceof And) {
                     ((And)expr0).and(expr1);
                     return expr0;
@@ -135,14 +140,38 @@ public class BooleanCompare extends GenericCompare implements BooleanValue {
 
                 return new And(expr0, expr1);
             }
-            case EQ: {
-                throw new InvalidIndexExpressionException();
-            }
-            case NOTEQ: {
-                throw new InvalidIndexExpressionException();
-            }
-            default:
-                throw new HBqlException("Invalid operator: " + this.getOperator());
         }
+
+        if (this.getOperator() == Operator.EQ) {
+
+            this.validateArgsForCompareFilter();
+
+            final GenericColumn<? extends GenericValue> column;
+            final Object constant;
+            final Comparison.Operator comparison;
+
+            if (this.getExprArg(0).isAColumnReference()) {
+                column = ((DelegateColumn)this.getExprArg(0)).getTypedColumn();
+                constant = this.getConstantValue(1);
+                comparison = this.getOperator().getComparisonLeft();
+            }
+            else {
+                column = ((DelegateColumn)this.getExprArg(1)).getTypedColumn();
+                constant = this.getConstantValue(0);
+                comparison = this.getOperator().getComparisonRight();
+            }
+
+            this.validateNumericArgTypes(constant);
+
+            final FieldType type = column.getColumnAttrib().getFieldType();
+            final byte[] compareVal = IO.getSerialization().getScalarAsBytes(type, constant);
+
+            return Expression.comparison(column.getColumnAttrib().getFamilyNameAsBytes(),
+                                         column.getColumnAttrib().getColumnNameAsBytes(),
+                                         comparison,
+                                         compareVal);
+        }
+
+        throw new HBqlException("Invalid operator: " + this.getOperator());
     }
 }

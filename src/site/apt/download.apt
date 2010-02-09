@@ -30,7 +30,7 @@ Release Notes
 
         * Initial IHBase index support
 
-        * Added FLUSH, COMPACT, and SPLIT statements
+        * Added {{{statements/flush-table.html}FLUSH}}, {{{statements/compact-table.html}COMPACT}}, and {{{statements/split-table.html}SPLIT}} statements
 
         * Added function tableAvailable() 
 

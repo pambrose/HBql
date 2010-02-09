@@ -13,7 +13,7 @@ ALTER TABLE
 ALTER TABLE table_name alterAction [, ...] [IF bool_expr]
 
 alterAction:
-    DROP [FAMILY] family_name
+      DROP [FAMILY] family_name
     | ADD [FAMILY] family_description
     | ALTER [FAMILY] family_name TO family_description
 

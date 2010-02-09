@@ -16,7 +16,7 @@ familyDescription:
     family_name '(' [familyProperty [, ...]] ')'
 
 familyProperty:
-    MAX_VERSIONS ':' int_expr
+      MAX_VERSIONS ':' int_expr
 	| BLOOM_FILTER ':' bool_expr
 	| BLOCK_SIZE ':' int_expr
 	| BLOCK_CACHE_ENABLED ':' bool_expr
@@ -27,7 +27,8 @@ familyProperty:
 	| INDEX ON column_name type
 
  type:
-     BYTE
+       BOOLEAN
+     | BYTE
      | CHAR
      | SHORT
      | INTEGER (INT)
