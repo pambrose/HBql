@@ -421,6 +421,16 @@ public class HConnectionImpl extends PoolableElement<HConnectionImpl> implements
         }
     }
 
+    public boolean tableAvailable(final String tableName) throws HBqlException {
+        this.validateTableName(tableName);
+        try {
+            return this.getHBaseAdmin().isTableAvailable(tableName);
+        }
+        catch (IOException e) {
+            throw new HBqlException(e);
+        }
+    }
+
     public boolean tableEnabled(final String tableName) throws HBqlException {
         this.validateTableName(tableName);
         try {

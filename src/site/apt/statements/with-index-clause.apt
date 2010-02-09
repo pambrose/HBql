@@ -35,7 +35,7 @@ clientFilter:
 *Description
 
     The WITH INDEX clause is used in the {{{./insert.html}insert}}, {{{select.html}select}}
-    and {{{delete.html}delete}} statements.
+    and {{{delete.html}delete}} statements. It uses the THBase index package.
 
     * Named parameters can be applied to any of the values above.
 

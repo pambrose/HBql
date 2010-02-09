@@ -74,7 +74,9 @@ Boolean Functions
 *--+--+--+--+
 | TableExists(string) | boolean  | Returns true if table exists | tableExists('foo') | true if table foo exists |
 *--+--+--+--+
-| TableEnabled(string) | boolean  | Returns true if table is enabled | tablEnabled('foo') | true if table foo is enabled |
+| TableEnabled(string) | boolean  | Returns true if table is enabled | tableEnabled('foo') | true if table foo is enabled |
+*--+--+--+--+
+| TableAvailable(string) | boolean  | Returns true if table is available | tableAvailable('foo') | true if table foo is available |
 *--+--+--+--+
 | FamilyExistsForTable(string, string) | boolean  | Returns true if table has family | familyExistsForTable('f1', 'foo') | true if table foo has family f1 |
 *--+--+--+--+

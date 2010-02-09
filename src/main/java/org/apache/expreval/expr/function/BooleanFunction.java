@@ -110,6 +110,15 @@ public class BooleanFunction extends GenericFunction implements BooleanValue {
                     return conn.tableEnabled(tableName);
                 }
 
+            case TABLEAVAILABLE:
+                if (conn == null) {
+                    return false;
+                }
+                else {
+                    final String tableName = (String)this.getExprArg(0).getValue(conn, null);
+                    return conn.tableAvailable(tableName);
+                }
+
             case FAMILYEXISTSFORTABLE:
                 if (conn == null) {
                     return false;

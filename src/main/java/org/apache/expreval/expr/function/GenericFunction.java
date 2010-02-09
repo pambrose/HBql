@@ -106,6 +106,7 @@ public abstract class GenericFunction extends GenericExpression {
         FAMILYEXISTSFORMAPPING(new FunctionTypeSignature(BooleanValue.class, StringValue.class, StringValue.class), false, false),
         TABLEEXISTS(new FunctionTypeSignature(BooleanValue.class, StringValue.class), false, false),
         TABLEENABLED(new FunctionTypeSignature(BooleanValue.class, StringValue.class), false, false),
+        TABLEAVAILABLE(new FunctionTypeSignature(BooleanValue.class, StringValue.class), false, false),
         INDEXEXISTSFORTABLE(new FunctionTypeSignature(BooleanValue.class, StringValue.class, StringValue.class), false, false),
         INDEXEXISTSFORMAPPING(new FunctionTypeSignature(BooleanValue.class, StringValue.class, StringValue.class), false, false),
         ASYNCEXECUTOREXISTS(new FunctionTypeSignature(BooleanValue.class, StringValue.class), false, false),

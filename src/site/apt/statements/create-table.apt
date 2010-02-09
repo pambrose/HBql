@@ -24,12 +24,27 @@ familyProperty:
 	| IN_MEMORY ':' bool_expr
 	| MAP_FILE_INDEX_INTERVAL ':' int_expr
 	| TTL ':' int_expr
+	| INDEX ON column_name type
+
+ type:
+     BOOLEAN   (BOOL)
+     | BYTE
+     | CHAR
+     | SHORT
+     | INTEGER (INT)
+     | LONG
+     | FLOAT
+     | DOUBLE
+     | STRING  (VARCHAR)
+ 
 
 ---------------------------
 
 *Description
 
     Creates table table_name with the declared families and properties.
+
+    * INDEX is for IHBase index declarations
 
 *Example
 

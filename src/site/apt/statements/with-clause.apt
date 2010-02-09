@@ -9,7 +9,7 @@ WITH Clause
 
 ---------------------------
 
-WITH {keys | timestamp | versions | scannerCacheSize | queryLimit | serverFiler | clientFilter}+
+WITH {keys | timestamp | versions | scannerCacheSize | queryLimit | indexFilter | serverFilter | clientFilter}+
 
 keys:
     KEYS key_Range [, ...]
@@ -34,6 +34,9 @@ scannerCacheSize:
 
 queryLimit:
     LIMIT limit_value
+
+indexFilter:
+    INDEX FILTER WHERE where_clause
 
 serverFilter:
     SERVER FILTER WHERE where_clause
@@ -71,6 +74,12 @@ clientFilter:
 
         The SERVER FILTER where_clause is evaluated on the server,
         while the CLIENT FILTER where_clause is evaluated on the client.
+
+    * The index filter uses the IHBase index package.  As mentioned in the
+    org.apache.hadoop.hbase.client.idx package documentation, an index filter
+    requires a server filter to be specified.  The index filter must return
+    the same records returned by the server filter (the server filter can also narrow 
+    the records returned).
 
 
 *Example
