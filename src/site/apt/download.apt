@@ -28,7 +28,11 @@ Release Notes
 
     0.9.22-alpha -- 02/08/10
 
-        * Initial IHBase support
+        * Initial IHBase index support
+
+        * Added FLUSH, COMPACT, and SPLIT statements
+
+        * Added function tableAvailable() 
 
     0.9.21-alpha -- 01/29/10
 
