@@ -47,7 +47,7 @@ public enum FieldType implements Serializable {
 
     KeyType(String.class, StringValue.class, -1, -1, null),  // No type synonyms for KEY
 
-    BooleanType(Boolean.TYPE, BooleanValue.class, 0, Bytes.SIZEOF_BOOLEAN, IdxQualifierType.BYTE, "BOOLEAN", "BOOL"),
+    BooleanType(Boolean.TYPE, BooleanValue.class, 0, Bytes.SIZEOF_BOOLEAN, null, "BOOLEAN", "BOOL"),
     ByteType(Byte.TYPE, ByteValue.class, 1, Bytes.SIZEOF_BYTE, IdxQualifierType.BYTE, "BYTE"),
     CharType(Character.TYPE, CharValue.class, 1, Bytes.SIZEOF_CHAR, IdxQualifierType.CHAR, "CHAR"),
 

@@ -27,8 +27,7 @@ familyProperty:
 	| INDEX ON column_name type
 
  type:
-     BOOLEAN   (BOOL)
-     | BYTE
+     BYTE
      | CHAR
      | SHORT
      | INTEGER (INT)
