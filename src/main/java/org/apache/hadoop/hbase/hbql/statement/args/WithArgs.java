@@ -117,6 +117,9 @@ public class WithArgs {
 
         if (this.getLimitArgs() != null)
             this.getLimitArgs().validate();
+
+        if (this.getIndexExpressionTree() != null && this.getServerExpressionTree() == null)
+            throw new HBqlException("An IHBase index filter requires a server filter");
     }
 
 

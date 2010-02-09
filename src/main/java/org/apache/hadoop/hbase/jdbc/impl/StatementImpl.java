@@ -99,7 +99,7 @@ public class StatementImpl implements Statement {
 
         final Query<HRecord> query = Query.newQuery(this.getHConnectionImpl(), (SelectStatement)stmt, HRecord.class);
         final HResultSet<HRecord> hResultSet = query.newResultSet(false);
-        final ResultSet resultSet = new ResultSetImpl(this, hResultSet);
+        final ResultSet resultSet = new ResultSetImpl(this, query, hResultSet);
         this.setResultSet(resultSet);
         return this.getResultSet();
     }

@@ -190,24 +190,23 @@ public class KeyRange extends SelectStatementArgs {
                                             final ColumnAttrib keyAttrib,
                                             final Set<ColumnAttrib> columnAttribs) throws HBqlException {
 
-        final Scan scan;
-
+        final RowRequest rowRequest;
         if (withArgs.getIndexExpressionTree() == null) {
-            scan = new Scan();
+            final Scan scan = new Scan();
+            this.setStartStopRows(scan, keyAttrib);
+            withArgs.setScanArgs(scan, columnAttribs);
+            rowRequest = withArgs.hasAnIndex()
+                         ? new IndexRequest(scan.getStartRow(), scan.getStopRow(), columnAttribs)
+                         : new ScanRequest(scan);
         }
         else {
-            final IdxScan idxScan = new IdxScan();
+            final IdxScan scan = new IdxScan();
             final Expression indexExpr = withArgs.getIndexExpressionTree().getIndexExpression();
-            idxScan.setExpression(indexExpr);
-            scan = idxScan;
+            scan.setExpression(indexExpr);
+            this.setStartStopRows(scan, keyAttrib);
+            withArgs.setScanArgs(scan, columnAttribs);
+            rowRequest = new ScanRequest(scan);
         }
-
-        this.setStartStopRows(scan, keyAttrib);
-        withArgs.setScanArgs(scan, columnAttribs);
-
-        final RowRequest rowRequest = withArgs.hasAnIndex()
-                                      ? new IndexRequest(scan.getStartRow(), scan.getStopRow(), columnAttribs)
-                                      : new ScanRequest(scan);
 
         return Lists.newArrayList(rowRequest);
     }

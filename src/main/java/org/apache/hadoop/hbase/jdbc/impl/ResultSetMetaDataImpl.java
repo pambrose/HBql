@@ -25,6 +25,16 @@ import java.sql.SQLException;
 
 public class ResultSetMetaDataImpl implements ResultSetMetaData {
 
+    private final ResultSetImpl resultSet;
+
+    public ResultSetMetaDataImpl(final ResultSetImpl resultSet) {
+        this.resultSet = resultSet;
+    }
+
+    private ResultSetImpl getResultSet() {
+        return this.resultSet;
+    }
+
     public int getColumnCount() throws SQLException {
         return 0;
     }
@@ -58,7 +68,7 @@ public class ResultSetMetaDataImpl implements ResultSetMetaData {
     }
 
     public String getColumnLabel(final int i) throws SQLException {
-        return null;
+        return "";
     }
 
     public String getColumnName(final int i) throws SQLException {
@@ -66,6 +76,22 @@ public class ResultSetMetaDataImpl implements ResultSetMetaData {
     }
 
     public String getSchemaName(final int i) throws SQLException {
+        return "";
+    }
+
+    public String getTableName(final int i) throws SQLException {
+        return "";
+    }
+
+    public String getCatalogName(final int i) throws SQLException {
+        return "";
+    }
+
+    public int getColumnType(final int i) throws SQLException {
+        return 0;
+    }
+
+    public String getColumnTypeName(final int i) throws SQLException {
         return null;
     }
 
@@ -77,32 +103,16 @@ public class ResultSetMetaDataImpl implements ResultSetMetaData {
         return 0;
     }
 
-    public String getTableName(final int i) throws SQLException {
-        return null;
-    }
-
-    public String getCatalogName(final int i) throws SQLException {
-        return null;
-    }
-
-    public int getColumnType(final int i) throws SQLException {
-        return 0;
-    }
-
-    public String getColumnTypeName(final int i) throws SQLException {
-        return null;
-    }
-
     public boolean isReadOnly(final int i) throws SQLException {
         return false;
     }
 
     public boolean isWritable(final int i) throws SQLException {
-        return false;
+        return true;
     }
 
     public boolean isDefinitelyWritable(final int i) throws SQLException {
-        return false;
+        return true;
     }
 
     public String getColumnClassName(final int i) throws SQLException {

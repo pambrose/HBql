@@ -35,7 +35,7 @@ import org.junit.Test;
 import java.io.IOException;
 import java.util.Random;
 
-public class IndexedHBaseTest extends TestSupport {
+public class IHBaseIndexTest extends TestSupport {
 
     static HConnection connection = null;
 
@@ -185,58 +185,13 @@ public class IndexedHBaseTest extends TestSupport {
     }
 
     @Test
-    public void simpleSelect8a() throws HBqlException, IOException {
+    public void simpleSelect8() throws HBqlException, IOException {
 
-        /*
-        IdxScan scan = new IdxScan();
-        scan.addFamily("f1".getBytes());
-        scan.setExpression(Expression.comparison("f1".getBytes(), "val2".getBytes(), Comparison.Operator.EQ, Bytes.toBytes(42)));
-
-        HBaseConfiguration conf = new HBaseConfiguration();
-
-        HTable table = new HTable(conf, "table22");
-        ResultScanner scanner = table.getScanner(scan);
-        int cnt = 0;
-        for (Result res : scanner) {
-           cnt++;
-        }
-        System.out.println("Count = " + cnt);
-        */
         final String q1 = "select * from tab4 WITH " +
                           "KEYS '000000000000005' TO LAST " +
-                          "INDEX FILTER WHERE val3 = 17 " +
-                          "SERVER FILTER WHERE val2 = 17 ";
+                          "SERVER FILTER WHERE val2 = 17 USING INDEX WHERE val2 = 17";
 
         final int rec_cnt = showValues(q1, false);
         assertTrue(rec_cnt == 1);
-    }
-
-    @Test
-    public void simpleSelect8b() throws HBqlException {
-        final String q1 = "select * from tab4 WITH " +
-                          "KEYS '000000000000005' TO LAST " +
-                          "INDEX FILTER WHERE val2 = 7 " +
-                          "SERVER FILTER WHERE val1 = '000000000001700' " +
-                          "CLIENT FILTER WHERE val1 = '000000000001700'";
-        final int rec_cnt = showValues(q1, false);
-        assertTrue(rec_cnt == 1);
-    }
-
-    @Test
-    public void simpleSelect9() throws HBqlException {
-        final String q1 = "select * from tab4 WITH " +
-                          "KEYS '000000000000005', '000000000000006', '000000000000007' " +
-                          "SERVER FILTER WHERE val1 = '000000000001700' " +
-                          "CLIENT FILTER WHERE val1 = '000000000001700'";
-        final int rec_cnt = showValues(q1, false);
-        assertTrue(rec_cnt == 1);
-    }
-
-    @Test
-    public void simpleSelect10() throws HBqlException {
-        final String q1 = "select * from tab4 WITH " +
-                          "KEYS '000000000000005', '000000000000006', '000000000000007' ";
-        final int rec_cnt = showValues(q1, false);
-        assertTrue(rec_cnt == 3);
     }
 }

@@ -23,6 +23,7 @@ package org.apache.hadoop.hbase.jdbc.impl;
 import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.client.HResultSet;
 import org.apache.hadoop.hbase.hbql.impl.HRecordImpl;
+import org.apache.hadoop.hbase.hbql.impl.Query;
 
 import java.io.InputStream;
 import java.io.Reader;
@@ -50,14 +51,22 @@ import java.util.Map;
 public class ResultSetImpl implements ResultSet {
 
     private final StatementImpl statement;
+    private final Query<HRecord> query;
     private final HResultSet<HRecord> results;
-    private Iterator<HRecord> resultsIterator;
+    private final Iterator<HRecord> resultsIterator;
     private HRecordImpl currentHRecordImpl = null;
 
-    public ResultSetImpl(final StatementImpl statement, final HResultSet<HRecord> results) {
+    public ResultSetImpl(final StatementImpl statement,
+                         final Query<HRecord> query,
+                         final HResultSet<HRecord> results) {
         this.statement = statement;
+        this.query = query;
         this.results = results;
         this.resultsIterator = results.iterator();
+    }
+
+    public Query<HRecord> getQuery() {
+        return this.query;
     }
 
     private HResultSet<HRecord> getResults() {
@@ -257,7 +266,7 @@ public class ResultSetImpl implements ResultSet {
     }
 
     public ResultSetMetaData getMetaData() throws SQLException {
-        return null;
+        return new ResultSetMetaDataImpl(this);
     }
 
     public Object getObject(final int i) throws SQLException {

@@ -285,8 +285,9 @@ options {memoize=true;}
 	| keyVERSIONS va=versionArgs			{withArgs.setVersionArgs($va.retval);}
 	| keySCANNER_CACHE_SIZE v=exprValue		{withArgs.setScannerCacheArgs(new ScannerCacheArgs($v.retval));}
 	| keyLIMIT v=exprValue				{withArgs.setLimitArgs(new LimitArgs($v.retval));}
-	| keyINDEX keyFILTER keyWHERE fe=filterExpr	{withArgs.setIndexExpressionTree($fe.retval);}
-	| keySERVER keyFILTER keyWHERE fe=filterExpr	{withArgs.setServerExpressionTree($fe.retval);}
+	| keySERVER keyFILTER keyWHERE fe=filterExpr (keyUSING keyINDEX keyWHERE ie=filterExpr)?
+							{withArgs.setServerExpressionTree($fe.retval); 
+							 withArgs.setIndexExpressionTree($ie.retval);}
 	| keyCLIENT keyFILTER keyWHERE fe=filterExpr	{withArgs.setClientExpressionTree($fe.retval);}
 	;
 	
@@ -656,7 +657,7 @@ keyLAST                         : {isKeyword(input, "LAST")}? ID;
 keyLIKE                         : {isKeyword(input, "LIKE")}? ID;
 keyLIMIT                        : {isKeyword(input, "LIMIT")}? ID;
 keyLZO                          : {isKeyword(input, "LZO")}? ID;
-keyMAJOR 	                : {isKeyword(input, "MAJOR")}? ID;
+keyMAJOR 	           	: {isKeyword(input, "MAJOR")}? ID;
 keyMAPPING                      : {isKeyword(input, "MAPPING")}? ID;
 keyMAPPINGS                     : {isKeyword(input, "MAPPINGS")}? ID;
 keyMAX                          : {isKeyword(input, "MAX")}? ID;
@@ -681,6 +682,7 @@ keyTHEN                         : {isKeyword(input, "THEN")}? ID;
 keyTIMESTAMP                    : {isKeyword(input, "TIMESTAMP")}? ID;
 keyTO                           : {isKeyword(input, "TO")}? ID;
 keyTRUE                         : {isKeyword(input, "TRUE")}? ID;
+keyUSING                        : {isKeyword(input, "USING")}? ID;
 keyVALUES                       : {isKeyword(input, "VALUES")}? ID;
 keyVERSION                      : {isKeyword(input, "VERSION")}? ID;
 keyVERSIONS                     : {isKeyword(input, "VERSIONS")}? ID;

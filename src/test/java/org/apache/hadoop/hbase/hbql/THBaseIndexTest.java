@@ -34,7 +34,7 @@ import org.junit.Test;
 
 import java.util.Random;
 
-public class IndexTest extends TestSupport {
+public class THBaseIndexTest extends TestSupport {
 
     static HConnection connection = null;
 
