@@ -216,6 +216,18 @@ public class IHBaseIndexTest extends TestSupport {
 
         final String q1 = "select * from tab4 WITH " +
                           "KEYS '000000000000005' TO LAST " +
+                          "SERVER FILTER WHERE val2 = 17 AND val4 = false USING INDEX WHERE val4 = false AND val2 = 17";
+
+        final int rec_cnt = showValues(q1, false);
+        assertTrue(rec_cnt == 1);
+    }
+
+
+    @Test
+    public void simpleSelect11() throws HBqlException, IOException {
+
+        final String q1 = "select * from tab4 WITH " +
+                          "KEYS '000000000000005' TO LAST " +
                           "SERVER FILTER WHERE val2 = 17 AND val4 = false USING INDEX WHERE val4 = false";
 
         final int rec_cnt = showValues(q1, false);
