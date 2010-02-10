@@ -57,9 +57,11 @@ public abstract class GenericCompare extends GenericExpression implements Boolea
         return this.operator;
     }
 
-    protected Object getValue(final int pos, final HConnectionImpl conn, final Object object) throws HBqlException,
-                                                                                                     ResultMissingColumnException,
-                                                                                                     NullColumnValueException {
+    protected Object getValue(final int pos,
+                              final HConnectionImpl conn,
+                              final Object object) throws HBqlException,
+                                                          ResultMissingColumnException,
+                                                          NullColumnValueException {
         return this.getExprArg(pos).getValue(conn, object);
     }
 

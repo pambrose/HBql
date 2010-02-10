@@ -38,7 +38,9 @@ public interface GenericValue extends Serializable {
 
     void setExpressionContext(MultipleExpressionContext context) throws HBqlException;
 
-    Object getValue(HConnectionImpl connection, Object object) throws HBqlException, ResultMissingColumnException, NullColumnValueException;
+    Object getValue(HConnectionImpl connection, Object object) throws HBqlException,
+                                                                      ResultMissingColumnException,
+                                                                      NullColumnValueException;
 
     Filter getFilter() throws HBqlException;
 
@@ -56,8 +58,9 @@ public interface GenericValue extends Serializable {
 
     void initAggregateValue(AggregateValue aggregateValue) throws HBqlException;
 
-    void applyResultToAggregateValue(AggregateValue aggregateValue,
-                                     Result result) throws HBqlException, ResultMissingColumnException, NullColumnValueException;
+    void applyResultToAggregateValue(AggregateValue aggregateValue, Result result) throws HBqlException,
+                                                                                          ResultMissingColumnException,
+                                                                                          NullColumnValueException;
 
     boolean hasAColumnReference();
 

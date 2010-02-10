@@ -64,6 +64,10 @@ public abstract class Serialization {
         return (String)this.getScalarFromBytes(FieldType.StringType, b);
     }
 
+    public Boolean getBooleanFromBytes(final byte[] b) throws HBqlException {
+        return (Boolean)this.getScalarFromBytes(FieldType.BooleanType, b);
+    }
+
     public byte[] getStringAsBytes(final String obj) throws HBqlException {
         return this.getScalarAsBytes(FieldType.StringType, obj);
     }

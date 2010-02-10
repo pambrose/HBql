@@ -20,6 +20,8 @@
 
 package org.apache.expreval.expr.compare;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.expreval.client.NullColumnValueException;
 import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.Operator;
@@ -31,18 +33,24 @@ import org.apache.hadoop.hbase.client.idx.exp.And;
 import org.apache.hadoop.hbase.client.idx.exp.Comparison;
 import org.apache.hadoop.hbase.client.idx.exp.Expression;
 import org.apache.hadoop.hbase.client.idx.exp.Or;
+import org.apache.hadoop.hbase.filter.CompareFilter;
 import org.apache.hadoop.hbase.filter.Filter;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.filter.RecordFilterList;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
-import org.apache.hadoop.hbase.hbql.impl.InvalidServerFilterException;
+import org.apache.hadoop.hbase.hbql.impl.Utils;
 import org.apache.hadoop.hbase.hbql.io.IO;
 import org.apache.hadoop.hbase.hbql.mapping.FieldType;
 import org.apache.hadoop.hbase.hbql.util.Lists;
 
+import java.io.DataInput;
+import java.io.DataOutput;
+import java.io.IOException;
 import java.util.List;
 
 public class BooleanCompare extends GenericCompare implements BooleanValue {
+
+    private static final Log LOG = LogFactory.getLog(BooleanCompare.class);
 
     public BooleanCompare(final GenericValue arg0, final Operator operator, final GenericValue arg1) {
         super(arg0, operator, arg1);
@@ -64,14 +72,30 @@ public class BooleanCompare extends GenericCompare implements BooleanValue {
             case AND:
                 return (Boolean)this.getValue(0, conn, object) && (Boolean)this.getValue(1, conn, object);
             case EQ: {
-                boolean val0 = (Boolean)this.getValue(0, conn, object);
-                boolean val1 = (Boolean)this.getValue(1, conn, object);
-                return val0 == val1;
+                final Object obj0 = this.getValue(0, conn, object);
+                final Object obj1 = this.getValue(1, conn, object);
+
+                if (obj0 == null || obj1 == null) {
+                    return false;
+                }
+                else {
+                    boolean val0 = (Boolean)obj0;
+                    boolean val1 = (Boolean)obj1;
+                    return val0 == val1;
+                }
             }
             case NOTEQ: {
-                boolean val0 = (Boolean)this.getValue(0, conn, object);
-                boolean val1 = (Boolean)this.getValue(1, conn, object);
-                return val0 != val1;
+                final Object obj0 = this.getValue(0, conn, object);
+                final Object obj1 = this.getValue(1, conn, object);
+
+                if (obj0 == null || obj1 == null) {
+                    return false;
+                }
+                else {
+                    boolean val0 = (Boolean)obj0;
+                    boolean val1 = (Boolean)obj1;
+                    return val0 != val1;
+                }
             }
             default:
                 throw new HBqlException("Invalid operator: " + this.getOperator());
@@ -80,11 +104,12 @@ public class BooleanCompare extends GenericCompare implements BooleanValue {
 
     public Filter getFilter() throws HBqlException {
 
-        final Filter filter0 = this.getExprArg(0).getFilter();
-        final Filter filter1 = this.getExprArg(1).getFilter();
+        if (this.getOperator() == Operator.OR || this.getOperator() == Operator.AND) {
 
-        switch (this.getOperator()) {
-            case OR: {
+            final Filter filter0 = this.getExprArg(0).getFilter();
+            final Filter filter1 = this.getExprArg(1).getFilter();
+
+            if (this.getOperator() == Operator.OR) {
                 if (filter0 instanceof RecordFilterList) {
                     if (((RecordFilterList)filter0).getOperator() == RecordFilterList.Operator.MUST_PASS_ONE) {
                         ((RecordFilterList)filter0).addFilter(filter1);
@@ -95,7 +120,7 @@ public class BooleanCompare extends GenericCompare implements BooleanValue {
                 final List<Filter> filterList = Lists.newArrayList(filter0, filter1);
                 return new RecordFilterList(RecordFilterList.Operator.MUST_PASS_ONE, filterList);
             }
-            case AND: {
+            else {
                 if (filter0 instanceof RecordFilterList) {
                     if (((RecordFilterList)filter0).getOperator() == RecordFilterList.Operator.MUST_PASS_ALL) {
                         ((RecordFilterList)filter0).addFilter(filter1);
@@ -106,15 +131,33 @@ public class BooleanCompare extends GenericCompare implements BooleanValue {
                 final List<Filter> filterList = Lists.newArrayList(filter0, filter1);
                 return new RecordFilterList(RecordFilterList.Operator.MUST_PASS_ALL, filterList);
             }
-            case EQ: {
-                throw new InvalidServerFilterException();
-            }
-            case NOTEQ: {
-                throw new InvalidServerFilterException();
-            }
-            default:
-                throw new HBqlException("Invalid operator: " + this.getOperator());
         }
+
+        if (this.getOperator() == Operator.EQ || this.getOperator() == Operator.NOTEQ) {
+
+            this.validateArgsForCompareFilter();
+
+            final GenericColumn<? extends GenericValue> column;
+            final Object constant;
+            final CompareFilter.CompareOp compareOp;
+
+            if (this.getExprArg(0).isAColumnReference()) {
+                column = ((DelegateColumn)this.getExprArg(0)).getTypedColumn();
+                constant = this.getConstantValue(1);
+                compareOp = this.getOperator().getCompareOpLeft();
+            }
+            else {
+                column = ((DelegateColumn)this.getExprArg(1)).getTypedColumn();
+                constant = this.getConstantValue(0);
+                compareOp = this.getOperator().getCompareOpRight();
+            }
+
+            return this.newSingleColumnValueFilter(column.getColumnAttrib(),
+                                                   compareOp,
+                                                   new BooleanComparable((Boolean)constant));
+        }
+
+        throw new HBqlException("Invalid operator: " + this.getOperator());
     }
 
     public Expression getIndexExpression() throws HBqlException {
@@ -173,5 +216,41 @@ public class BooleanCompare extends GenericCompare implements BooleanValue {
         }
 
         throw new HBqlException("Invalid operator: " + this.getOperator());
+    }
+
+    private static class BooleanComparable extends GenericComparable<Boolean> {
+
+        public BooleanComparable() {
+        }
+
+        public BooleanComparable(final Boolean value) {
+            this.setValue(value);
+        }
+
+        public int compareTo(final byte[] bytes) {
+
+            if (this.equalValues(bytes))
+                return 0;
+
+            try {
+                final Boolean columnValue = IO.getSerialization().getBooleanFromBytes(bytes);
+                return (this.getValue().compareTo(columnValue));
+            }
+            catch (HBqlException e) {
+                e.printStackTrace();
+                Utils.logException(LOG, e);
+                return 1;
+            }
+        }
+
+        public void write(final DataOutput dataOutput) throws IOException {
+            dataOutput.writeBoolean(this.getValue());
+        }
+
+        public void readFields(final DataInput dataInput) throws IOException {
+            this.setValue(dataInput.readBoolean());
+
+            this.setValueInBytes(FieldType.BooleanType, this.getValue());
+        }
     }
 }

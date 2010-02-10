@@ -26,11 +26,11 @@ import org.apache.hadoop.hbase.client.Get;
 import org.apache.hadoop.hbase.client.Scan;
 import org.apache.hadoop.hbase.client.tableindexed.IndexSpecification;
 import org.apache.hadoop.hbase.filter.Filter;
-import org.apache.hadoop.hbase.filter.PageFilter;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.Util;
+import org.apache.hadoop.hbase.hbql.filter.InstrumentedFilter;
+import org.apache.hadoop.hbase.hbql.filter.PageFilter;
 import org.apache.hadoop.hbase.hbql.filter.RecordFilter;
-import org.apache.hadoop.hbase.hbql.filter.RecordFilterList;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 import org.apache.hadoop.hbase.hbql.impl.Utils;
 import org.apache.hadoop.hbase.hbql.mapping.ColumnAttrib;
@@ -52,6 +52,7 @@ public class WithArgs {
     private VersionArgs versionArgs = null;
     private ScannerCacheArgs scannerCacheArgs = null;
     private LimitArgs limitArgs = null;
+    private boolean verbose = false;
     private ExpressionTree indexExpressionTree = null;
     private ExpressionTree clientExpressionTree = null;
     private ExpressionTree serverExpressionTree = null;
@@ -205,6 +206,14 @@ public class WithArgs {
         if (this.getLimitArgs() != null)
             this.addError("Limit");
         this.limitArgs = limitArgs;
+    }
+
+    public boolean getVerbose() {
+        return this.verbose;
+    }
+
+    public void setVerbose(final boolean verbose) {
+        this.verbose = verbose;
     }
 
     public ExpressionTree getClientExpressionTree() {
@@ -496,34 +505,32 @@ public class WithArgs {
 
     private Filter getServerFilter(final boolean applyLimit) throws HBqlException {
 
-        if (this.getServerExpressionTree() == null) {
-            if (applyLimit && this.getLimit() > 0)
-                return new PageFilter(this.getLimit());
-            else
-                return null;
-        }
-        else {
-            Filter exprFilter;
+        Filter exprFilter = null;
+
+        if (this.getServerExpressionTree() != null) {
             try {
                 exprFilter = this.getServerExpressionTree().getFilter();
             }
             catch (HBqlException e) {
                 // Use RecordFilter instead
-                if (this.getServerExpressionTree() != null)
-                    this.getServerExpressionTree().setMappingContext(this.getMappingContext());
-
+                //if (this.getServerExpressionTree() != null)
+                this.getServerExpressionTree().setMappingContext(this.getMappingContext());
                 exprFilter = RecordFilter.newRecordFilter(this.getServerExpressionTree());
             }
 
-            // Now apply PageFilter if limit was specified
-            if (applyLimit && this.getLimit() > 0) {
-                final Filter limitFilter = new PageFilter(this.getLimit());
-                final List<Filter> filterList = Lists.newArrayList(limitFilter, exprFilter);
-                return new RecordFilterList(RecordFilterList.Operator.MUST_PASS_ALL, filterList);
+            if (exprFilter != null && exprFilter instanceof InstrumentedFilter) {
+                ((InstrumentedFilter)exprFilter).setVerbose(this.getVerbose());
             }
-            else {
-                return exprFilter;
-            }
+        }
+
+        // Now apply PageFilter if limit was specified
+        if (applyLimit && this.getLimit() > 0) {
+            final InstrumentedFilter filter = new PageFilter(this.getLimit(), exprFilter);
+            filter.setVerbose(this.getVerbose());
+            return filter;
+        }
+        else {
+            return exprFilter;
         }
     }
 

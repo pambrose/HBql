@@ -119,8 +119,8 @@ public class DateCompare extends GenericCompare {
                 return 0;
 
             try {
-                Date dateValue = (Date)IO.getSerialization().getScalarFromBytes(FieldType.DateType, bytes);
-                long columnValue = dateValue.getTime();
+                final Date dateValue = (Date)IO.getSerialization().getScalarFromBytes(FieldType.DateType, bytes);
+                final long columnValue = dateValue.getTime();
                 return (columnValue > this.getValue()) ? -1 : 1;
             }
             catch (HBqlException e) {
