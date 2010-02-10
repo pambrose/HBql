@@ -26,13 +26,17 @@ git clone git://github.com/pambrose/HBql.git
 
 Release Notes
 
+    0.9.23-alpha -- 02/09/10
+
+        * Added support for boolean IHBase index expressions
+
     0.9.22-alpha -- 02/08/10
 
         * Initial IHBase index support
 
         * Added {{{statements/flush-table.html}FLUSH}}, {{{statements/compact-table.html}COMPACT}}, and {{{statements/split-table.html}SPLIT}} statements
 
-        * Added function tableAvailable() 
+        * Added function tableAvailable()
 
     0.9.21-alpha -- 01/29/10
 
