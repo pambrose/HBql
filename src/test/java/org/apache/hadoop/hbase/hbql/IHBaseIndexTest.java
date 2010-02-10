@@ -201,11 +201,81 @@ public class IHBaseIndexTest extends TestSupport {
     }
 
     @Test
-    public void simpleSelect9() throws HBqlException, IOException {
+    public void simpleSelect9a() throws HBqlException, IOException {
 
-        final String q1 = "select * from tab4 WITH " +
-                          "KEYS '000000000000005' TO LAST " +
-                          "SERVER FILTER WHERE val4 = false USING INDEX WHERE val4 = false";
+        final String q1 = "select * from tab4 WITH "
+                          + "KEYS '000000000000005' TO LAST "
+                          + "CLIENT FILTER WHERE val4 = false";
+
+        final int rec_cnt = showValues(q1, false);
+        assertTrue(rec_cnt == 3);
+    }
+
+    @Test
+    public void simpleSelect9b() throws HBqlException, IOException {
+
+        final String q1 = "select * from tab4 WITH "
+                          + "KEYS '000000000000005' TO LAST "
+                          + "SERVER FILTER WHERE val4 = false";
+
+        final int rec_cnt = showValues(q1, false);
+        assertTrue(rec_cnt == 3);
+    }
+
+    @Test
+    public void simpleSelect9c() throws HBqlException, IOException {
+
+        final String q1 = "select * from tab4 WITH "
+                          + "KEYS '000000000000005' TO LAST "
+                          + "SERVER FILTER WHERE val4 = false USING INDEX WHERE val4 = false";
+
+        final int rec_cnt = showValues(q1, false);
+        assertTrue(rec_cnt == 3);
+    }
+
+    @Test
+    public void simpleSelect9d() throws HBqlException, IOException {
+
+        final String q1 = "select * from tab4 WITH "
+                          + "KEYS '000000000000005' TO LAST "
+                          + "LIMIT 2 "
+                          + "SERVER FILTER WHERE val4 = false ";
+
+        final int rec_cnt = showValues(q1, false);
+        assertTrue(rec_cnt == 2);
+    }
+
+    @Test
+    public void simpleSelect9e() throws HBqlException, IOException {
+
+        final String q1 = "select * from tab4 WITH "
+                          + "KEYS '000000000000005' TO LAST "
+                          + "VERBOSE LIMIT 2 "
+                          + "SERVER FILTER WHERE val4 = false USING INDEX WHERE val4 = false";
+
+        final int rec_cnt = showValues(q1, false);
+        assertTrue(rec_cnt == 2);
+    }
+
+    @Test
+    public void simpleSelect9f() throws HBqlException, IOException {
+
+        final String q1 = "select * from tab4 WITH "
+                          + "KEYS '000000000000005' TO LAST "
+                          + " LIMIT 1 "
+                          + "SERVER FILTER WHERE val4 = false USING INDEX WHERE val4 = false";
+
+        final int rec_cnt = showValues(q1, false);
+        assertTrue(rec_cnt == 1);
+    }
+
+    @Test
+    public void simpleSelect9g() throws HBqlException, IOException {
+
+        final String q1 = "select * from tab4 WITH "
+                          + "KEYS '000000000000005' TO LAST "
+                          + "LIMIT 4 "
+                          + "SERVER FILTER WHERE val4 = false USING INDEX WHERE val4 = false";
 
         final int rec_cnt = showValues(q1, false);
         assertTrue(rec_cnt == 3);

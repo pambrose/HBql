@@ -285,6 +285,7 @@ options {memoize=true;}
 	| keyVERSIONS va=versionArgs			{withArgs.setVersionArgs($va.retval);}
 	| keySCANNER_CACHE_SIZE v=exprValue		{withArgs.setScannerCacheArgs(new ScannerCacheArgs($v.retval));}
 	| keyLIMIT v=exprValue				{withArgs.setLimitArgs(new LimitArgs($v.retval));}
+	| keyVERBOSE  					{withArgs.setVerbose(true);}
 	| keySERVER keyFILTER keyWHERE fe=filterExpr (keyUSING keyINDEX keyWHERE ie=filterExpr)?
 							{withArgs.setServerExpressionTree($fe.retval); 
 							 withArgs.setIndexExpressionTree($ie.retval);}
@@ -295,6 +296,7 @@ indexElements[WithArgs withArgs]
 options {memoize=true;}	
 	: (keyKEYS | keyKEY) k=keysRangeArgs		{withArgs.setKeyRangeArgs($k.retval);}
 	| keyLIMIT v=exprValue				{withArgs.setLimitArgs(new LimitArgs($v.retval));}
+	| keyVERBOSE  					{withArgs.setVerbose(true);}
 	| keyINDEX keyFILTER keyWHERE fe=filterExpr	{withArgs.setServerExpressionTree($fe.retval);}
 	| keyCLIENT keyFILTER keyWHERE fe=filterExpr	{withArgs.setClientExpressionTree($fe.retval);}
 	;
@@ -684,6 +686,7 @@ keyTO                           : {isKeyword(input, "TO")}? ID;
 keyTRUE                         : {isKeyword(input, "TRUE")}? ID;
 keyUSING                        : {isKeyword(input, "USING")}? ID;
 keyVALUES                       : {isKeyword(input, "VALUES")}? ID;
+keyVERBOSE                      : {isKeyword(input, "VERBOSE")}? ID;
 keyVERSION                      : {isKeyword(input, "VERSION")}? ID;
 keyVERSIONS                     : {isKeyword(input, "VERSIONS")}? ID;
 keyWHEN                         : {isKeyword(input, "WHEN")}? ID;

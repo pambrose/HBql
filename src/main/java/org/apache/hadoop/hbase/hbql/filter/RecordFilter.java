@@ -26,7 +26,6 @@ import org.apache.expreval.client.NullColumnValueException;
 import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.ExpressionTree;
 import org.apache.hadoop.hbase.KeyValue;
-import org.apache.hadoop.hbase.filter.Filter;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.impl.HRecordImpl;
 import org.apache.hadoop.hbase.hbql.impl.Utils;
@@ -46,11 +45,12 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Arrays;
 
-public class RecordFilter implements Filter {
+public class RecordFilter implements InstrumentedFilter {
 
     private static final Log LOG = LogFactory.getLog(RecordFilter.class);
 
-    private ExpressionTree expressionTree;
+    private boolean verbose = false;
+    private ExpressionTree expressionTree = null;
 
     public HRecordImpl record = new HRecordImpl((MappingContext)null);
 
@@ -82,8 +82,17 @@ public class RecordFilter implements Filter {
         return this.getExpressionTree() != null;
     }
 
+    public void setVerbose(final boolean verbose) {
+        this.verbose = verbose;
+    }
+
+    public boolean getVerbose() {
+        return this.verbose;
+    }
+
     public void reset() {
-        // LOG.debug("In reset()");
+        if (this.getVerbose())
+            LOG.debug("In reset()");
         this.getHRecord().clearValues();
     }
 
@@ -106,7 +115,8 @@ public class RecordFilter implements Filter {
 
     public ReturnCode filterKeyValue(KeyValue v) {
 
-        // LOG.debug("In filterKeyValue()");
+        if (this.getVerbose())
+            LOG.debug("In filterKeyValue()");
 
         if (this.hasValidExpressionTree()) {
 
@@ -118,7 +128,8 @@ public class RecordFilter implements Filter {
 
                 // Do not bother setting value if it is not used in expression
                 if (this.getExpressionTree().getAttribsUsedInExpr().contains(attrib)) {
-                    LOG.debug("In in filterKeyValue() setting value for: " + familyName + ":" + columnName);
+                    if (this.getVerbose())
+                        LOG.debug("In filterKeyValue() setting value for: " + familyName + ":" + columnName);
                     final Object val = attrib.getValueFromBytes(null, v.getValue());
                     this.getHRecord().setCurrentValue(familyName, columnName, v.getTimestamp(), val);
                     this.getHRecord().setVersionValue(familyName, columnName, v.getTimestamp(), val, true);
@@ -135,17 +146,20 @@ public class RecordFilter implements Filter {
 
     public boolean filterRow() {
 
-        LOG.debug("In filterRow()");
+        if (this.getVerbose())
+            LOG.debug("In filterRow()");
 
         boolean filterRow;
         if (!this.hasValidExpressionTree()) {
-            LOG.debug("In filterRow() had invalid hasValidExpressionTree(): ");
+            if (this.getVerbose())
+                LOG.debug("In filterRow() had invalid hasValidExpressionTree(): ");
             filterRow = false;
         }
         else {
             try {
                 filterRow = !this.getExpressionTree().evaluate(null, this.getHRecord());
-                //LOG.debug("In filterRow() filtering record: " + filterRow);
+                if (this.getVerbose())
+                    LOG.debug("In filterRow() filtering record: " + filterRow);
             }
             catch (ResultMissingColumnException e) {
                 LOG.debug("In filterRow() had ResultMissingColumnException exception: " + e.getMessage());
@@ -169,6 +183,7 @@ public class RecordFilter implements Filter {
 
     public void write(DataOutput out) throws IOException {
         try {
+            out.writeBoolean(this.getVerbose());
             final byte[] b = IO.getSerialization().getObjectAsBytes(this.getExpressionTree());
             Bytes.writeByteArray(out, b);
         }
@@ -182,8 +197,10 @@ public class RecordFilter implements Filter {
     public void readFields(DataInput in) throws IOException {
 
         try {
+            this.verbose = in.readBoolean();
             final byte[] b = Bytes.readByteArray(in);
             this.expressionTree = (ExpressionTree)IO.getSerialization().getScalarFromBytes(FieldType.ObjectType, b);
+
             this.getHRecord().setMappingContext(this.getExpressionTree().getMappingContext());
             this.getMapping().resetDefaultValues();
         }
