@@ -18,14 +18,25 @@
  * limitations under the License.
  */
 
-package org.apache.expreval.expr.node;
+package org.apache.expreval.expr.ifthenstmt;
 
 import org.apache.expreval.client.NullColumnValueException;
 import org.apache.expreval.client.ResultMissingColumnException;
+import org.apache.expreval.expr.ExpressionType;
+import org.apache.expreval.expr.node.ByteValue;
+import org.apache.expreval.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 
-public interface ByteValue extends GenericValue {
+public class ByteIfThen extends GenericIfThen implements ByteValue {
 
-    Byte getValue(HConnectionImpl connection, Object object) throws HBqlException, ResultMissingColumnException, NullColumnValueException;
+    public ByteIfThen(final GenericValue arg0, final GenericValue arg1, final GenericValue arg2) {
+        super(ExpressionType.BYTEIFTHEN, arg0, arg1, arg2);
+    }
+
+    public Byte getValue(final HConnectionImpl conn, final Object object) throws HBqlException,
+                                                                                 ResultMissingColumnException,
+                                                                                 NullColumnValueException {
+        return (Byte)super.getValue(conn, object);
+    }
 }

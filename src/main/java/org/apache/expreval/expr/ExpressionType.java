@@ -44,6 +44,7 @@ public enum ExpressionType {
     NUMBERCASEELSE(new FunctionTypeSignature(NumberValue.class, BooleanValue.class, NumberValue.class)),
 
     BOOLEANIFTHEN(new FunctionTypeSignature(BooleanValue.class, BooleanValue.class, BooleanValue.class, BooleanValue.class)),
+    BYTEIFTHEN(new FunctionTypeSignature(ByteValue.class, BooleanValue.class, ByteValue.class, ByteValue.class)),
     STRINGIFTHEN(new FunctionTypeSignature(StringValue.class, BooleanValue.class, StringValue.class, StringValue.class)),
     DATEIFTHEN(new FunctionTypeSignature(DateValue.class, BooleanValue.class, DateValue.class, DateValue.class)),
     NUMBERIFTHEN(new FunctionTypeSignature(NumberValue.class, BooleanValue.class, NumberValue.class, NumberValue.class)),
@@ -52,13 +53,13 @@ public enum ExpressionType {
     DATECALCULATION(new FunctionTypeSignature(DateValue.class, DateValue.class, DateValue.class)),
     NUMBERCALCULATION(new FunctionTypeSignature(NumberValue.class, NumberValue.class, NumberValue.class)),
 
+    BYTEBETWEEN(new FunctionTypeSignature(BooleanValue.class, ByteValue.class, ByteValue.class, ByteValue.class)),
     STRINGBETWEEN(new FunctionTypeSignature(BooleanValue.class, StringValue.class, StringValue.class, StringValue.class)),
     DATEBETWEEN(new FunctionTypeSignature(BooleanValue.class, DateValue.class, DateValue.class, DateValue.class)),
     NUMBERBETWEEN(new FunctionTypeSignature(BooleanValue.class, NumberValue.class, NumberValue.class, NumberValue.class)),
-    BYTEBETWEEN(new FunctionTypeSignature(BooleanValue.class, ByteValue.class, ByteValue.class, ByteValue.class)),
 
-    BYTENULL(new FunctionTypeSignature(BooleanValue.class, ByteValue.class)),
     BOOLEANNULL(new FunctionTypeSignature(BooleanValue.class, BooleanValue.class)),
+    BYTENULL(new FunctionTypeSignature(BooleanValue.class, ByteValue.class)),
     STRINGNULL(new FunctionTypeSignature(BooleanValue.class, StringValue.class)),
     DATENULL(new FunctionTypeSignature(BooleanValue.class, DateValue.class)),
     NUMBERNULL(new FunctionTypeSignature(BooleanValue.class, NumberValue.class)),

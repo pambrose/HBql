@@ -24,6 +24,7 @@ import org.apache.expreval.client.NullColumnValueException;
 import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.TypeSupport;
 import org.apache.expreval.expr.node.BooleanValue;
+import org.apache.expreval.expr.node.ByteValue;
 import org.apache.expreval.expr.node.DateValue;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.expreval.expr.node.NumberValue;
@@ -53,6 +54,8 @@ public class DelegateIfThen extends GenericIfThen {
             this.setTypedExpr(new DateIfThen(this.getExprArg(0), this.getExprArg(1), this.getExprArg(2)));
         else if (TypeSupport.isParentClass(BooleanValue.class, type1, type2))
             this.setTypedExpr(new BooleanIfThen(this.getExprArg(0), this.getExprArg(1), this.getExprArg(2)));
+        else if (TypeSupport.isParentClass(ByteValue.class, type1, type2))
+            this.setTypedExpr(new ByteIfThen(this.getExprArg(0), this.getExprArg(1), this.getExprArg(2)));
         else
             this.throwInvalidTypeException(type1, type2);
 
