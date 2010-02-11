@@ -162,17 +162,19 @@ public class RecordFilter implements InstrumentedFilter {
                     LOG.debug("In filterRow() filtering record: " + filterRow);
             }
             catch (ResultMissingColumnException e) {
-                LOG.debug("In filterRow() had ResultMissingColumnException exception: " + e.getMessage());
+                if (this.getVerbose())
+                    LOG.debug("In filterRow() had ResultMissingColumnException exception: " + e.getMessage());
                 filterRow = true;
             }
             catch (NullColumnValueException e) {
-                LOG.debug("In filterRow() had NullColumnValueException exception: " + e.getMessage());
+                if (this.getVerbose())
+                    LOG.debug("In filterRow() had NullColumnValueException exception: " + e.getMessage());
                 filterRow = true;
             }
             catch (HBqlException e) {
                 e.printStackTrace();
                 Utils.logException(LOG, e);
-                LOG.debug("In filterRow() had exception: " + e.getMessage());
+                LOG.debug("In filterRow() had HBqlException: " + e.getMessage());
                 filterRow = true;
             }
         }

@@ -75,7 +75,7 @@ public abstract class ColumnAttrib implements Serializable {
         return null;
     }
 
-    public abstract Object getCurrentValue(final Object obj) throws HBqlException;
+    public abstract Object getCurrentValue(final Object obj) throws HBqlException, ResultMissingColumnException, NullColumnValueException;
 
     public abstract void setCurrentValue(final Object obj,
                                          final long timestamp,
@@ -256,7 +256,16 @@ public abstract class ColumnAttrib implements Serializable {
             retval = this.invokeGetterMethod(obj);
         }
         else {
-            final Object value = this.getCurrentValue(obj);
+            final Object value;
+            try {
+                value = this.getCurrentValue(obj);
+            }
+            catch (ResultMissingColumnException e) {
+                return null;
+            }
+            catch (NullColumnValueException e) {
+                return null;
+            }
 
             if (this.isAnArray()) {
                 retval = IO.getSerialization().getArrayAsBytes(this.getFieldType(), value);

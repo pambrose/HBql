@@ -137,10 +137,12 @@ public abstract class FieldAttrib extends ColumnAttrib {
 
         // Just call current value for version since we have different fields for current value and versions
         Map<Long, Object> mapVal = (Map<Long, Object>)this.getCurrentValue(obj);
+
         if (mapVal == null) {
             mapVal = new TreeMap<Long, Object>();
             this.setCurrentValue(obj, 0, mapVal);
         }
+
         return mapVal;
     }
 

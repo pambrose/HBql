@@ -21,6 +21,8 @@
 package org.apache.hadoop.hbase.hbql.mapping;
 
 import org.apache.expreval.client.InternalErrorException;
+import org.apache.expreval.client.NullColumnValueException;
+import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.impl.HRecordImpl;
@@ -83,8 +85,17 @@ public class HRecordAttrib extends ColumnAttrib {
         // TODO This needs to be implemented
     }
 
-    public Object getCurrentValue(final Object record) throws HBqlException {
-        return ((HRecordImpl)record).getCurrentValue(this.getAliasName());
+    public Object getCurrentValue(final Object record) throws HBqlException, ResultMissingColumnException, NullColumnValueException {
+        Object retval = ((HRecordImpl)record).getCurrentValue(this.getAliasName());
+        if (retval == null) {
+            if (!((HRecordImpl)record).isColumnDefined(this.getAliasName()))
+                throw new ResultMissingColumnException(this.getAliasName());
+            else
+                throw new NullColumnValueException(this.getAliasName());
+        }
+        else {
+            return retval;
+        }
     }
 
     public void setCurrentValue(final Object record, final long timestamp, final Object val) throws HBqlException {

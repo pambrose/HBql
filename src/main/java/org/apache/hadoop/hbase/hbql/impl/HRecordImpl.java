@@ -229,7 +229,12 @@ public class HRecordImpl implements HRecord {
         this.setCurrentValue(name, this.getTimestamp(), val, true);
     }
 
+    public boolean isColumnDefined(final String name) throws HBqlException {
+        return this.getColumnValuesMap().findElement(name) != null;
+    }
+
     public Object getCurrentValue(final String name) throws HBqlException {
+
         final ColumnValue columnValue = this.getColumnValuesMap().findElement(name);
         if (columnValue != null) {
             final Object retval = columnValue.getCurrentValue();

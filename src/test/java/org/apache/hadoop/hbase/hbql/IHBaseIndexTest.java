@@ -53,7 +53,10 @@ public class IHBaseIndexTest extends TestSupport {
                            + "  val1 string alias val1, "
                            + "  val2 int alias val2, "
                            + "  val3 int alias val3, "
-                           + "  val4 boolean alias val4 "
+                           + "  val4 boolean alias val4, "
+                           + "  val5 string alias val5, "
+                           + "  val5b boolean alias val5b, "
+                           + "  val6 int alias val6 "
                            + "))");
 
         if (!connection.tableExists("table22"))
@@ -223,6 +226,28 @@ public class IHBaseIndexTest extends TestSupport {
     }
 
     @Test
+    public void simpleSelect9b2() throws HBqlException, IOException {
+
+        final String q1 = "select * from tab4 WITH "
+                          + "KEYS '000000000000005' TO LAST "
+                          + "SERVER FILTER WHERE val5b = false";
+
+        final int rec_cnt = showValues(q1, false);
+        assertTrue(rec_cnt == 0);
+    }
+
+    @Test
+    public void simpleSelect9b3() throws HBqlException, IOException {
+
+        final String q1 = "select * from tab4 WITH "
+                          + "KEYS '000000000000005' TO LAST "
+                          + "SERVER FILTER WHERE val5b = val4";
+
+        final int rec_cnt = showValues(q1, false);
+        assertTrue(rec_cnt == 0);
+    }
+
+    @Test
     public void simpleSelect9c() throws HBqlException, IOException {
 
         final String q1 = "select * from tab4 WITH "
@@ -243,6 +268,54 @@ public class IHBaseIndexTest extends TestSupport {
 
         final int rec_cnt = showValues(q1, false);
         assertTrue(rec_cnt == 2);
+    }
+
+    @Test
+    public void simpleSelect9d2() throws HBqlException, IOException {
+
+        final String q1 = "select * from tab4 WITH "
+                          + "KEYS '000000000000005' TO LAST "
+                          + "LIMIT 2 "
+                          + "SERVER FILTER WHERE val5 IS NULL ";
+
+        final int rec_cnt = showValues(q1, false);
+        assertTrue(rec_cnt == 0);
+    }
+
+    @Test
+    public void simpleSelect9d2a() throws HBqlException, IOException {
+
+        final String q1 = "select * from tab4 WITH "
+                          + "KEYS '000000000000005' TO LAST "
+                          + "LIMIT 2 "
+                          + "SERVER FILTER WHERE not definedInRow(val5) ";
+
+        final int rec_cnt = showValues(q1, false);
+        assertTrue(rec_cnt == 2);
+    }
+
+    @Test
+    public void simpleSelect9d3() throws HBqlException, IOException {
+
+        final String q1 = "select * from tab4 WITH "
+                          + "KEYS '000000000000005' TO LAST "
+                          + "LIMIT 2 "
+                          + "SERVER FILTER WHERE val5 = 'nada' ";
+
+        final int rec_cnt = showValues(q1, false);
+        assertTrue(rec_cnt == 0);
+    }
+
+    @Test
+    public void simpleSelect9d4() throws HBqlException, IOException {
+
+        final String q1 = "select * from tab4 WITH "
+                          + "KEYS '000000000000005' TO LAST "
+                          + "LIMIT 2 "
+                          + "SERVER FILTER WHERE val6 = 44 ";
+
+        final int rec_cnt = showValues(q1, false);
+        assertTrue(rec_cnt == 0);
     }
 
     @Test
