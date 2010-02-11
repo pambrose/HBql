@@ -23,6 +23,7 @@ package org.apache.expreval.expr.nullcomp;
 import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.TypeSupport;
 import org.apache.expreval.expr.node.BooleanValue;
+import org.apache.expreval.expr.node.ByteValue;
 import org.apache.expreval.expr.node.DateValue;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.expreval.expr.node.NumberValue;
@@ -50,6 +51,8 @@ public class DelegateNullCompare extends GenericNullCompare {
             this.setTypedExpr(new DateNullCompare(this.isNot(), this.getExprArg(0)));
         else if (TypeSupport.isParentClass(BooleanValue.class, type))
             this.setTypedExpr(new BooleanNullCompare(this.isNot(), this.getExprArg(0)));
+        else if (TypeSupport.isParentClass(ByteValue.class, type))
+            this.setTypedExpr(new ByteNullCompare(this.isNot(), this.getExprArg(0)));
         else
             this.throwInvalidTypeException(type);
 

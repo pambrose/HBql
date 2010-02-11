@@ -23,6 +23,7 @@ package org.apache.expreval.expr.betweenstmt;
 import org.apache.expreval.client.NullColumnValueException;
 import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.TypeSupport;
+import org.apache.expreval.expr.node.ByteValue;
 import org.apache.expreval.expr.node.DateValue;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.expreval.expr.node.NumberValue;
@@ -53,6 +54,8 @@ public class DelegateBetweenStmt extends GenericBetweenStmt {
             this.setTypedExpr(new NumberBetweenStmt(this.getExprArg(0), this.isNot(), this.getExprArg(1), this.getExprArg(2)));
         else if (TypeSupport.isParentClass(DateValue.class, type1, type2, type3))
             this.setTypedExpr(new DateBetweenStmt(this.getExprArg(0), this.isNot(), this.getExprArg(1), this.getExprArg(2)));
+        else if (TypeSupport.isParentClass(ByteValue.class, type1, type2, type3))
+            this.setTypedExpr(new ByteBetweenStmt(this.getExprArg(0), this.isNot(), this.getExprArg(1), this.getExprArg(2)));
         else
             this.throwInvalidTypeException(type1, type2, type3);
 

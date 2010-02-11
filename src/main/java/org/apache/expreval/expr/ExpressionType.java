@@ -21,6 +21,7 @@
 package org.apache.expreval.expr;
 
 import org.apache.expreval.expr.node.BooleanValue;
+import org.apache.expreval.expr.node.ByteValue;
 import org.apache.expreval.expr.node.DateValue;
 import org.apache.expreval.expr.node.NumberValue;
 import org.apache.expreval.expr.node.StringValue;
@@ -54,7 +55,9 @@ public enum ExpressionType {
     STRINGBETWEEN(new FunctionTypeSignature(BooleanValue.class, StringValue.class, StringValue.class, StringValue.class)),
     DATEBETWEEN(new FunctionTypeSignature(BooleanValue.class, DateValue.class, DateValue.class, DateValue.class)),
     NUMBERBETWEEN(new FunctionTypeSignature(BooleanValue.class, NumberValue.class, NumberValue.class, NumberValue.class)),
+    BYTEBETWEEN(new FunctionTypeSignature(BooleanValue.class, ByteValue.class, ByteValue.class, ByteValue.class)),
 
+    BYTENULL(new FunctionTypeSignature(BooleanValue.class, ByteValue.class)),
     BOOLEANNULL(new FunctionTypeSignature(BooleanValue.class, BooleanValue.class)),
     STRINGNULL(new FunctionTypeSignature(BooleanValue.class, StringValue.class)),
     DATENULL(new FunctionTypeSignature(BooleanValue.class, DateValue.class)),
