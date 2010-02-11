@@ -30,6 +30,10 @@ import org.apache.expreval.expr.Operator;
 import org.apache.expreval.expr.literal.BooleanLiteral;
 import org.apache.expreval.expr.node.BooleanValue;
 import org.apache.expreval.expr.node.GenericValue;
+import org.apache.expreval.expr.var.DelegateColumn;
+import org.apache.expreval.expr.var.GenericColumn;
+import org.apache.hadoop.hbase.client.idx.exp.Comparison;
+import org.apache.hadoop.hbase.client.idx.exp.Expression;
 import org.apache.hadoop.hbase.filter.WritableByteArrayComparable;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
@@ -146,5 +150,35 @@ public abstract class GenericCompare extends GenericExpression implements Boolea
         protected boolean equalValues(final byte[] bytes) {
             return Bytes.equals(bytes, this.getValueInBytes());
         }
+    }
+
+    public Expression getIndexExpression() throws HBqlException {
+
+        this.validateArgsForCompareFilter();
+
+        final GenericColumn<? extends GenericValue> column;
+        final Object constant;
+        final Comparison.Operator comparison;
+
+        if (this.getExprArg(0).isAColumnReference()) {
+            column = ((DelegateColumn)this.getExprArg(0)).getTypedColumn();
+            constant = this.getConstantValue(1);
+            comparison = this.getOperator().getComparisonLeft();
+        }
+        else {
+            column = ((DelegateColumn)this.getExprArg(1)).getTypedColumn();
+            constant = this.getConstantValue(0);
+            comparison = this.getOperator().getComparisonRight();
+        }
+
+        this.validateNumericArgTypes(constant);
+
+        final FieldType type = column.getColumnAttrib().getFieldType();
+        final byte[] compareVal = IO.getSerialization().getScalarAsBytes(type, constant);
+
+        return Expression.comparison(column.getColumnAttrib().getFamilyNameAsBytes(),
+                                     column.getColumnAttrib().getColumnNameAsBytes(),
+                                     comparison,
+                                     compareVal);
     }
 }

@@ -58,7 +58,7 @@ public enum FieldType implements Serializable {
     DoubleType(Double.TYPE, DoubleValue.class, 6, Bytes.SIZEOF_DOUBLE, IdxQualifierType.DOUBLE, "DOUBLE"),
 
     StringType(String.class, StringValue.class, -1, -1, IdxQualifierType.BYTE_ARRAY, "STRING", "VARCHAR"),
-    DateType(Date.class, DateValue.class, -1, -1, null, "DATE", "DATETIME"),
+    DateType(Date.class, DateValue.class, -1, -1, IdxQualifierType.LONG, "DATE", "DATETIME"),
     ObjectType(Object.class, ObjectValue.class, -1, -1, null, "OBJECT", "OBJ");
 
     private Class componentType;

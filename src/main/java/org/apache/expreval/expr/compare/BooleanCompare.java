@@ -144,6 +144,42 @@ public class BooleanCompare extends GenericCompare implements BooleanValue {
         throw new HBqlException("Invalid operator: " + this.getOperator());
     }
 
+    private static class BooleanComparable extends GenericComparable<Boolean> {
+
+        public BooleanComparable() {
+        }
+
+        public BooleanComparable(final Boolean value) {
+            this.setValue(value);
+        }
+
+        public int compareTo(final byte[] bytes) {
+
+            if (this.equalValues(bytes))
+                return 0;
+
+            try {
+                final Boolean columnValue = IO.getSerialization().getBooleanFromBytes(bytes);
+                return (this.getValue().compareTo(columnValue));
+            }
+            catch (HBqlException e) {
+                e.printStackTrace();
+                Utils.logException(LOG, e);
+                return 1;
+            }
+        }
+
+        public void write(final DataOutput dataOutput) throws IOException {
+            dataOutput.writeBoolean(this.getValue());
+        }
+
+        public void readFields(final DataInput dataInput) throws IOException {
+            this.setValue(dataInput.readBoolean());
+
+            this.setValueInBytes(FieldType.BooleanType, this.getValue());
+        }
+    }
+
     public Expression getIndexExpression() throws HBqlException {
 
         if (this.getOperator() == Operator.OR || this.getOperator() == Operator.AND) {
@@ -200,41 +236,5 @@ public class BooleanCompare extends GenericCompare implements BooleanValue {
         }
 
         throw new HBqlException("Invalid operator: " + this.getOperator());
-    }
-
-    private static class BooleanComparable extends GenericComparable<Boolean> {
-
-        public BooleanComparable() {
-        }
-
-        public BooleanComparable(final Boolean value) {
-            this.setValue(value);
-        }
-
-        public int compareTo(final byte[] bytes) {
-
-            if (this.equalValues(bytes))
-                return 0;
-
-            try {
-                final Boolean columnValue = IO.getSerialization().getBooleanFromBytes(bytes);
-                return (this.getValue().compareTo(columnValue));
-            }
-            catch (HBqlException e) {
-                e.printStackTrace();
-                Utils.logException(LOG, e);
-                return 1;
-            }
-        }
-
-        public void write(final DataOutput dataOutput) throws IOException {
-            dataOutput.writeBoolean(this.getValue());
-        }
-
-        public void readFields(final DataInput dataInput) throws IOException {
-            this.setValue(dataInput.readBoolean());
-
-            this.setValueInBytes(FieldType.BooleanType, this.getValue());
-        }
     }
 }
