@@ -5,14 +5,14 @@
 
 Releases
 
-    *{{{./downloads/hbql-0.9.23-alpha.zip}0.9.23-alpha.zip}}
+    *{{{./downloads/hbql-0.9.24-alpha.zip}0.9.24-alpha.zip}}
     
-    *{{{./downloads/hbql-0.9.23-alpha.tar.gz}0.9.23-alpha.tar.gz}}
+    *{{{./downloads/hbql-0.9.24-alpha.tar.gz}0.9.24-alpha.tar.gz}}
 
 
 Javadocs
 
-    *{{{./downloads/javadocs-0.9.23-alpha.zip}javadocs-0.9.23-alpha.zip}}
+    *{{{./downloads/javadocs-0.9.24-alpha.zip}javadocs-0.9.24-alpha.zip}}
     
 
 Source
@@ -25,6 +25,10 @@ git clone git://github.com/pambrose/HBql.git
 
 
 Release Notes
+
+    0.9.24-alpha -- 02/11/10
+
+        * Expression evaluation cleanup
 
     0.9.23-alpha -- 02/09/10
 
