@@ -48,20 +48,12 @@ public abstract class Serialization {
         return (Number)IO.getSerialization().getScalarFromBytes(fieldType, b);
     }
 
-    public Integer getIntFromBytes(byte[] b) throws HBqlException {
-        return (Integer)IO.getSerialization().getScalarFromBytes(FieldType.IntegerType, b);
-    }
-
-    public Long getLongFromBytes(byte[] b) throws HBqlException {
-        return (Long)IO.getSerialization().getScalarFromBytes(FieldType.LongType, b);
-    }
-
-    public Double getDoubleFromBytes(byte[] b) throws HBqlException {
-        return (Double)IO.getSerialization().getScalarFromBytes(FieldType.DoubleType, b);
-    }
-
     public String getStringFromBytes(final byte[] b) throws HBqlException {
         return (String)this.getScalarFromBytes(FieldType.StringType, b);
+    }
+
+    public Byte getByteFromBytes(final byte[] b) throws HBqlException {
+        return (Byte)this.getScalarFromBytes(FieldType.ByteType, b);
     }
 
     public Boolean getBooleanFromBytes(final byte[] b) throws HBqlException {

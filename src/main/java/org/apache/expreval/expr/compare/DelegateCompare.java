@@ -25,6 +25,7 @@ import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.Operator;
 import org.apache.expreval.expr.TypeSupport;
 import org.apache.expreval.expr.node.BooleanValue;
+import org.apache.expreval.expr.node.ByteValue;
 import org.apache.expreval.expr.node.DateValue;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.expreval.expr.node.NumberValue;
@@ -60,6 +61,8 @@ public class DelegateCompare extends GenericCompare {
             this.typedExpr = new DateCompare(this.getExprArg(0), this.getOperator(), this.getExprArg(1));
         else if (TypeSupport.isParentClass(BooleanValue.class, type0, type1))
             this.typedExpr = new BooleanCompare(this.getExprArg(0), this.getOperator(), this.getExprArg(1));
+        else if (TypeSupport.isParentClass(ByteValue.class, type0, type1))
+            this.typedExpr = new ByteCompare(this.getExprArg(0), this.getOperator(), this.getExprArg(1));
         else
             this.throwInvalidTypeException(type0, type1);
 
