@@ -26,7 +26,9 @@ git clone git://github.com/pambrose/HBql.git
 
 Release Notes
 
-    0.9.24-alpha -- 02/11/10
+    0.9.24-alpha -- 02/18/10
+
+        * NULL value cleanup
 
         * Expression evaluation cleanup
 
