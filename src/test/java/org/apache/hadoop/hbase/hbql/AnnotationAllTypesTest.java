@@ -36,14 +36,14 @@ import java.util.List;
 
 public class AnnotationAllTypesTest extends TestSupport {
 
-    static HConnection connection = null;
+    static HConnection conn = null;
 
     static int cnt = 10;
 
     @BeforeClass
     public static void beforeClass() throws HBqlException {
-        connection = HConnectionManager.newConnection();
-        setupMapping(connection);
+        conn = HConnectionManager.newConnection();
+        setupMapping(conn);
     }
 
     public static void setupMapping(HConnection connection) throws HBqlException {
@@ -91,7 +91,7 @@ public class AnnotationAllTypesTest extends TestSupport {
     public static List<AnnotatedAllTypes> insertSomeData(int cnt, boolean noRandomData) throws HBqlException {
 
         List<AnnotatedAllTypes> retval = Lists.newArrayList();
-        final HBatch<AnnotatedAllTypes> batch = HBatch.newHBatch(connection);
+        final HBatch<AnnotatedAllTypes> batch = conn.newHBatch();
 
         for (int i = 0; i < cnt; i++) {
 
@@ -116,7 +116,7 @@ public class AnnotationAllTypesTest extends TestSupport {
 
         assertTrue(vals.size() == cnt);
 
-        HStatement stmt = connection.createStatement();
+        HStatement stmt = conn.createStatement();
         HResultSet<AnnotatedAllTypes> recs = stmt.executeQuery("select * from alltypes2", AnnotatedAllTypes.class);
 
         int reccnt = 0;
@@ -133,7 +133,7 @@ public class AnnotationAllTypesTest extends TestSupport {
 
         assertTrue(vals.size() == cnt);
 
-        HStatement stmt = connection.createStatement();
+        HStatement stmt = conn.createStatement();
         HResultSet<AnnotatedAllTypes> recs = stmt.executeQuery("select * from alltypes2", AnnotatedAllTypes.class);
 
         int reccnt = 0;
@@ -150,7 +150,7 @@ public class AnnotationAllTypesTest extends TestSupport {
 
         assertTrue(vals.size() == cnt);
 
-        HPreparedStatement pstmt = connection.prepareStatement("select * from alltypes2 WITH LIMIT :limit");
+        HPreparedStatement pstmt = conn.prepareStatement("select * from alltypes2 WITH LIMIT :limit");
 
         pstmt.setParameter("limit", cnt / 2);
 

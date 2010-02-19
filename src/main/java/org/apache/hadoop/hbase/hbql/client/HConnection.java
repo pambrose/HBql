@@ -100,4 +100,6 @@ public interface HConnection {
     void setAsyncExecutorName(String name);
 
     String getAsyncExecutorName();
+
+    <T> HBatch<T> newHBatch();
 }

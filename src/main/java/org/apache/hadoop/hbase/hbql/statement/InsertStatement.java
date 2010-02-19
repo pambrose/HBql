@@ -217,7 +217,7 @@ public class InsertStatement extends StatementWithParameters implements Connecti
 
         while (this.getInsertValuesSource().hasValues()) {
 
-            final HBatch<HRecord> batch = HBatch.newHBatch(conn);
+            final HBatch<HRecord> batch = conn.newHBatch();
 
             for (int i = 0; i < this.getInsertColumnList().size(); i++) {
                 final String name = this.getInsertColumnList().get(i).asString();

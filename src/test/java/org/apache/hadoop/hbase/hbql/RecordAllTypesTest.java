@@ -37,56 +37,56 @@ import java.util.List;
 
 public class RecordAllTypesTest extends TestSupport {
 
-    static HConnection connection = null;
+    static HConnection conn = null;
 
     static int cnt = 10;
 
     @BeforeClass
     public static void beforeClass() throws HBqlException {
 
-        connection = HConnectionManager.newConnection();
+        conn = HConnectionManager.newConnection();
 
-        connection.execute("CREATE TEMP MAPPING alltypes FOR TABLE example2"
-                           + "("
-                           + "keyval KEY, "
-                           + "f1 ("
-                           + "  val1 boolean ALIAS booleanValue, "
-                           + "  val2 boolean[] ALIAS booleanArrayValue, "
-                           + "  val3 byte ALIAS byteValue, "
-                           + "  val4 byte[] ALIAS byteArrayValue, "
-                           + "  val5 char ALIAS charValue, "
-                           + "  val6 char[] ALIAS charArrayValue, "
-                           + "  val7 short ALIAS shortValue, "
-                           + "  val8 short[] ALIAS shortArrayValue, "
-                           + "  val9 int ALIAS intValue, "
-                           + "  val10 int[] ALIAS intArrayValue, "
-                           + "  val11 long ALIAS longValue, "
-                           + "  val12 long[] ALIAS longArrayValue, "
-                           + "  val13 float ALIAS floatValue, "
-                           + "  val14 float[] ALIAS floatArrayValue, "
-                           + "  val15 double ALIAS doubleValue, "
-                           + "  val16 double[] ALIAS doubleArrayValue, "
-                           + "  val17 string ALIAS stringValue, "
-                           + "  val18 string[] ALIAS stringArrayValue, "
-                           + "  val19 date ALIAS dateValue, "
-                           + "  val20 date[] ALIAS dateArrayValue, "
-                           + "  val21 object ALIAS mapValue, "
-                           + "  val22 object[] ALIAS mapArrayValue, "
-                           + "  val23 object ALIAS objectValue, "
-                           + "  val24 object[] ALIAS objectArrayValue "
-                           + "))");
+        conn.execute("CREATE TEMP MAPPING alltypes FOR TABLE example2"
+                     + "("
+                     + "keyval KEY, "
+                     + "f1 ("
+                     + "  val1 boolean ALIAS booleanValue, "
+                     + "  val2 boolean[] ALIAS booleanArrayValue, "
+                     + "  val3 byte ALIAS byteValue, "
+                     + "  val4 byte[] ALIAS byteArrayValue, "
+                     + "  val5 char ALIAS charValue, "
+                     + "  val6 char[] ALIAS charArrayValue, "
+                     + "  val7 short ALIAS shortValue, "
+                     + "  val8 short[] ALIAS shortArrayValue, "
+                     + "  val9 int ALIAS intValue, "
+                     + "  val10 int[] ALIAS intArrayValue, "
+                     + "  val11 long ALIAS longValue, "
+                     + "  val12 long[] ALIAS longArrayValue, "
+                     + "  val13 float ALIAS floatValue, "
+                     + "  val14 float[] ALIAS floatArrayValue, "
+                     + "  val15 double ALIAS doubleValue, "
+                     + "  val16 double[] ALIAS doubleArrayValue, "
+                     + "  val17 string ALIAS stringValue, "
+                     + "  val18 string[] ALIAS stringArrayValue, "
+                     + "  val19 date ALIAS dateValue, "
+                     + "  val20 date[] ALIAS dateArrayValue, "
+                     + "  val21 object ALIAS mapValue, "
+                     + "  val22 object[] ALIAS mapArrayValue, "
+                     + "  val23 object ALIAS objectValue, "
+                     + "  val24 object[] ALIAS objectArrayValue "
+                     + "))");
 
-        if (!connection.tableExists("example2"))
-            System.out.println(connection.execute("create table example2 (f1() )"));
+        if (!conn.tableExists("example2"))
+            System.out.println(conn.execute("create table example2 (f1() )"));
         else {
-            System.out.println(connection.execute("delete from alltypes"));
+            System.out.println(conn.execute("delete from alltypes"));
         }
     }
 
     public static List<RecordAllTypes> insertSomeData(int cnt, boolean noRandomData) throws HBqlException {
 
         List<RecordAllTypes> retval = Lists.newArrayList();
-        final HBatch<HRecord> batch = HBatch.newHBatch(connection);
+        final HBatch<HRecord> batch = conn.newHBatch();
 
         for (int i = 0; i < cnt; i++) {
 
@@ -95,7 +95,7 @@ public class RecordAllTypesTest extends TestSupport {
 
             retval.add(rat);
 
-            batch.insert(rat.getHRecord(connection));
+            batch.insert(rat.getHRecord(conn));
         }
 
         batch.apply();
@@ -110,7 +110,7 @@ public class RecordAllTypesTest extends TestSupport {
 
         assertTrue(vals.size() == cnt);
 
-        HStatement stmt = connection.createStatement();
+        HStatement stmt = conn.createStatement();
         HResultSet<HRecord> recs = stmt.executeQuery("select * from alltypes");
 
         int reccnt = 0;
@@ -127,7 +127,7 @@ public class RecordAllTypesTest extends TestSupport {
 
         assertTrue(vals.size() == cnt);
 
-        HStatement stmt = connection.createStatement();
+        HStatement stmt = conn.createStatement();
         HResultSet<HRecord> recs = stmt.executeQuery("select * from alltypes");
 
         int reccnt = 0;
@@ -144,7 +144,7 @@ public class RecordAllTypesTest extends TestSupport {
 
         assertTrue(vals.size() == cnt);
 
-        HPreparedStatement stmt = connection.prepareStatement("select * from alltypes WITH LIMIT :limit");
+        HPreparedStatement stmt = conn.prepareStatement("select * from alltypes WITH LIMIT :limit");
 
         stmt.setParameter("limit", cnt / 2);
         HResultSet<HRecord> recs = stmt.executeQuery();
@@ -163,10 +163,10 @@ public class RecordAllTypesTest extends TestSupport {
 
         assertTrue(vals.size() == cnt);
 
-        HPreparedStatement stmt = connection.prepareStatement("select * from alltypes " +
-                                                              "WITH " +
-                                                              "SERVER FILTER WHERE 1=1 " +
-                                                              "LIMIT :limit");
+        HPreparedStatement stmt = conn.prepareStatement("select * from alltypes " +
+                                                        "WITH " +
+                                                        "SERVER FILTER WHERE 1=1 " +
+                                                        "LIMIT :limit");
 
         stmt.setParameter("limit", cnt / 2);
         HResultSet<HRecord> recs = stmt.executeQuery();

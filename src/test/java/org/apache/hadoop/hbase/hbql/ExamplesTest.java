@@ -240,7 +240,7 @@ public class ExamplesTest extends TestSupport {
         rec.setCurrentValue("val1", 123);
         rec.setCurrentValue("al2", "testval");
 
-        HBatch<HRecord> batch = HBatch.newHBatch(conn);
+        HBatch<HRecord> batch = conn.newHBatch();
         batch.insert(rec);
         batch.apply();
 
@@ -568,7 +568,7 @@ public class ExamplesTest extends TestSupport {
         }
 
         // Add some other records using the Record interface
-        final HBatch<HRecord> batch = HBatch.newHBatch(conn);
+        final HBatch<HRecord> batch = conn.newHBatch();
         for (int i = 5; i < 10; i++) {
             HRecord rec = conn.getMapping("demo1").newHRecord();
             rec.setCurrentValue("keyval", Util.getZeroPaddedNonNegativeNumber(i, 10));
@@ -839,7 +839,7 @@ public class ExamplesTest extends TestSupport {
         }
 
         // Add some other records using an AnnotatedExample object
-        final HBatch<AnnotatedExample> batch = HBatch.newHBatch(conn);
+        final HBatch<AnnotatedExample> batch = conn.newHBatch();
         for (int i = 5; i < 10; i++) {
             AnnotatedExample obj = new AnnotatedExample();
             obj.keyval = Util.getZeroPaddedNonNegativeNumber(i, 10);

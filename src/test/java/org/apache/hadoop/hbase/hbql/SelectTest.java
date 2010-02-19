@@ -94,11 +94,11 @@ public class SelectTest extends TestSupport {
         insertRecords(connection, 10, "Batch 3");
     }
 
-    private static void insertRecords(final HConnection connection,
+    private static void insertRecords(final HConnection conn,
                                       final int cnt,
                                       final String msg) throws HBqlException {
 
-        final HBatch<HRecord> batch = HBatch.newHBatch(connection);
+        final HBatch<HRecord> batch = conn.newHBatch();
 
         for (int i = 0; i < cnt; i++) {
 
@@ -126,7 +126,7 @@ public class SelectTest extends TestSupport {
                 val8check[j] = intv1[j];
             }
 
-            final HRecord rec = connection.getMapping("tab8").newHRecord();
+            final HRecord rec = conn.getMapping("tab8").newHRecord();
             rec.setCurrentValue("keyval", keyval);
             rec.setCurrentValue("val1", s_val5);
             rec.setCurrentValue("val2", s_val5 + " " + msg);

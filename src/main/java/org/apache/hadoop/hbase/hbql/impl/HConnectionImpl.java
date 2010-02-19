@@ -34,6 +34,7 @@ import org.apache.hadoop.hbase.client.tableindexed.IndexedTableDescriptor;
 import org.apache.hadoop.hbase.hbql.client.AsyncExecutor;
 import org.apache.hadoop.hbase.hbql.client.AsyncExecutorManager;
 import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
+import org.apache.hadoop.hbase.hbql.client.HBatch;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.client.HMapping;
@@ -534,6 +535,10 @@ public class HConnectionImpl extends PoolableElement<HConnectionImpl> implements
 
     public void setAsyncExecutorName(final String poolName) {
         this.asyncExecutorName = poolName;
+    }
+
+    public <T> HBatch<T> newHBatch() {
+        return new HBatch<T>(this);
     }
 
     public void validateTableName(final String tableName) throws HBqlException {

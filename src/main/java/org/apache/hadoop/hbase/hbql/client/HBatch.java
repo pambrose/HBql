@@ -49,10 +49,6 @@ public class HBatch<T> {
         this.connection = connection;
     }
 
-    public static <E> HBatch<E> newHBatch(final HConnection connection) {
-        return new HBatch<E>(connection);
-    }
-
     public HConnection getConnection() {
         return this.connection;
     }

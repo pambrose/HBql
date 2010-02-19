@@ -118,9 +118,9 @@ public class AnnotationExample {
 
     public static void main(String[] args) throws HBqlException {
 
-        HConnection connection = HConnectionManager.newConnection();
+        HConnection conn = HConnectionManager.newConnection();
 
-        final HBatch<TestObject> batch = HBatch.newHBatch(connection);
+        final HBatch<TestObject> batch = conn.newHBatch();
         for (int i = 0; i < 10; i++)
             batch.insert(new TestObject(i));
 
@@ -135,7 +135,7 @@ public class AnnotationExample {
                               //+ "SERVER FILTER WHERE author LIKE '.*val.*' OR LENGTH(author) > 4 "
                               + "CLIENT FILTER WHERE author LIKE '.*val.*' OR LENGTH(author) > 4";
 
-        HStatement stmt = connection.createStatement();
+        HStatement stmt = conn.createStatement();
         HResultSet<TestObject> results2 = stmt.executeQuery(query2, TestObject.class);
 
         for (TestObject val2 : results2) {
