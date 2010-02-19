@@ -27,7 +27,7 @@ import org.apache.hadoop.hbase.hbql.client.HPreparedStatement;
 import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.client.HResultSet;
 import org.apache.hadoop.hbase.hbql.statement.HBqlStatement;
-import org.apache.hadoop.hbase.hbql.statement.ParameterStatement;
+import org.apache.hadoop.hbase.hbql.statement.StatementWithParameters;
 
 import java.util.List;
 
@@ -42,8 +42,8 @@ public class HPreparedStatementImpl extends HStatementImpl implements HPreparedS
 
         this.statement = Utils.parseHBqlStatement(sql);
 
-        if ((this.getStatement() instanceof ParameterStatement)) {
-            final ParameterStatement paramStmt = (ParameterStatement)this.getStatement();
+        if ((this.getStatement() instanceof StatementWithParameters)) {
+            final StatementWithParameters paramStmt = (StatementWithParameters)this.getStatement();
 
             // Need to call this here to enable setParameters
             paramStmt.validate(this.getHConnectionImpl());
@@ -83,15 +83,33 @@ public class HPreparedStatementImpl extends HStatementImpl implements HPreparedS
     }
 
     public int setParameter(final String name, final Object val) throws HBqlException {
-        Utils.checkForNullParameterValue(val);
-        final ParameterStatement paramStmt = Utils.getParameterStatement(this.getStatement());
-        return paramStmt.setParameter(name, val);
+        checkForNullParameterValue(val);
+        final StatementWithParameters paramStmt = getParameterStatement(this.getStatement());
+        return paramStmt.setStatementParameter(name, val);
     }
 
     public void setParameter(final int i, final Object val) throws HBqlException {
-        Utils.checkForNullParameterValue(val);
-        final ParameterStatement paramStmt = Utils.getParameterStatement(this.getStatement());
+        checkForNullParameterValue(val);
+        final StatementWithParameters paramStmt = getParameterStatement(this.getStatement());
         final NamedParameter param = paramStmt.getNamedParameters().getParameter(i);
         param.setParameter(val);
+    }
+
+    public void resetParameters() throws HBqlException {
+        final StatementWithParameters paramStmt = getParameterStatement(this.getStatement());
+        paramStmt.resetParameters();
+    }
+
+    public static void checkForNullParameterValue(final Object val) throws HBqlException {
+        //if (val == null)
+        //    throw new HBqlException("Parameter value cannot be NULL");
+    }
+
+    public static StatementWithParameters getParameterStatement(final HBqlStatement statement) throws HBqlException {
+
+        if (!(statement instanceof StatementWithParameters))
+            throw new HBqlException(statement.getClass().getSimpleName() + " statements do not support parameters");
+
+        return (StatementWithParameters)statement;
     }
 }

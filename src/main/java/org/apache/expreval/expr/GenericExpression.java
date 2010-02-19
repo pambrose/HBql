@@ -32,6 +32,7 @@ import org.apache.expreval.expr.node.BooleanValue;
 import org.apache.expreval.expr.node.DateValue;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.expreval.expr.node.NumberValue;
+import org.apache.expreval.expr.node.ObjectValue;
 import org.apache.expreval.expr.node.StringValue;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.client.idx.exp.Expression;
@@ -416,18 +417,20 @@ public abstract class GenericExpression implements GenericValue {
         throw new InvalidTypeException(sbuf.toString());
     }
 
-    protected Class<? extends GenericValue> determineGenericValueClass(final Class<? extends GenericValue> clazz) throws InvalidTypeException {
+    final List<Class<? extends GenericValue>> types = Arrays.asList(StringValue.class,
+                                                                    NumberValue.class,
+                                                                    DateValue.class,
+                                                                    BooleanValue.class,
+                                                                    ObjectValue.class);
 
-        final List<Class<? extends GenericValue>> types = Arrays.asList(StringValue.class,
-                                                                        NumberValue.class,
-                                                                        DateValue.class,
-                                                                        BooleanValue.class);
+    protected Class<? extends GenericValue> getGenericValueClass(final Class<? extends GenericValue> clazz) throws InvalidTypeException {
 
         for (final Class<? extends GenericValue> type : types)
             if (TypeSupport.isParentClass(type, clazz))
                 return type;
 
         this.throwInvalidTypeException(clazz);
+
         return null;
     }
 

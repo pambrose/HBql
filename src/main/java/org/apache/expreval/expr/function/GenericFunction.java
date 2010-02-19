@@ -199,7 +199,7 @@ public abstract class GenericFunction extends GenericExpression {
             throw new InvalidTypeException("Incorrect number of arguments in function " + this.getFunctionType().name()
                                            + " in " + this.asString());
 
-        for (final Class<? extends GenericValue> clazz : this.getTypeSignature().getArgs()) {
+        for (final Class<? extends GenericValue> clazz : this.getTypeSignature().getArgTypeList()) {
             final Class<? extends GenericValue> type = this.getExprArg(i).validateTypes(this, false);
             try {
                 this.validateParentClass(clazz, type);

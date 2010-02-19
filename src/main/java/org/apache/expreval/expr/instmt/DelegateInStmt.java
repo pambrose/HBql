@@ -46,7 +46,7 @@ public class DelegateInStmt extends GenericInStmt {
 
         final Class<? extends GenericValue> type = this.getExprArg(0).validateTypes(this, false);
 
-        final Class<? extends GenericValue> inType = this.determineGenericValueClass(type);
+        final Class<? extends GenericValue> inType = this.getGenericValueClass(type);
 
         // Make sure all the types are matched
         for (final GenericValue val : this.getInList())

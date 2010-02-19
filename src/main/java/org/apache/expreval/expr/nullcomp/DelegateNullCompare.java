@@ -27,6 +27,7 @@ import org.apache.expreval.expr.node.ByteValue;
 import org.apache.expreval.expr.node.DateValue;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.expreval.expr.node.NumberValue;
+import org.apache.expreval.expr.node.ObjectValue;
 import org.apache.expreval.expr.node.StringValue;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
@@ -40,8 +41,7 @@ public class DelegateNullCompare extends GenericNullCompare {
     public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,
                                                        final boolean allowCollections) throws HBqlException {
 
-        final Class<? extends GenericValue> type = this.determineGenericValueClass(this.getExprArg(0).validateTypes(this,
-                                                                                                                    false));
+        final Class<? extends GenericValue> type = this.getGenericValueClass(this.getExprArg(0).validateTypes(this, false));
 
         if (TypeSupport.isParentClass(StringValue.class, type))
             this.setTypedExpr(new StringNullCompare(this.isNot(), this.getExprArg(0)));
@@ -53,6 +53,8 @@ public class DelegateNullCompare extends GenericNullCompare {
             this.setTypedExpr(new BooleanNullCompare(this.isNot(), this.getExprArg(0)));
         else if (TypeSupport.isParentClass(ByteValue.class, type))
             this.setTypedExpr(new ByteNullCompare(this.isNot(), this.getExprArg(0)));
+        else if (TypeSupport.isParentClass(ObjectValue.class, type))
+            this.setTypedExpr(new ObjectNullCompare(this.isNot(), this.getExprArg(0)));
         else
             this.throwInvalidTypeException(type);
 

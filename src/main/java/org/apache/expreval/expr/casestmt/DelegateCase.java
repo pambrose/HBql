@@ -43,7 +43,7 @@ public class DelegateCase extends GenericCase {
                                                        final boolean allowCollections) throws HBqlException {
 
         final Class<? extends GenericValue> type = this.getWhenExprList().get(0).validateTypes(this, false);
-        final Class<? extends GenericValue> argType = this.determineGenericValueClass(type);
+        final Class<? extends GenericValue> argType = this.getGenericValueClass(type);
 
         for (final GenericCaseWhen val : this.getWhenExprList())
             this.validateParentClass(argType, val.validateTypes(this, false));

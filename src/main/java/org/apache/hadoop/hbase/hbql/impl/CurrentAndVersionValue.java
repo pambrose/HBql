@@ -41,16 +41,20 @@ public class CurrentAndVersionValue<T> extends Value {
         return this.currentValue;
     }
 
+    public boolean isValueSet() {
+        return currentValueSet;
+    }
+
+    private AtomicReference<NavigableMap<Long, T>> getAtomicVersionMap() {
+        return this.atomicVersionMap;
+    }
+
     public void setCurrentValue(final long timestamp, final T val) {
         if (timestamp >= this.currentValueTimestamp) {
             this.currentValueSet = true;
             this.currentValueTimestamp = timestamp;
             this.currentValue = val;
         }
-    }
-
-    private AtomicReference<NavigableMap<Long, T>> getAtomicVersionMap() {
-        return this.atomicVersionMap;
     }
 
     public NavigableMap<Long, T> getVersionMap() {
@@ -66,9 +70,5 @@ public class CurrentAndVersionValue<T> extends Value {
 
     public void setVersionMap(final NavigableMap<Long, T> versionMap) {
         this.getAtomicVersionMap().set(versionMap);
-    }
-
-    public boolean isValueSet() {
-        return currentValueSet;
     }
 }

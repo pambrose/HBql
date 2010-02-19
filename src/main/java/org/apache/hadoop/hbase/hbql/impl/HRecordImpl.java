@@ -25,6 +25,7 @@ import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HRecord;
 import org.apache.hadoop.hbase.hbql.client.UnMappedValueMap;
 import org.apache.hadoop.hbase.hbql.mapping.ColumnAttrib;
+import org.apache.hadoop.hbase.hbql.mapping.FieldType;
 import org.apache.hadoop.hbase.hbql.mapping.MappingContext;
 import org.apache.hadoop.hbase.hbql.mapping.ResultAccessor;
 import org.apache.hadoop.hbase.hbql.mapping.TableMapping;
@@ -32,6 +33,7 @@ import org.apache.hadoop.hbase.hbql.util.AtomicReferences;
 import org.apache.hadoop.hbase.hbql.util.Lists;
 import org.apache.hadoop.hbase.hbql.util.Maps;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.NavigableMap;
@@ -63,6 +65,22 @@ public class HRecordImpl implements HRecord {
         this.mappingContext = mappingContext;
     }
 
+    public long getTimestamp() {
+        return this.timestamp;
+    }
+
+    private AtomicReference<ElementMap<UnMappedValueMap>> getAtomicUnMappedValuesMap() {
+        return this.atomicUnMappedValuesMap;
+    }
+
+    private AtomicReference<ElementMap<ColumnValue>> getAtomicColumnValuesMap() {
+        return this.atomicColumnValuesMap;
+    }
+
+    private List<String> getNamePositionList() {
+        return this.namePositionList;
+    }
+
     public String getAttribName(final int i) throws HBqlException {
         try {
             return this.getNamePositionList().get(i - 1);
@@ -70,10 +88,6 @@ public class HRecordImpl implements HRecord {
         catch (ArrayIndexOutOfBoundsException e) {
             throw new HBqlException("Invalid column number " + i);
         }
-    }
-
-    private List<String> getNamePositionList() {
-        return this.namePositionList;
     }
 
     public void addNameToPositionList(final String name) {
@@ -88,10 +102,6 @@ public class HRecordImpl implements HRecord {
         return this.getMappingContext().getResultAccessor();
     }
 
-    private AtomicReference<ElementMap<ColumnValue>> getAtomicColumnValuesMap() {
-        return this.atomicColumnValuesMap;
-    }
-
     protected ElementMap<ColumnValue> getColumnValuesMap() {
         if (this.getAtomicColumnValuesMap().get() == null)
             synchronized (this) {
@@ -99,10 +109,6 @@ public class HRecordImpl implements HRecord {
                     this.getAtomicColumnValuesMap().set(new ElementMap<ColumnValue>(this));
             }
         return this.getAtomicColumnValuesMap().get();
-    }
-
-    private AtomicReference<ElementMap<UnMappedValueMap>> getAtomicUnMappedValuesMap() {
-        return this.atomicUnMappedValuesMap;
     }
 
     private ElementMap<UnMappedValueMap> getUnMappedValuesMap() {
@@ -124,10 +130,6 @@ public class HRecordImpl implements HRecord {
             throw new InternalErrorException(value.getClass().getName());
     }
 
-    public long getTimestamp() {
-        return this.timestamp;
-    }
-
     public void clearValues() {
         this.getColumnValuesMap().clear();
         this.getUnMappedValuesMap().clear();
@@ -141,8 +143,8 @@ public class HRecordImpl implements HRecord {
         }
         else {
             if (inMapping && !this.getTableMapping().containsVariableName(name))
-                throw new HBqlException("Invalid variable name " + this.getTableMapping()
-                        .getMappingName() + "." + name);
+                throw new HBqlException("Invalid variable name "
+                                        + this.getTableMapping().getMappingName() + "." + name);
             final ColumnValue columnValue = new ColumnValue(name);
             this.addElement(columnValue);
             return columnValue;
@@ -195,8 +197,7 @@ public class HRecordImpl implements HRecord {
                                 final long timestamp,
                                 final Object val,
                                 final boolean inMapping) throws HBqlException {
-        final ColumnAttrib attrib = this.getTableMapping()
-                .getAttribFromFamilyQualifiedName(familyName, columnName);
+        final ColumnAttrib attrib = this.getTableMapping().getAttribFromFamilyQualifiedName(familyName, columnName);
         if (attrib == null)
             throw new HBqlException("Invalid column name " + familyName + ":" + columnName);
 
@@ -238,8 +239,15 @@ public class HRecordImpl implements HRecord {
         final ColumnValue columnValue = this.getColumnValuesMap().findElement(name);
         if (columnValue != null) {
             final Object retval = columnValue.getCurrentValue();
-            if (retval != null)
+            if (retval != null) {
+                // Check if Date value
+                if (retval instanceof Long) {
+                    final ColumnAttrib att = this.getMappingContext().getResultAccessor().getColumnAttribByName(name);
+                    if (att != null && att.getFieldType() == FieldType.DateType)
+                        return new Date((Long)retval);
+                }
                 return retval;
+            }
         }
 
         // Return default value if it exists

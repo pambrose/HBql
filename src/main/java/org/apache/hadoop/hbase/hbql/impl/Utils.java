@@ -30,7 +30,6 @@ import org.apache.hadoop.hbase.hbql.statement.DeleteStatement;
 import org.apache.hadoop.hbase.hbql.statement.HBqlStatement;
 import org.apache.hadoop.hbase.hbql.statement.InsertStatement;
 import org.apache.hadoop.hbase.hbql.statement.NonConnectionStatement;
-import org.apache.hadoop.hbase.hbql.statement.ParameterStatement;
 import org.apache.hadoop.hbase.hbql.statement.SelectStatement;
 import org.apache.hadoop.hbase.hbql.util.Lists;
 
@@ -82,13 +81,6 @@ public class Utils {
         return stmt instanceof NonConnectionStatement;
     }
 
-    public static ParameterStatement getParameterStatement(final HBqlStatement statement) throws HBqlException {
-        if (!(statement instanceof ParameterStatement))
-            throw new HBqlException(statement.getClass().getSimpleName() + " statements do not support parameters");
-
-        return (ParameterStatement)statement;
-    }
-
     private static List<Class> classList = Lists.newArrayList();
 
     public static void checkForDefaultConstructors(final Class clazz) {
@@ -130,11 +122,6 @@ public class Utils {
             return false;
         }
         return true;
-    }
-
-    public static void checkForNullParameterValue(final Object val) throws HBqlException {
-        if (val == null)
-            throw new HBqlException("Parameter value cannot be NULL");
     }
 
     public static boolean isValidString(final String val) {

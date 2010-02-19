@@ -62,6 +62,14 @@ public class MappingContext implements Serializable {
         return this.mapping;
     }
 
+    public ResultAccessor getResultAccessor() {
+        return this.resultAccessor;
+    }
+
+    public void setResultAccessor(final ResultAccessor resultAccessor) {
+        this.resultAccessor = resultAccessor;
+    }
+
     public TableMapping getTableMapping() {
         return (TableMapping)this.getMapping();
     }
@@ -88,13 +96,5 @@ public class MappingContext implements Serializable {
             if (!mappingName.equals(selectName))
                 throw new HBqlException("Class " + mappingName + " instead of " + selectName);
         }
-    }
-
-    public ResultAccessor getResultAccessor() {
-        return this.resultAccessor;
-    }
-
-    public void setResultAccessor(final ResultAccessor resultAccessor) {
-        this.resultAccessor = resultAccessor;
     }
 }

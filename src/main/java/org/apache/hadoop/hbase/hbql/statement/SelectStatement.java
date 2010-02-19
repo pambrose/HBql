@@ -33,10 +33,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class SelectStatement extends StatementWithMapping implements ParameterStatement, HBqlStatement {
+public class SelectStatement extends StatementWithParameters implements HBqlStatement {
 
     private final List<ColumnAttrib> selectColumnAttribList = Lists.newArrayList();
-    private final NamedParameters namedParameters = new NamedParameters();
     private final AtomicInteger expressionCounter = new AtomicInteger(-1);
     private final List<SelectElement> selectElementList;
     private final WithArgs withArgs;
@@ -54,10 +53,6 @@ public class SelectStatement extends StatementWithMapping implements ParameterSt
 
     public synchronized String getNextExpressionName() {
         return "expr-" + this.expressionCounter.incrementAndGet();
-    }
-
-    public NamedParameters getNamedParameters() {
-        return this.namedParameters;
     }
 
     private boolean isValidated() {
@@ -163,7 +158,7 @@ public class SelectStatement extends StatementWithMapping implements ParameterSt
         this.getNamedParameters().addParameters(this.getWithArgs().getParameterList());
     }
 
-    public void reset() {
+    public void resetParameters() {
         for (final SelectElement selectElement : this.getSelectElementList())
             selectElement.reset();
 
@@ -171,7 +166,7 @@ public class SelectStatement extends StatementWithMapping implements ParameterSt
     }
 
 
-    public int setParameter(final String name, final Object val) throws HBqlException {
+    public int setStatementParameter(final String name, final Object val) throws HBqlException {
         int cnt = 0;
         for (final SelectElement selectElement : this.getSelectElementList())
             cnt += selectElement.setParameter(name, val);

@@ -18,15 +18,28 @@
  * limitations under the License.
  */
 
-package org.apache.expreval.expr.node;
+package org.apache.hadoop.hbase.hbql.statement;
 
-import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 
-import java.util.Map;
+public abstract class StatementWithParameters extends StatementWithMapping {
 
-public interface MapValue extends GenericValue {
+    private final NamedParameters namedParameters = new NamedParameters();
 
-    Map getValue(HConnectionImpl connection, Object object) throws HBqlException, ResultMissingColumnException;
+    public StatementWithParameters(final StatementPredicate predicate, final String mappingName) {
+        super(predicate, mappingName);
+    }
+
+    public NamedParameters getNamedParameters() {
+        return this.namedParameters;
+    }
+
+    abstract public int setStatementParameter(String name, Object val) throws HBqlException;
+
+    abstract public void validate(HConnectionImpl connection) throws HBqlException;
+
+    abstract public void validateTypes() throws HBqlException;
+
+    abstract public void resetParameters();
 }

@@ -18,27 +18,14 @@
  * limitations under the License.
  */
 
-package org.apache.hadoop.hbase.hbql.client;
+package org.apache.expreval.expr.nullcomp;
 
-import java.util.List;
+import org.apache.expreval.expr.ExpressionType;
+import org.apache.expreval.expr.node.GenericValue;
 
-public interface HPreparedStatement extends HStatement {
+public class ObjectNullCompare extends GenericNullCompare {
 
-    ExecutionResults execute() throws HBqlException;
-
-    HResultSet<HRecord> executeQuery() throws HBqlException;
-
-    <T> HResultSet<T> executeQuery(Class clazz) throws HBqlException;
-
-    List<HRecord> executeQueryAndFetch() throws HBqlException;
-
-    <T> List<T> executeQueryAndFetch(Class clazz) throws HBqlException;
-
-    ExecutionResults executeUpdate() throws HBqlException;
-
-    int setParameter(String name, Object val) throws HBqlException;
-
-    void setParameter(int i, Object obj) throws HBqlException;
-
-    void resetParameters() throws HBqlException;
+    public ObjectNullCompare(final boolean not, final GenericValue arg0) {
+        super(ExpressionType.OBJECTNULL, not, arg0);
+    }
 }

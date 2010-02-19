@@ -31,10 +31,10 @@ import org.apache.expreval.expr.literal.DoubleLiteral;
 import org.apache.expreval.expr.literal.FloatLiteral;
 import org.apache.expreval.expr.literal.IntegerLiteral;
 import org.apache.expreval.expr.literal.LongLiteral;
+import org.apache.expreval.expr.literal.NullLiteral;
 import org.apache.expreval.expr.literal.ObjectLiteral;
 import org.apache.expreval.expr.literal.ShortLiteral;
 import org.apache.expreval.expr.literal.StringLiteral;
-import org.apache.expreval.expr.literal.StringNullLiteral;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.client.idx.exp.Expression;
@@ -104,6 +104,47 @@ public class NamedParameter implements GenericValue {
         return this.typedExprList;
     }
 
+    public GenericValue getOptimizedValue() throws HBqlException {
+        return this;
+    }
+
+    public boolean isAConstant() {
+        return false;
+    }
+
+    public boolean hasAColumnReference() {
+        return false;
+    }
+
+    public boolean isAColumnReference() {
+        return false;
+    }
+
+    public boolean isDefaultKeyword() {
+        return false;
+    }
+
+    public boolean isAnAggregateValue() {
+        return false;
+    }
+
+    public void setExpressionContext(final MultipleExpressionContext context) {
+        this.context = context;
+        this.getExpressionContext().addNamedParameter(this);
+    }
+
+    private MultipleExpressionContext getExpressionContext() {
+        return this.context;
+    }
+
+    public void initAggregateValue(final AggregateValue aggregateValue) throws HBqlException {
+        throw new InternalErrorException("Not applicable");
+    }
+
+    public void applyResultToAggregateValue(final AggregateValue aggregateValue, final Result result) throws HBqlException {
+        throw new InternalErrorException("Not applicable");
+    }
+
     public void reset() {
         this.typedExpr = null;
         this.typedExprList = null;
@@ -163,47 +204,6 @@ public class NamedParameter implements GenericValue {
             return this.getTypedExprList();
     }
 
-    public void setExpressionContext(final MultipleExpressionContext context) {
-        this.context = context;
-        this.getContext().addNamedParameter(this);
-    }
-
-    private MultipleExpressionContext getContext() {
-        return this.context;
-    }
-
-    public GenericValue getOptimizedValue() throws HBqlException {
-        return this;
-    }
-
-    public boolean isAConstant() {
-        return false;
-    }
-
-    public boolean hasAColumnReference() {
-        return false;
-    }
-
-    public boolean isAColumnReference() {
-        return false;
-    }
-
-    public boolean isDefaultKeyword() {
-        return false;
-    }
-
-    public boolean isAnAggregateValue() {
-        return false;
-    }
-
-    public void initAggregateValue(final AggregateValue aggregateValue) throws HBqlException {
-        throw new InternalErrorException("Not applicable");
-    }
-
-    public void applyResultToAggregateValue(final AggregateValue aggregateValue, final Result result) throws HBqlException {
-        throw new InternalErrorException("Not applicable");
-    }
-
     public void setParameter(final Object val) throws HBqlException {
 
         // Reset both values
@@ -222,7 +222,7 @@ public class NamedParameter implements GenericValue {
     private GenericValue getValueExpr(final Serializable val) throws InvalidTypeException {
 
         if (val == null)
-            return new StringNullLiteral();
+            return new NullLiteral();
 
         if (val instanceof Boolean)
             return new BooleanLiteral((Boolean)val);

@@ -66,6 +66,26 @@ public class SelectExpressionContext extends MultipleExpressionContext implement
         return this.asName;
     }
 
+    private ColumnAttrib getColumnAttrib() {
+        return this.columnAttrib;
+    }
+
+    private String getFamilyName() {
+        return this.familyName;
+    }
+
+    private String getColumnName() {
+        return this.columnName;
+    }
+
+    private byte[] getFamilyNameBytes() {
+        return this.familyNameBytes;
+    }
+
+    private byte[] getColumnNameBytes() {
+        return this.columnNameBytes;
+    }
+
     public boolean isAnAggregateElement() {
         return this.getGenericValue().isAnAggregateValue();
     }
@@ -127,26 +147,6 @@ public class SelectExpressionContext extends MultipleExpressionContext implement
 
     public Class<? extends GenericValue> getExpressionType() throws HBqlException {
         return this.getGenericValue().validateTypes(null, false);
-    }
-
-    private ColumnAttrib getColumnAttrib() {
-        return this.columnAttrib;
-    }
-
-    private String getFamilyName() {
-        return this.familyName;
-    }
-
-    private String getColumnName() {
-        return this.columnName;
-    }
-
-    private byte[] getFamilyNameBytes() {
-        return this.familyNameBytes;
-    }
-
-    private byte[] getColumnNameBytes() {
-        return this.columnNameBytes;
     }
 
     public void validate(final MappingContext mappingContext, final HConnection connection) throws HBqlException {

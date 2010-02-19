@@ -24,6 +24,7 @@ import org.apache.expreval.expr.node.BooleanValue;
 import org.apache.expreval.expr.node.ByteValue;
 import org.apache.expreval.expr.node.DateValue;
 import org.apache.expreval.expr.node.NumberValue;
+import org.apache.expreval.expr.node.ObjectValue;
 import org.apache.expreval.expr.node.StringValue;
 
 public enum ExpressionType {
@@ -61,6 +62,7 @@ public enum ExpressionType {
     BOOLEANNULL(new FunctionTypeSignature(BooleanValue.class, BooleanValue.class)),
     BYTENULL(new FunctionTypeSignature(BooleanValue.class, ByteValue.class)),
     STRINGNULL(new FunctionTypeSignature(BooleanValue.class, StringValue.class)),
+    OBJECTNULL(new FunctionTypeSignature(BooleanValue.class, ObjectValue.class)),
     DATENULL(new FunctionTypeSignature(BooleanValue.class, DateValue.class)),
     NUMBERNULL(new FunctionTypeSignature(BooleanValue.class, NumberValue.class)),
 

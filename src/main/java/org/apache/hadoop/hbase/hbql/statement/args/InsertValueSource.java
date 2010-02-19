@@ -42,7 +42,7 @@ public abstract class InsertValueSource {
 
     public abstract List<NamedParameter> getParameterList();
 
-    public abstract int setParameter(String name, Object val) throws HBqlException;
+    public abstract int setInsertSourceParameter(String name, Object val) throws HBqlException;
 
     public abstract void validate() throws HBqlException;
 

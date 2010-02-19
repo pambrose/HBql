@@ -23,6 +23,7 @@ package org.apache.hadoop.hbase.hbql.statement;
 import org.apache.expreval.expr.TypeSupport;
 import org.apache.expreval.expr.function.DelegateFunction;
 import org.apache.expreval.expr.literal.DefaultKeyword;
+import org.apache.expreval.expr.literal.NullLiteral;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.expreval.expr.var.DelegateColumn;
 import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
@@ -38,9 +39,8 @@ import org.apache.hadoop.hbase.hbql.util.Lists;
 
 import java.util.List;
 
-public class InsertStatement extends StatementWithMapping implements ParameterStatement, ConnectionStatement {
+public class InsertStatement extends StatementWithParameters implements ConnectionStatement {
 
-    private final NamedParameters namedParameters = new NamedParameters();
     private final List<SelectExpressionContext> columnList = Lists.newArrayList();
     private final InsertValueSource insertValuesSource;
 
@@ -82,12 +82,24 @@ public class InsertStatement extends StatementWithMapping implements ParameterSt
         this.getInsertValuesSource().setInsertStatement(this);
     }
 
-    public NamedParameters getNamedParameters() {
-        return this.namedParameters;
-    }
-
     private boolean isValidated() {
         return this.validated;
+    }
+
+    private HRecord getHRecord() {
+        return this.record;
+    }
+
+    public HConnectionImpl getConnection() {
+        return this.connection;
+    }
+
+    private List<SelectExpressionContext> getInsertColumnList() {
+        return this.columnList;
+    }
+
+    private InsertValueSource getInsertValuesSource() {
+        return this.insertValuesSource;
     }
 
     public void validate(final HConnectionImpl conn) throws HBqlException {
@@ -143,8 +155,17 @@ public class InsertStatement extends StatementWithMapping implements ParameterSt
                 continue;
             }
 
+            if (type2.equals(NullLiteral.class)) {
+                if (!TypeSupport.allowsNullValues(type1))
+                    throw new InvalidTypeException("Argument " + i
+                                                   + " type " + type1.getSimpleName()
+                                                   + " cannot be assigned a NULL value"
+                                                   + " in " + this.asString());
+                continue;
+            }
+
             if (!TypeSupport.isParentClass(type1, type2))
-                throw new InvalidTypeException("Type mismatch in argument " + i
+                throw new InvalidTypeException("Type mismatch with argument " + i
                                                + " expecting " + type1.getSimpleName()
                                                + " but found " + type2.getSimpleName()
                                                + " in " + this.asString());
@@ -172,32 +193,16 @@ public class InsertStatement extends StatementWithMapping implements ParameterSt
         this.getNamedParameters().addParameters(this.getInsertValuesSource().getParameterList());
     }
 
-    public void reset() {
+    public void resetParameters() {
         this.getInsertValuesSource().reset();
         this.getHRecord().reset();
     }
 
-    public int setParameter(final String name, final Object val) throws HBqlException {
-        final int cnt = this.getInsertValuesSource().setParameter(name, val);
+    public int setStatementParameter(final String name, final Object val) throws HBqlException {
+        final int cnt = this.getInsertValuesSource().setInsertSourceParameter(name, val);
         if (cnt == 0)
             throw new HBqlException("Parameter name " + name + " does not exist in " + this.asString());
         return cnt;
-    }
-
-    private HRecord getHRecord() {
-        return this.record;
-    }
-
-    public HConnectionImpl getConnection() {
-        return this.connection;
-    }
-
-    private List<SelectExpressionContext> getInsertColumnList() {
-        return this.columnList;
-    }
-
-    private InsertValueSource getInsertValuesSource() {
-        return this.insertValuesSource;
     }
 
     protected ExecutionResults execute(final HConnectionImpl conn) throws HBqlException {

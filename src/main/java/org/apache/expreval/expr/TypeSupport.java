@@ -25,7 +25,6 @@ import org.apache.expreval.expr.node.ByteValue;
 import org.apache.expreval.expr.node.CharValue;
 import org.apache.expreval.expr.node.DateValue;
 import org.apache.expreval.expr.node.GenericValue;
-import org.apache.expreval.expr.node.MapValue;
 import org.apache.expreval.expr.node.NumberValue;
 import org.apache.expreval.expr.node.ObjectValue;
 import org.apache.expreval.expr.node.StringValue;
@@ -81,12 +80,20 @@ public class TypeSupport {
         if (isParentClass(DateValue.class, clazz))
             return DateValue.class;
 
-        if (isParentClass(MapValue.class, clazz))
-            return MapValue.class;
-
         if (isParentClass(ObjectValue.class, clazz))
             return ObjectValue.class;
 
         return null;
+    }
+
+    public static boolean allowsNullValues(final Class clazz) {
+
+        if (isParentClass(StringValue.class, clazz))
+            return true;
+
+        if (isParentClass(ObjectValue.class, clazz))
+            return true;
+
+        return false;
     }
 }

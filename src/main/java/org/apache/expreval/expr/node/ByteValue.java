@@ -25,7 +25,9 @@ import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 
-public interface ByteValue extends GenericValue {
+public interface ByteValue extends NumberValue {
 
-    Byte getValue(HConnectionImpl connection, Object object) throws HBqlException, ResultMissingColumnException, NullColumnValueException;
+    Byte getValue(HConnectionImpl connection, Object object) throws HBqlException,
+                                                                    ResultMissingColumnException,
+                                                                    NullColumnValueException;
 }

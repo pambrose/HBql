@@ -192,8 +192,8 @@ deleteItem
 	: columnRef | familyWildCard;
 	
 insertValues returns [InsertValueSource retval]
-	: keyVALUES LPAREN e=insertExprList RPAREN	{retval = new InsertSingleRow($e.retval);}
-	| sel=selectStatement				{retval = new InsertSelectValues($sel.retval);};
+	: keyVALUES LPAREN e=insertExprList RPAREN	{retval = new SingleRowInsertSource($e.retval);}
+	| sel=selectStatement				{retval = new SelectValuesInsertSource($sel.retval);};
 			
 selectStatement returns [SelectStatement retval]
 	: keySELECT c=selectElems keyFROM keyMAPPING? t=simpleId w=withClause?
@@ -395,7 +395,7 @@ atomExpr returns [GenericValue retval]
 	| l=longLiteral					{retval = $l.retval;}
 	| d=doubleLiteral				{retval = $d.retval;}
 	| b=booleanLiteral				{retval = $b.retval;}
-	| keyNULL					{retval = new StringNullLiteral();}
+	| keyNULL					{retval = new NullLiteral();}
 	| p=paramRef					{retval = new NamedParameter($p.text);}
 	| v=columnRef					{retval = new DelegateColumn($v.text);}
 	;

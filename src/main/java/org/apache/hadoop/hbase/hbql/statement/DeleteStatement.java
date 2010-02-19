@@ -41,9 +41,8 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 
-public class DeleteStatement extends StatementWithMapping implements ParameterStatement, ConnectionStatement {
+public class DeleteStatement extends StatementWithParameters implements ConnectionStatement {
 
-    private final NamedParameters namedParameters = new NamedParameters();
     private final List<String> deleteItemList = Lists.newArrayList();
     private final List<String> originaltemList;
     private final WithArgs withArgs;
@@ -79,10 +78,6 @@ public class DeleteStatement extends StatementWithMapping implements ParameterSt
 
     private boolean isValidated() {
         return this.validated;
-    }
-
-    public NamedParameters getNamedParameters() {
-        return this.namedParameters;
     }
 
     public void validate(final HConnectionImpl conn) throws HBqlException {
@@ -212,7 +207,7 @@ public class DeleteStatement extends StatementWithMapping implements ParameterSt
         }
     }
 
-    public void reset() {
+    public void resetParameters() {
         this.getWithArgs().reset();
     }
 
@@ -220,7 +215,7 @@ public class DeleteStatement extends StatementWithMapping implements ParameterSt
         this.getNamedParameters().addParameters(this.getWithArgs().getParameterList());
     }
 
-    public int setParameter(final String name, final Object val) throws HBqlException {
+    public int setStatementParameter(final String name, final Object val) throws HBqlException {
         final int cnt = this.getWithArgs().setParameter(name, val);
         if (cnt == 0)
             throw new HBqlException("Parameter name " + name + " does not exist in " + this.asString());

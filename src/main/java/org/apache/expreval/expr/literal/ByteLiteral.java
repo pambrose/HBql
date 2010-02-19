@@ -20,20 +20,16 @@
 
 package org.apache.expreval.expr.literal;
 
+import org.apache.expreval.expr.node.ByteValue;
 import org.apache.expreval.expr.node.GenericValue;
-import org.apache.expreval.expr.node.StringValue;
 
-public class StringNullLiteral extends GenericLiteral<String> implements StringValue {
+public class ByteLiteral extends GenericLiteral<Byte> implements ByteValue {
 
-    public StringNullLiteral() {
-        super(null);
+    public ByteLiteral(final Byte value) {
+        super(value);
     }
 
     protected Class<? extends GenericValue> getReturnType() {
-        return StringValue.class;
-    }
-
-    public String asString() {
-        return "NULL";
+        return ByteValue.class;
     }
 }

@@ -29,12 +29,12 @@ import org.apache.hadoop.hbase.hbql.util.Lists;
 
 import java.util.List;
 
-public class InsertSingleRow extends InsertValueSource {
+public class SingleRowInsertSource extends InsertValueSource {
 
     private final List<SelectExpressionContext> valueList = Lists.newArrayList();
     private boolean calledForValues = false;
 
-    public InsertSingleRow(final List<GenericValue> valueList) {
+    public SingleRowInsertSource(final List<GenericValue> valueList) {
         for (final GenericValue val : valueList)
             this.getValueList().add(SelectExpressionContext.newExpression(val, null));
     }
@@ -53,7 +53,7 @@ public class InsertSingleRow extends InsertValueSource {
         return parameterList;
     }
 
-    public int setParameter(final String name, final Object val) throws HBqlException {
+    public int setInsertSourceParameter(final String name, final Object val) throws HBqlException {
 
         int cnt = 0;
 

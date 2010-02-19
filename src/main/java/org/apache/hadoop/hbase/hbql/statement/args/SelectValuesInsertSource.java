@@ -28,7 +28,6 @@ import org.apache.hadoop.hbase.hbql.client.HResultSet;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 import org.apache.hadoop.hbase.hbql.impl.InvalidTypeException;
 import org.apache.hadoop.hbase.hbql.impl.Query;
-import org.apache.hadoop.hbase.hbql.impl.Utils;
 import org.apache.hadoop.hbase.hbql.statement.SelectStatement;
 import org.apache.hadoop.hbase.hbql.statement.select.SelectElement;
 import org.apache.hadoop.hbase.hbql.statement.select.SelectExpressionContext;
@@ -37,14 +36,14 @@ import org.apache.hadoop.hbase.hbql.util.Lists;
 import java.util.Iterator;
 import java.util.List;
 
-public class InsertSelectValues extends InsertValueSource {
+public class SelectValuesInsertSource extends InsertValueSource {
 
     private final SelectStatement selectStatement;
     private Iterator<HRecord> resultsIterator = null;
     private HRecord currentRecord = null;
 
 
-    public InsertSelectValues(final SelectStatement selectStatement) {
+    public SelectValuesInsertSource(final SelectStatement selectStatement) {
         this.selectStatement = selectStatement;
     }
 
@@ -56,9 +55,9 @@ public class InsertSelectValues extends InsertValueSource {
         return this.getSelectStatement().getNamedParameters().getParameterList();
     }
 
-    public int setParameter(final String name, final Object val) throws HBqlException {
-        Utils.checkForNullParameterValue(val);
-        return this.getSelectStatement().setParameter(name, val);
+    public int setInsertSourceParameter(final String name, final Object val) throws HBqlException {
+        //HPreparedStatementImpl.checkForNullParameterValue(val);
+        return this.getSelectStatement().setStatementParameter(name, val);
     }
 
     public void validate() throws HBqlException {
@@ -108,7 +107,7 @@ public class InsertSelectValues extends InsertValueSource {
     }
 
     public void reset() {
-        this.getSelectStatement().reset();
+        this.getSelectStatement().resetParameters();
     }
 
     public String asString() {

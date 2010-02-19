@@ -22,6 +22,7 @@ package org.apache.expreval.expr;
 
 import org.apache.expreval.client.InternalErrorException;
 import org.apache.expreval.expr.literal.BooleanLiteral;
+import org.apache.expreval.expr.literal.ByteLiteral;
 import org.apache.expreval.expr.literal.DateLiteral;
 import org.apache.expreval.expr.literal.DoubleLiteral;
 import org.apache.expreval.expr.literal.FloatLiteral;
@@ -30,6 +31,7 @@ import org.apache.expreval.expr.literal.LongLiteral;
 import org.apache.expreval.expr.literal.ShortLiteral;
 import org.apache.expreval.expr.literal.StringLiteral;
 import org.apache.expreval.expr.node.BooleanValue;
+import org.apache.expreval.expr.node.ByteValue;
 import org.apache.expreval.expr.node.DateValue;
 import org.apache.expreval.expr.node.DoubleValue;
 import org.apache.expreval.expr.node.FloatValue;
@@ -54,19 +56,45 @@ public abstract class TypeSignature implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private Class<? extends GenericValue> returnType;
-    private List<Class<? extends GenericValue>> typeSig = Lists.newArrayList();
-    private transient Constructor literalConstructor;
+    private List<Class<? extends GenericValue>> argsTypeSignature = Lists.newArrayList();
+
     private Class literalCastClass;
+    private transient Constructor literalConstructor;
 
     public TypeSignature() {
     }
 
     public TypeSignature(final Class<? extends GenericValue> returnType,
-                         final Class<? extends GenericValue>... typeSig) {
+                         final Class<? extends GenericValue>... argsTypeSignature) {
         this.returnType = returnType;
+        this.argsTypeSignature.addAll(Arrays.asList(argsTypeSignature));
+
         this.literalCastClass = this.getLiteralCastClass(this.getReturnType());
         this.literalConstructor = this.getLiteralConstructor(this.getReturnType(), this.getLiteralCastClass());
-        this.typeSig.addAll(Arrays.asList(typeSig));
+    }
+
+    public Class<? extends GenericValue> getReturnType() {
+        return this.returnType;
+    }
+
+    public List<Class<? extends GenericValue>> getArgTypeList() {
+        return this.argsTypeSignature;
+    }
+
+    private Constructor getLiteralConstructor() {
+        return this.literalConstructor;
+    }
+
+    private Class getLiteralCastClass() {
+        return this.literalCastClass;
+    }
+
+    public Class<? extends GenericValue> getArg(final int i) {
+        return this.getArgTypeList().get(i);
+    }
+
+    public int getArgCount() {
+        return this.getArgTypeList().size();
     }
 
     private Class getLiteralCastClass(final Class<? extends GenericValue> type) {
@@ -75,6 +103,8 @@ public abstract class TypeSignature implements Serializable {
             return null;
         else if (type == BooleanValue.class)
             return Boolean.class;
+        else if (type == ByteValue.class)
+            return Byte.class;
         else if (type == StringValue.class)
             return String.class;
         else if (type == DateValue.class)
@@ -91,8 +121,9 @@ public abstract class TypeSignature implements Serializable {
             return Double.class;
         else if (type == NumberValue.class)
             return Number.class;
-        else
+        else {
             throw new RuntimeException("Invalid return type in signature: " + type.getName());
+        }
     }
 
     private Constructor getLiteralConstructor(final Class type, final Class aLiteralCastClass) {
@@ -104,6 +135,8 @@ public abstract class TypeSignature implements Serializable {
                 return null;
             else if (type == BooleanValue.class || type == Boolean.class)
                 clazz = BooleanLiteral.class;
+            else if (type == ByteValue.class || type == Byte.class)
+                clazz = ByteLiteral.class;
             else if (type == StringValue.class || type == String.class)
                 clazz = StringLiteral.class;
             else if (type == DateValue.class || type == Date.class)
@@ -156,29 +189,5 @@ public abstract class TypeSignature implements Serializable {
         catch (InvocationTargetException e) {
             throw new InternalErrorException(e.getMessage());
         }
-    }
-
-    public Class<? extends GenericValue> getReturnType() {
-        return returnType;
-    }
-
-    public List<Class<? extends GenericValue>> getArgs() {
-        return typeSig;
-    }
-
-    private Constructor getLiteralConstructor() {
-        return this.literalConstructor;
-    }
-
-    private Class getLiteralCastClass() {
-        return this.literalCastClass;
-    }
-
-    public Class<? extends GenericValue> getArg(final int i) {
-        return this.getArgs().get(i);
-    }
-
-    public int getArgCount() {
-        return this.getArgs().size();
     }
 }

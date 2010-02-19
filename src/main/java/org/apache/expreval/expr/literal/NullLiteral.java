@@ -18,20 +18,24 @@
  * limitations under the License.
  */
 
-package org.apache.hadoop.hbase.hbql.statement;
+package org.apache.expreval.expr.literal;
 
-import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
+import org.apache.expreval.expr.node.GenericValue;
+import org.apache.expreval.expr.node.ObjectValue;
 
-public interface ParameterStatement {
+import java.io.Serializable;
 
-    int setParameter(String name, Object val) throws HBqlException;
+public class NullLiteral extends GenericLiteral<Serializable> implements ObjectValue {
 
-    NamedParameters getNamedParameters();
+    public NullLiteral() {
+        super(null);
+    }
 
-    void validate(HConnectionImpl connection) throws HBqlException;
+    protected Class<? extends GenericValue> getReturnType() {
+        return ObjectValue.class;
+    }
 
-    void validateTypes() throws HBqlException;
-
-    void reset();
+    public String asString() {
+        return "NULL";
+    }
 }
