@@ -131,6 +131,31 @@ public abstract class GenericFunction extends GenericExpression {
         public boolean isOptimiziable() {
             return this.optimiziable;
         }
+
+        public static GenericFunction getFunction(final String functionName, final List<GenericValue> exprList) {
+
+            final FunctionType type;
+
+            try {
+                type = FunctionType.valueOf(functionName.toUpperCase());
+            }
+            catch (IllegalArgumentException e) {
+                return null;
+            }
+
+            final Class<? extends GenericValue> returnType = type.getTypeSignature().getReturnType();
+
+            if (TypeSupport.isParentClass(BooleanValue.class, returnType))
+                return new BooleanFunction(type, exprList);
+            else if (TypeSupport.isParentClass(StringValue.class, returnType))
+                return new StringFunction(type, exprList);
+            else if (TypeSupport.isParentClass(NumberValue.class, returnType))
+                return new NumberFunction(type, exprList);
+            else if (TypeSupport.isParentClass(DateValue.class, returnType))
+                return new DateFunction(type, exprList);
+            else
+                return null;
+        }
     }
 
     private final FunctionType functionType;
@@ -214,31 +239,5 @@ public abstract class GenericFunction extends GenericExpression {
 
     public String asString() {
         return this.getFunctionName() + super.asString();
-    }
-
-    public static GenericFunction getFunction(final String functionName, final List<GenericValue> exprList) {
-
-        final FunctionType type;
-
-        try {
-            final String name = functionName.toUpperCase();
-            type = FunctionType.valueOf(name);
-        }
-        catch (IllegalArgumentException e) {
-            return null;
-        }
-
-        final Class<? extends GenericValue> returnType = type.getTypeSignature().getReturnType();
-
-        if (TypeSupport.isParentClass(BooleanValue.class, returnType))
-            return new BooleanFunction(type, exprList);
-        else if (TypeSupport.isParentClass(StringValue.class, returnType))
-            return new StringFunction(type, exprList);
-        else if (TypeSupport.isParentClass(NumberValue.class, returnType))
-            return new NumberFunction(type, exprList);
-        else if (TypeSupport.isParentClass(DateValue.class, returnType))
-            return new DateFunction(type, exprList);
-        else
-            return null;
     }
 }

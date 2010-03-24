@@ -59,15 +59,15 @@ public class DelegateFunction extends DelegateStmt<GenericFunction> {
 
         GenericFunction genericFunction;
 
-        genericFunction = GenericFunction.getFunction(funcName, exprList);
+        genericFunction = GenericFunction.FunctionType.getFunction(funcName, exprList);
         if (genericFunction != null)
             return genericFunction;
 
-        genericFunction = DateFunction.getFunction(funcName, exprList);
+        genericFunction = DateFunction.IntervalType.getFunction(funcName, exprList);
         if (genericFunction != null)
             return genericFunction;
 
-        genericFunction = DateFunction.getFunction(funcName);
+        genericFunction = DateFunction.ConstantType.getFunction(funcName);
         if (genericFunction != null)
             return genericFunction;
 
