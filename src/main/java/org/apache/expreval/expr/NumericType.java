@@ -20,6 +20,7 @@
 
 package org.apache.expreval.expr;
 
+import org.apache.expreval.expr.node.ByteValue;
 import org.apache.expreval.expr.node.DoubleValue;
 import org.apache.expreval.expr.node.FloatValue;
 import org.apache.expreval.expr.node.GenericValue;
@@ -30,41 +31,42 @@ import org.apache.expreval.expr.node.ShortValue;
 
 public enum NumericType {
 
+    ByteType(ByteValue.class, Byte.class),
     ShortType(ShortValue.class, Short.class),
     IntegerType(IntegerValue.class, Integer.class),
     LongType(LongValue.class, Long.class),
     FloatType(FloatValue.class, Float.class),
     DoubleType(DoubleValue.class, Double.class),
-    NumberType(NumberValue.class, Number.class);
+    NumberType(NumberValue.class, Number.class);  // NumberType is not explicitly referenced, but it is iterated on
 
     final Class<? extends GenericValue> exprType;
-    final Class<? extends Number> primType;
+    final Class<? extends Number> primaryType;
 
-    private NumericType(final Class<? extends GenericValue> exprType, final Class<? extends Number> primType) {
+    private NumericType(final Class<? extends GenericValue> exprType, final Class<? extends Number> primaryType) {
         this.exprType = exprType;
-        this.primType = primType;
+        this.primaryType = primaryType;
     }
 
     private Class<? extends GenericValue> getExprType() {
         return this.exprType;
     }
 
-    private Class<? extends Number> getPrimType() {
-        return primType;
+    private Class<? extends Number> getPrimaryType() {
+        return this.primaryType;
     }
 
     public static int getTypeRanking(final Class clazz) {
         for (final NumericType type : values())
-            if (clazz.equals(type.getExprType()) || clazz.equals(type.getPrimType()))
+            if (clazz.equals(type.getExprType()) || clazz.equals(type.getPrimaryType()))
                 return type.ordinal();
         return -1;
     }
 
-    public static boolean isAssignable(final Class parentClazz, final Class lowerClazz) {
-        final int parentRanking = getTypeRanking(parentClazz);
-        final int clazzRanking = getTypeRanking(lowerClazz);
+    public static boolean isAssignable(final Class parentClass, final Class childClass) {
+        final int parentRanking = getTypeRanking(parentClass);
+        final int childRanking = getTypeRanking(childClass);
 
-        return clazzRanking <= parentRanking;
+        return childRanking <= parentRanking;
     }
 
     public static Class getHighestRankingNumericArg(final Object... vals) {
@@ -91,23 +93,27 @@ public enum NumericType {
         return getTypeRanking(clazz) != -1;
     }
 
+    public static boolean isAByte(final Class clazz) {
+        return clazz == ByteType.getExprType() || clazz == (ByteType.getPrimaryType());
+    }
+
     public static boolean isAShort(final Class clazz) {
-        return clazz.equals(ShortValue.class) || clazz.equals(Short.class);
+        return clazz == ShortType.getExprType() || clazz == ShortType.getPrimaryType();
     }
 
     public static boolean isAnInteger(final Class clazz) {
-        return clazz.equals(IntegerValue.class) || clazz.equals(Integer.class);
+        return clazz == IntegerType.getExprType() || clazz == IntegerType.getPrimaryType();
     }
 
     public static boolean isALong(final Class clazz) {
-        return clazz.equals(LongValue.class) || clazz.equals(Long.class);
+        return clazz == LongType.getExprType() || clazz == LongType.getPrimaryType();
     }
 
     public static boolean isAFloat(final Class clazz) {
-        return clazz.equals(FloatValue.class) || clazz.equals(Float.class);
+        return clazz == FloatType.getExprType() || clazz == FloatType.getPrimaryType();
     }
 
     public static boolean isADouble(final Class clazz) {
-        return clazz.equals(DoubleValue.class) || clazz.equals(Double.class);
+        return clazz == DoubleType.getExprType() || clazz == DoubleType.getPrimaryType();
     }
 }

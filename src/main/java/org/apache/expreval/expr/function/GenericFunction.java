@@ -44,7 +44,7 @@ import java.util.Random;
 
 public abstract class GenericFunction extends GenericExpression {
 
-    static Random randomVal = new Random();
+    final static Random randomVal = new Random();
 
     public static enum FunctionType {
 
@@ -108,12 +108,13 @@ public abstract class GenericFunction extends GenericExpression {
         ASYNCEXECUTOREXISTS(new FunctionTypeSignature(BooleanValue.class, StringValue.class), false, false),
         QUERYEXECUTORPOOLEXISTS(new FunctionTypeSignature(BooleanValue.class, StringValue.class), false, false);
 
-
         private final FunctionTypeSignature typeSignature;
         private final boolean anAggregateValue;
         private final boolean optimiziable;
 
-        private FunctionType(final FunctionTypeSignature typeSignature, final boolean anAggregateValue, final boolean optimiziable) {
+        private FunctionType(final FunctionTypeSignature typeSignature,
+                             final boolean anAggregateValue,
+                             final boolean optimiziable) {
             this.typeSignature = typeSignature;
             this.anAggregateValue = anAggregateValue;
             this.optimiziable = optimiziable;
@@ -129,31 +130,6 @@ public abstract class GenericFunction extends GenericExpression {
 
         public boolean isOptimiziable() {
             return this.optimiziable;
-        }
-
-        public static GenericFunction getFunction(final String functionName, final List<GenericValue> exprList) {
-
-            final FunctionType type;
-
-            try {
-                type = FunctionType.valueOf(functionName.toUpperCase());
-            }
-            catch (IllegalArgumentException e) {
-                return null;
-            }
-
-            final Class<? extends GenericValue> returnType = type.getTypeSignature().getReturnType();
-
-            if (TypeSupport.isParentClass(BooleanValue.class, returnType))
-                return new BooleanFunction(type, exprList);
-            else if (TypeSupport.isParentClass(StringValue.class, returnType))
-                return new StringFunction(type, exprList);
-            else if (TypeSupport.isParentClass(NumberValue.class, returnType))
-                return new NumberFunction(type, exprList);
-            else if (TypeSupport.isParentClass(DateValue.class, returnType))
-                return new DateFunction(type, exprList);
-
-            return null;
         }
     }
 
@@ -238,5 +214,31 @@ public abstract class GenericFunction extends GenericExpression {
 
     public String asString() {
         return this.getFunctionName() + super.asString();
+    }
+
+    public static GenericFunction getFunction(final String functionName, final List<GenericValue> exprList) {
+
+        final FunctionType type;
+
+        try {
+            final String name = functionName.toUpperCase();
+            type = FunctionType.valueOf(name);
+        }
+        catch (IllegalArgumentException e) {
+            return null;
+        }
+
+        final Class<? extends GenericValue> returnType = type.getTypeSignature().getReturnType();
+
+        if (TypeSupport.isParentClass(BooleanValue.class, returnType))
+            return new BooleanFunction(type, exprList);
+        else if (TypeSupport.isParentClass(StringValue.class, returnType))
+            return new StringFunction(type, exprList);
+        else if (TypeSupport.isParentClass(NumberValue.class, returnType))
+            return new NumberFunction(type, exprList);
+        else if (TypeSupport.isParentClass(DateValue.class, returnType))
+            return new DateFunction(type, exprList);
+        else
+            return null;
     }
 }

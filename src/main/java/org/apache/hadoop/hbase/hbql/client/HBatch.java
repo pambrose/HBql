@@ -160,7 +160,7 @@ public class HBatch<T> {
                     tableref.getHTable().close();
                 }
                 finally {
-                    // release to table pool
+                    // Release to table pool
                     if (tableref != null)
                         tableref.releaseHTable();
                 }

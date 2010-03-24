@@ -97,69 +97,69 @@ public abstract class TypeSignature implements Serializable {
         return this.getArgTypeList().size();
     }
 
-    private Class getLiteralCastClass(final Class<? extends GenericValue> type) {
+    private Class getLiteralCastClass(final Class<? extends GenericValue> clazz) {
 
-        if (type == null)
+        if (clazz == null)
             return null;
-        else if (type == BooleanValue.class)
+        else if (clazz == BooleanValue.class)
             return Boolean.class;
-        else if (type == ByteValue.class)
+        else if (clazz == ByteValue.class)
             return Byte.class;
-        else if (type == StringValue.class)
-            return String.class;
-        else if (type == DateValue.class)
-            return Long.class;    // Note this is Long and not Date
-        else if (type == ShortValue.class)
+        else if (clazz == ShortValue.class)
             return Short.class;
-        else if (type == IntegerValue.class)
+        else if (clazz == IntegerValue.class)
             return Integer.class;
-        else if (type == LongValue.class)
+        else if (clazz == LongValue.class)
             return Long.class;
-        else if (type == FloatValue.class)
+        else if (clazz == FloatValue.class)
             return Float.class;
-        else if (type == DoubleValue.class)
+        else if (clazz == DoubleValue.class)
             return Double.class;
-        else if (type == NumberValue.class)
+        else if (clazz == NumberValue.class)
             return Number.class;
+        else if (clazz == StringValue.class)
+            return String.class;
+        else if (clazz == DateValue.class)
+            return Long.class;    // Note this is Long and not Date
         else {
-            throw new RuntimeException("Invalid return type in signature: " + type.getName());
+            throw new RuntimeException("Invalid return type in signature: " + clazz.getName());
         }
     }
 
-    private Constructor getLiteralConstructor(final Class type, final Class aLiteralCastClass) {
+    private Constructor getLiteralConstructor(final Class clazz, final Class aLiteralCastClass) {
 
-        final Class clazz;
+        final Class retval;
 
         try {
-            if (type == null)
+            if (clazz == null)
                 return null;
-            else if (type == BooleanValue.class || type == Boolean.class)
-                clazz = BooleanLiteral.class;
-            else if (type == ByteValue.class || type == Byte.class)
-                clazz = ByteLiteral.class;
-            else if (type == StringValue.class || type == String.class)
-                clazz = StringLiteral.class;
-            else if (type == DateValue.class || type == Date.class)
-                clazz = DateLiteral.class;
-            else if (type == ShortValue.class || type == Short.class)
-                clazz = ShortLiteral.class;
-            else if (type == IntegerValue.class || type == Integer.class)
-                clazz = IntegerLiteral.class;
-            else if (type == LongValue.class || type == Long.class)
-                clazz = LongLiteral.class;
-            else if (type == FloatValue.class || type == Float.class)
-                clazz = FloatLiteral.class;
-            else if (type == DoubleValue.class || type == Double.class)
-                clazz = DoubleLiteral.class;
-            else if (type == NumberValue.class || type == Number.class)
+            else if (clazz == BooleanValue.class || clazz == Boolean.class)
+                retval = BooleanLiteral.class;
+            else if (NumericType.isAByte(clazz))
+                retval = ByteLiteral.class;
+            else if (NumericType.isAShort(clazz))
+                retval = ShortLiteral.class;
+            else if (NumericType.isAnInteger(clazz))
+                retval = IntegerLiteral.class;
+            else if (NumericType.isALong(clazz))
+                retval = LongLiteral.class;
+            else if (NumericType.isAFloat(clazz))
+                retval = FloatLiteral.class;
+            else if (NumericType.isADouble(clazz))
+                retval = DoubleLiteral.class;
+            else if (clazz == NumberValue.class || clazz == Number.class)
                 return null;
+            else if (clazz == StringValue.class || clazz == String.class)
+                retval = StringLiteral.class;
+            else if (clazz == DateValue.class || clazz == Date.class)
+                retval = DateLiteral.class;
             else
-                throw new RuntimeException("Invalid return type in signature: " + type.getName());
+                throw new RuntimeException("Invalid return type in signature: " + clazz.getName());
 
-            return clazz.getConstructor(aLiteralCastClass);
+            return retval.getConstructor(aLiteralCastClass);
         }
         catch (NoSuchMethodException e) {
-            throw new RuntimeException("Invalid literal constructor in signature: " + type.getName());
+            throw new RuntimeException("Invalid literal constructor in signature: " + clazz.getName());
         }
     }
 

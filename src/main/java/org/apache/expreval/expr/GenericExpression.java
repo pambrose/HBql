@@ -58,6 +58,7 @@ public abstract class GenericExpression implements GenericValue {
     private Class<? extends GenericValue> highestRankingNumericArgFoundInValidate = NumberValue.class;
     private Class rankingClass = null;
     private boolean useDecimal = false;
+    private boolean useByte = false;
     private boolean useShort = false;
     private boolean useInteger = false;
     private boolean useLong = false;
@@ -69,6 +70,10 @@ public abstract class GenericExpression implements GenericValue {
     private final AtomicBoolean allArgsOptimized = new AtomicBoolean(false);
 
     private MultipleExpressionContext expressionContext = null;
+
+    private Class getRankingClass() {
+        return this.rankingClass;
+    }
 
     protected GenericExpression(final ExpressionType type, final GenericValue... exprs) {
         this(type, Arrays.asList(exprs));
@@ -111,14 +116,16 @@ public abstract class GenericExpression implements GenericValue {
     }
 
     protected Number getValueWithCast(final long result) throws HBqlException {
-        if (this.useShort)
+        if (this.useByte)
+            return (byte)result;
+        else if (this.useShort)
             return (short)result;
         else if (this.useInteger)
             return (int)result;
         else if (this.useLong)
             return result;
         else
-            throw new HBqlException("Invalid class: " + rankingClass.getName());
+            throw new HBqlException("Invalid class: " + this.getRankingClass().getName());
     }
 
     protected Number getValueWithCast(final double result) throws HBqlException {
@@ -127,12 +134,12 @@ public abstract class GenericExpression implements GenericValue {
         else if (this.useDouble)
             return result;
         else
-            throw new HBqlException("Invalid class: " + rankingClass.getName());
+            throw new HBqlException("Invalid class: " + this.getRankingClass().getName());
     }
 
     protected Class validateNumericArgTypes(final Object... objs) {
 
-        if (rankingClass == null) {
+        if (this.getRankingClass() == null) {
 
             // If we do not already know the specific types, then look at the class of both args
             if (this.getHighestRankingNumericArgFoundInValidate() == NumberValue.class)
@@ -140,16 +147,17 @@ public abstract class GenericExpression implements GenericValue {
             else
                 this.rankingClass = this.getHighestRankingNumericArgFoundInValidate();
 
-            this.useDecimal = NumericType.useDecimalNumericArgs(rankingClass);
+            this.useDecimal = NumericType.useDecimalNumericArgs(this.getRankingClass());
 
-            this.useShort = NumericType.isAShort(rankingClass);
-            this.useInteger = NumericType.isAnInteger(rankingClass);
-            this.useLong = NumericType.isALong(rankingClass);
-            this.useFloat = NumericType.isAFloat(rankingClass);
-            this.useDouble = NumericType.isADouble(rankingClass);
+            this.useByte = NumericType.isAByte(this.getRankingClass());
+            this.useShort = NumericType.isAShort(this.getRankingClass());
+            this.useInteger = NumericType.isAnInteger(this.getRankingClass());
+            this.useLong = NumericType.isALong(this.getRankingClass());
+            this.useFloat = NumericType.isAFloat(this.getRankingClass());
+            this.useDouble = NumericType.isADouble(this.getRankingClass());
         }
 
-        return this.rankingClass;
+        return this.getRankingClass();
     }
 
     public boolean isAConstant() {
@@ -265,10 +273,12 @@ public abstract class GenericExpression implements GenericValue {
         if (this.getGenericValueList().size() != this.getTypeSignature().getArgCount())
             throw new InvalidTypeException("Incorrect number of arguments in " + this.asString());
 
-        for (int i = 0; i < this.getTypeSignature().getArgCount(); i++)
-            this.validateParentClass(this.getTypeSignature().getArg(i), this.getExprArg(i).validateTypes(this, false));
+        final FunctionTypeSignature typeSignature = this.getTypeSignature();
 
-        return this.getTypeSignature().getReturnType();
+        for (int i = 0; i < typeSignature.getArgCount(); i++)
+            this.validateParentClass(typeSignature.getArg(i), this.getExprArg(i).validateTypes(this, false));
+
+        return typeSignature.getReturnType();
     }
 
     protected Class<? extends GenericValue> validateNumericTypes() throws HBqlException {
@@ -352,32 +362,32 @@ public abstract class GenericExpression implements GenericValue {
         return sbuf.toString();
     }
 
-    public void validateParentClass(final Class<? extends GenericValue> parentClazz,
-                                    final Class<? extends GenericValue>... clazzes) throws InvalidTypeException {
+    public void validateParentClass(final Class<? extends GenericValue> parentClass,
+                                    final Class<? extends GenericValue>... childrenClasses) throws InvalidTypeException {
 
-        List<Class<? extends GenericValue>> classList = Lists.newArrayList();
+        final List<Class<? extends GenericValue>> classList = Lists.newArrayList();
 
-        for (final Class<? extends GenericValue> clazz : clazzes) {
+        for (final Class<? extends GenericValue> childClass : childrenClasses) {
 
-            if (clazz != null) {
-                if (TypeSupport.isParentClass(NumberValue.class, parentClazz)) {
-                    if (!TypeSupport.isParentClass(NumberValue.class, clazz)) {
-                        classList.add(clazz);
+            if (childClass != null) {
+                if (TypeSupport.isParentClass(NumberValue.class, parentClass)) {
+                    if (!TypeSupport.isParentClass(NumberValue.class, childClass)) {
+                        classList.add(childClass);
                     }
                     else {
-                        if (!NumericType.isAssignable(parentClazz, clazz))
-                            classList.add(clazz);
+                        if (!NumericType.isAssignable(parentClass, childClass))
+                            classList.add(childClass);
                     }
                 }
                 else {
-                    if (!parentClazz.isAssignableFrom(clazz))
-                        classList.add(clazz);
+                    if (!parentClass.isAssignableFrom(childClass))
+                        classList.add(childClass);
                 }
             }
         }
 
         if (classList.size() > 0) {
-            final StringBuilder sbuf = new StringBuilder("Expecting type " + parentClazz.getSimpleName()
+            final StringBuilder sbuf = new StringBuilder("Expecting type " + parentClass.getSimpleName()
                                                          + " but encountered type"
                                                          + ((classList.size() > 1) ? "s" : "") + " ");
             boolean first = true;

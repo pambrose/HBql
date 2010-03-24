@@ -198,8 +198,10 @@ public class NamedParameter implements GenericValue {
     public Object getValue(final HConnectionImpl conn, final Object object) throws HBqlException,
                                                                                    ResultMissingColumnException,
                                                                                    NullColumnValueException {
-        if (this.isScalarValueSet())
-            return this.getTypedExpr().getValue(conn, object);
+        if (this.isScalarValueSet()) {
+            final GenericValue genericValue = this.getTypedExpr();
+            return genericValue.getValue(conn, object);
+        }
         else
             return this.getTypedExprList();
     }

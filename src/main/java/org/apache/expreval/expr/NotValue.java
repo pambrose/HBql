@@ -44,7 +44,7 @@ public abstract class NotValue<T extends GenericExpression> extends DelegateStmt
     }
 
     public boolean isNot() {
-        return not;
+        return this.not;
     }
 
     protected String notAsString() {

@@ -53,25 +53,25 @@ public class DelegateFunction extends DelegateStmt<GenericFunction> {
         return this.getTypedExpr().isAnAggregateValue();
     }
 
-    private GenericFunction getFunction(final String functionName,
+    private GenericFunction getFunction(final String funcName,
                                         final List<GenericValue> exprList,
                                         final GenericValue parentExpr) throws InvalidFunctionException {
 
         GenericFunction genericFunction;
 
-        genericFunction = GenericFunction.FunctionType.getFunction(functionName, exprList);
+        genericFunction = GenericFunction.getFunction(funcName, exprList);
         if (genericFunction != null)
             return genericFunction;
 
-        genericFunction = DateFunction.IntervalType.getFunction(functionName, exprList);
+        genericFunction = DateFunction.getFunction(funcName, exprList);
         if (genericFunction != null)
             return genericFunction;
 
-        genericFunction = DateFunction.ConstantType.getFunction(functionName);
+        genericFunction = DateFunction.getFunction(funcName);
         if (genericFunction != null)
             return genericFunction;
 
-        throw new InvalidFunctionException(functionName + " in " + parentExpr.asString());
+        throw new InvalidFunctionException(funcName + " in " + parentExpr.asString());
     }
 
     public GenericValue getOptimizedValue() throws HBqlException {

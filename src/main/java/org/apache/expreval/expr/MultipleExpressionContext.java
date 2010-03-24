@@ -146,7 +146,8 @@ public abstract class MultipleExpressionContext implements Serializable {
                            final Object object) throws HBqlException, ResultMissingColumnException, NullColumnValueException {
         this.validateTypes(allowColumns, allowCollections);
         this.optimize();
-        return this.getGenericValue(i).getValue(conn, object);
+        final GenericValue genericValue = this.getGenericValue(i);
+        return genericValue.getValue(conn, object);
     }
 
     public Object evaluateConstant(final int i, final boolean allowCollections) throws HBqlException {
@@ -195,7 +196,7 @@ public abstract class MultipleExpressionContext implements Serializable {
             // This is run even if TypeSignature is null because it calls validateTypes()
             final List<Class<? extends GenericValue>> clazzList = Lists.newArrayList();
             for (final GenericValue val : this.getExpressionList()) {
-                final Class<? extends GenericValue> returnType = val.validateTypes(null, allowCollections);
+                final Class<? extends GenericValue> returnType = val.validateTypes(val, allowCollections);
                 clazzList.add(returnType);
             }
 

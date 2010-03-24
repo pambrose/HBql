@@ -48,17 +48,6 @@ public class DateFunction extends GenericFunction implements DateValue {
         public long getValue() {
             return this.value;
         }
-
-        public static GenericFunction getFunction(final String functionName) {
-
-            try {
-                final ConstantType type = ConstantType.valueOf(functionName.toUpperCase());
-                return new DateFunction(type);
-            }
-            catch (IllegalArgumentException e) {
-                return null;
-            }
-        }
     }
 
     public enum IntervalType {
@@ -78,17 +67,6 @@ public class DateFunction extends GenericFunction implements DateValue {
 
         public long getIntervalMillis() {
             return intervalMillis;
-        }
-
-        public static GenericFunction getFunction(final String functionName, final List<GenericValue> exprList) {
-
-            try {
-                final IntervalType type = IntervalType.valueOf(functionName.toUpperCase());
-                return new DateFunction(type, exprList);
-            }
-            catch (IllegalArgumentException e) {
-                return null;
-            }
         }
     }
 
@@ -180,7 +158,6 @@ public class DateFunction extends GenericFunction implements DateValue {
             return super.getFunctionName();
     }
 
-
     public String asString() {
         if (this.isIntervalDate())
             return this.getIntervalType().name() + "(" + this.getExprArg(0).asString() + ")";
@@ -188,5 +165,27 @@ public class DateFunction extends GenericFunction implements DateValue {
             return this.getConstantType().name() + "()";
         else
             return super.asString();
+    }
+
+    public static GenericFunction getFunction(final String functionName, final List<GenericValue> exprList) {
+
+        try {
+            final IntervalType type = IntervalType.valueOf(functionName.toUpperCase());
+            return new DateFunction(type, exprList);
+        }
+        catch (IllegalArgumentException e) {
+            return null;
+        }
+    }
+
+    public static GenericFunction getFunction(final String functionName) {
+
+        try {
+            final ConstantType type = ConstantType.valueOf(functionName.toUpperCase());
+            return new DateFunction(type);
+        }
+        catch (IllegalArgumentException e) {
+            return null;
+        }
     }
 }

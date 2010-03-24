@@ -37,21 +37,21 @@ public class TypeSupport {
         return isParentClass(Collection.class, obj.getClass());
     }
 
-    public static boolean isParentClass(final Class parentClazz, final Class... clazzes) {
+    public static boolean isParentClass(final Class parentClass, final Class... childrenClasses) {
 
-        final boolean parentIsANumber = NumericType.isANumber(parentClazz);
+        final boolean parentIsANumber = NumericType.isANumber(parentClass);
 
-        for (final Class clazz : clazzes) {
+        for (final Class clazz : childrenClasses) {
 
             if (clazz == null)
                 continue;
 
             if (parentIsANumber && NumericType.isANumber(clazz)) {
-                if (!NumericType.isAssignable(parentClazz, clazz))
+                if (!NumericType.isAssignable(parentClass, clazz))
                     return false;
             }
             else {
-                if (!parentClazz.isAssignableFrom(clazz))
+                if (!parentClass.isAssignableFrom(clazz))
                     return false;
             }
         }

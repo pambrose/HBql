@@ -41,22 +41,29 @@ public class DelegateNullCompare extends GenericNullCompare {
     public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,
                                                        final boolean allowCollections) throws HBqlException {
 
-        final Class<? extends GenericValue> type = this.getGenericValueClass(this.getExprArg(0).validateTypes(this, false));
+        final GenericValue genericValue = this.getExprArg(0);
+        final Class<? extends GenericValue> validatedValue = genericValue.validateTypes(this, false);
+        final Class<? extends GenericValue> type = this.getGenericValueClass(validatedValue);
 
+        final GenericNullCompare typedExpr;
         if (TypeSupport.isParentClass(StringValue.class, type))
-            this.setTypedExpr(new StringNullCompare(this.isNot(), this.getExprArg(0)));
+            typedExpr = new StringNullCompare(this.isNot(), this.getExprArg(0));
         else if (TypeSupport.isParentClass(NumberValue.class, type))
-            this.setTypedExpr(new NumberNullCompare(this.isNot(), this.getExprArg(0)));
+            typedExpr = new NumberNullCompare(this.isNot(), this.getExprArg(0));
         else if (TypeSupport.isParentClass(DateValue.class, type))
-            this.setTypedExpr(new DateNullCompare(this.isNot(), this.getExprArg(0)));
+            typedExpr = new DateNullCompare(this.isNot(), this.getExprArg(0));
         else if (TypeSupport.isParentClass(BooleanValue.class, type))
-            this.setTypedExpr(new BooleanNullCompare(this.isNot(), this.getExprArg(0)));
+            typedExpr = new BooleanNullCompare(this.isNot(), this.getExprArg(0));
         else if (TypeSupport.isParentClass(ByteValue.class, type))
-            this.setTypedExpr(new ByteNullCompare(this.isNot(), this.getExprArg(0)));
+            typedExpr = new ByteNullCompare(this.isNot(), this.getExprArg(0));
         else if (TypeSupport.isParentClass(ObjectValue.class, type))
-            this.setTypedExpr(new ObjectNullCompare(this.isNot(), this.getExprArg(0)));
-        else
+            typedExpr = new ObjectNullCompare(this.isNot(), this.getExprArg(0));
+        else {
+            typedExpr = null;
             this.throwInvalidTypeException(type);
+        }
+
+        this.setTypedExpr(typedExpr);
 
         return this.getTypedExpr().validateTypes(parentExpr, false);
     }
