@@ -9,7 +9,11 @@ Installation
 
     * Add the following jars to your client classpath.
 
-        ** $HBQL_HOME/hbql-0.9.24-alpha.jar
+        ** $HBQL_HOME/hbql-0.9.25-alpha.jar
+
+        ** $HBASE_HOME/contrib/transactional/hbase-0.20.3-transactional.jar
+
+        ** $HBASE_HOME/contrib/indexed/hbase-0.20.3-indexed.jar
 
         ** $HBQL_HOME/lib/antlr-runtime-3.1.3.jar
 
@@ -17,7 +21,11 @@ Installation
 
     * Add the following jar to HBASE_CLASSPATH in $HBASE_HOME/conf/hbase-env.sh and restart hbase.
 
-        ** $HBQL_HOME/hbql-0.9.24-alpha.jar
+        ** $HBQL_HOME/hbql-0.9.25-alpha.jar
+
+        ** $HBASE_HOME/contrib/transactional/hbase-0.20.3-transactional.jar
+
+        ** $HBASE_HOME/contrib/indexed/hbase-0.20.3-indexed.jar
 
     * To verify your installation, run the {{{./console/console.html}console}}
       and enter the {{{./statements/version.html}VERSION}}
@@ -26,23 +34,10 @@ Installation
 
 * THBase Index Support (org.apache.hadoop.hbase.client.tableindexed)
 
-    **In order to use the INDEX statements, you need to enable hbase indexing:
-
-        ***Add the following jar to your client classpath.
-
-            ****$HBASE_HOME/contrib/transactional/hbase-0.20.3-transactional.jar
-
-
-        ***Add the following jar to HBASE_CLASSPATH in $HBASE_HOME/conf/hbase-env.sh and restart hbase.
-
-            ****$HBASE_HOME/contrib/transactional/hbase-0.20.3-transactional.jar
-
-
-
-        ***As described in the org.apache.hadoop.hbase.client.tableindexed package description: \
-        "Modify hbase-site.xml to turn on the IndexedRegionServer.  This is done by setting \
-        hbase.regionserver.class to org.apache.hadoop.hbase.ipc.IndexedRegionInterface
-        and hbase.regionserver.impl to org.apache.hadoop.hbase.regionserver.tableindexed.IndexedRegionServer".
+    ** As described in the org.apache.hadoop.hbase.client.tableindexed package description: \
+       "Modify hbase-site.xml to turn on the IndexedRegionServer.  This is done by setting \
+       hbase.regionserver.class to org.apache.hadoop.hbase.ipc.IndexedRegionInterface
+       and hbase.regionserver.impl to org.apache.hadoop.hbase.regionserver.tableindexed.IndexedRegionServer".
 
 ---------------------------
 
@@ -61,23 +56,9 @@ Installation
 
 * IHBase Index Support (org.apache.hadoop.hbase.client.idx)
 
-    **In order to use the INDEX statements, you need to enable hbase indexing:
-
-        ***Add the following jar to your client classpath.
-
-            ****$HBASE_HOME/contrib/transactional/hbase-0.20.3-transactional.jar
-
-
-        ***Add the following jars to HBASE_CLASSPATH in $HBASE_HOME/conf/hbase-env.sh and restart hbase.
-
-            ****$HBASE_HOME/contrib/indexed/hbase-0.20.3-indexed.jar
-            
-            ****$HBASE_HOME/contrib/indexed/lib/commons-lang-2.4.jar
-
-
-        ***As described in the org.apache.hadoop.hbase.client.idx package description: \
-        "Modify hbase-site.xml to set the hbase.region.impl property to IdxRegion.  This is \
-        done by setting hbase.hregion.impl to org.apache.hadoop.hbase.regionserver.IdxRegion".
+    ** As described in the org.apache.hadoop.hbase.client.idx package description: \
+       "Modify hbase-site.xml to set the hbase.region.impl property to IdxRegion.  This is \
+       done by setting hbase.hregion.impl to org.apache.hadoop.hbase.regionserver.IdxRegion".
 
 ---------------------------
 
