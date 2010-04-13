@@ -93,7 +93,7 @@ public class MappingManager {
         return names;
     }
 
-    public boolean mappingExists(final String mappingName) throws HBqlException {
+    public synchronized boolean mappingExists(final String mappingName) throws HBqlException {
 
         if (this.getUserMappingsMap().get(mappingName) != null)
             return true;
@@ -119,7 +119,7 @@ public class MappingManager {
         }
     }
 
-    public boolean dropMapping(final String mappingName) throws HBqlException {
+    public synchronized boolean dropMapping(final String mappingName) throws HBqlException {
 
         if (this.getUserMappingsMap().containsKey(mappingName)) {
             this.getUserMappingsMap().remove(mappingName);
