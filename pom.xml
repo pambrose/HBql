@@ -26,7 +26,7 @@
     <artifactId>HBql</artifactId>
     <name>HBql</name>
     <packaging>jar</packaging>
-    <version>0.9.25-alpha</version>
+    <version>0.9.26-alpha</version>
 
     <scm>
         <connection>scm:git://github.com/pambrose/HBql.git/</connection>

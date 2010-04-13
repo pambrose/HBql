@@ -9,7 +9,7 @@ Installation
 
     * Add the following jars to your client classpath.
 
-        ** $HBQL_HOME/hbql-0.9.25-alpha.jar
+        ** $HBQL_HOME/hbql-0.9.26-alpha.jar
 
         ** $HBASE_HOME/contrib/transactional/hbase-0.20.3-transactional.jar
 
@@ -21,7 +21,7 @@ Installation
 
     * Add the following jar to HBASE_CLASSPATH in $HBASE_HOME/conf/hbase-env.sh and restart hbase.
 
-        ** $HBQL_HOME/hbql-0.9.25-alpha.jar
+        ** $HBQL_HOME/hbql-0.9.26-alpha.jar
 
         ** $HBASE_HOME/contrib/transactional/hbase-0.20.3-transactional.jar
 
