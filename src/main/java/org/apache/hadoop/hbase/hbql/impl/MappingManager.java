@@ -52,7 +52,7 @@ public class MappingManager {
         this.getCachedMappingsMap().clear();
     }
 
-    public void validatePersistentMetadata() throws HBqlException {
+    public synchronized void validatePersistentMetadata() throws HBqlException {
 
         final String sql1 = "CREATE TEMP SYSTEM MAPPING " + SYSTEM_MAPPINGS
                             + " (mapping_name KEY, f1(mapping_obj object alias mapping_obj))";
