@@ -9,11 +9,9 @@ Installation
 
     * Add the following jars to your client classpath.
 
-        ** $HBQL_HOME/hbql-0.9.26-alpha.jar
+        ** $HBQL_HOME/hbql-0.9.27-alpha.jar
 
-        ** $HBASE_HOME/contrib/transactional/hbase-0.20.3-transactional.jar
-
-        ** $HBASE_HOME/contrib/indexed/hbase-0.20.3-indexed.jar
+        ** $HBASE_HOME/contrib/transactional/hbase-0.20.4-transactional.jar
 
         ** $HBQL_HOME/lib/antlr-runtime-3.1.3.jar
 
@@ -21,11 +19,9 @@ Installation
 
     * Add the following jar to HBASE_CLASSPATH in $HBASE_HOME/conf/hbase-env.sh and restart hbase.
 
-        ** $HBQL_HOME/hbql-0.9.26-alpha.jar
+        ** $HBQL_HOME/hbql-0.9.27-alpha.jar
 
-        ** $HBASE_HOME/contrib/transactional/hbase-0.20.3-transactional.jar
-
-        ** $HBASE_HOME/contrib/indexed/hbase-0.20.3-indexed.jar
+        ** $HBASE_HOME/contrib/transactional/hbase-0.20.4-transactional.jar
 
     * To verify your installation, run the {{{./console/console.html}console}}
       and enter the {{{./statements/version.html}VERSION}}
@@ -53,25 +49,6 @@ Installation
 
 ---------------------------
 
-
-* IHBase Index Support (org.apache.hadoop.hbase.client.idx)
-
-    ** As described in the org.apache.hadoop.hbase.client.idx package description: \
-       "Modify hbase-site.xml to set the hbase.region.impl property to IdxRegion.  This is \
-       done by setting hbase.hregion.impl to org.apache.hadoop.hbase.regionserver.IdxRegion".
-
----------------------------
-
-<property>
-    <name>hbase.hregion.impl</name>
-    <value>org.apache.hadoop.hbase.regionserver.IdxRegion</value>
-</property>
-
----------------------------
-
-* Warning on HBase indexes 
-
-    **THBase and IHBase indexes are not compatible on the same server.
 
 
 

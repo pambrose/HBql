@@ -26,7 +26,7 @@
     <artifactId>HBql</artifactId>
     <name>HBql</name>
     <packaging>jar</packaging>
-    <version>0.9.26-alpha</version>
+    <version>0.9.27-alpha</version>
 
     <scm>
         <connection>scm:git://github.com/pambrose/HBql.git/</connection>
@@ -67,27 +67,61 @@
     <repositories>
 
         <repository>
-            <id>jboss.com</id>
-            <name>JBoss.com Repository</name>
-            <url>http://repository.jboss.com/maven2/</url>
-        </repository>
-
-        <repository>
             <id>java.net</id>
             <name>java.net Repository</name>
-            <url>http://download.java.net/maven/2/</url>
+            <url>http://download.java.net/maven/2</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
         </repository>
 
-        <repository>
-            <id>apache.org</id>
-            <name>apache.org</name>
-            <url>http://people.apache.org/~chirino/zk-repo/</url>
-        </repository>
+        <!--
 
         <repository>
             <id>maven.javarants.com</id>
             <name>javarants</name>
             <url>http://maven.javarants.com/artifactory/libs-releases/</url>
+        </repository>
+
+        <repository>
+            <id>jboss.com</id>
+            <name>JBoss.com Repository</name>
+            <url>http://repository.jboss.com/maven2/</url>
+        </repository>
+
+
+        <repository>
+            <id>apache.org</id>
+            <name>apache.org</name>
+            <url>http://repo1.maven.org/maven2</url>
+        </repository>
+        -->
+
+        <repository>
+            <id>asf-releases</id>
+            <name>Apache Public Releases</name>
+            <url>https://repository.apache.org/content/repositories/releases</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+        </repository>
+
+        <repository>
+            <id>codehaus</id>
+            <name>Codehaus Public</name>
+            <url>http://repository.codehaus.org</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
         </repository>
 
     </repositories>
@@ -97,40 +131,31 @@
         <dependency>
             <groupId>org.apache.hbase</groupId>
             <artifactId>hbase</artifactId>
-            <version>0.20.3</version>
+            <version>0.20.4</version>
         </dependency>
 
         <!--
         This is a hack.
-        In order to get this to work, I renamed hbase-0.20.3-transactional.jar to hbase-transactional-0.20.3.jar
+        In order to get this to work, I renamed hbase-0.20.4-transactional.jar to hbase-transactional-0.20.4.jar
         -->
         <dependency>
             <groupId>org.apache.hbase</groupId>
             <artifactId>hbase-transactional</artifactId>
-            <version>0.20.3</version>
-        </dependency>
-
-        <!--
-        This is a hack.
-        In order to get this to work, I renamed hbase-0.20.3-indexed.jar to hbase-indexed-0.20.3.jar
-        -->
-        <dependency>
-            <groupId>org.apache.hbase</groupId>
-            <artifactId>hbase-indexed</artifactId>
-            <version>0.20.3</version>
+            <version>0.20.4</version>
         </dependency>
 
         <dependency>
-            <groupId>org.apache.hadoop.zookeeper</groupId>
-            <artifactId>zookeeper</artifactId>
-            <version>3.2.2</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.mahout.hadoop</groupId>
+            <groupId>org.apache.hadoop</groupId>
             <artifactId>hadoop-core</artifactId>
-            <version>0.20.1</version>
+            <version>0.20.2</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>zookeeper</artifactId>
+            <version>3.3.0</version>
+        </dependency>
+
         <dependency>
             <groupId>org.antlr</groupId>
             <artifactId>antlr-runtime</artifactId>

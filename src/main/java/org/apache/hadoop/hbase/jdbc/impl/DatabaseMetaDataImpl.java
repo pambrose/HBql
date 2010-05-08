@@ -69,7 +69,7 @@ public class DatabaseMetaDataImpl implements DatabaseMetaData {
     }
 
     public String getDatabaseProductVersion() throws SQLException {
-        return "0.20.3";
+        return "0.20.4";
     }
 
     public String getDriverName() throws SQLException {
@@ -77,7 +77,7 @@ public class DatabaseMetaDataImpl implements DatabaseMetaData {
     }
 
     public String getDriverVersion() throws SQLException {
-        return "0.9.26-alpha";
+        return "0.9.27-alpha";
     }
 
     public int getDriverMajorVersion() {

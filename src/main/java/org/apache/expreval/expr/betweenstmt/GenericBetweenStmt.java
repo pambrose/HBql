@@ -42,7 +42,7 @@ public abstract class GenericBetweenStmt extends NotValue<GenericBetweenStmt> im
                + this.getExprArg(1).asString() + " AND " + this.getExprArg(2).asString();
     }
 
-    protected abstract static class GenericBetweenComparable<T> implements WritableByteArrayComparable {
+    protected abstract static class GenericBetweenComparable<T> extends WritableByteArrayComparable {
 
         private T lowerValue;
         private T upperValue;

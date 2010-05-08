@@ -53,10 +53,8 @@ public class WithArgs {
     private ScannerCacheArgs scannerCacheArgs = null;
     private LimitArgs limitArgs = null;
     private boolean verbose = false;
-    private ExpressionTree indexExpressionTree = null;
     private ExpressionTree clientExpressionTree = null;
     private ExpressionTree serverExpressionTree = null;
-
     private MappingContext mappingContext = null;
 
     // Keep track of args set multiple times
@@ -81,11 +79,6 @@ public class WithArgs {
 
         if (this.getLimitArgs() != null)
             this.getLimitArgs().setMappingContext(this.getMappingContext());
-
-        if (this.getIndexExpressionTree() != null) {
-            this.getIndexExpressionTree().setMappingContext(this.getMappingContext());
-            this.getIndexExpressionTree().setUseResultData(false);
-        }
 
         if (this.getServerExpressionTree() != null) {
             this.getServerExpressionTree().setMappingContext(this.getMappingContext());
@@ -118,11 +111,7 @@ public class WithArgs {
 
         if (this.getLimitArgs() != null)
             this.getLimitArgs().validate();
-
-        if (this.getIndexExpressionTree() != null && this.getServerExpressionTree() == null)
-            throw new HBqlException("An IHBase index filter requires a server filter");
     }
-
 
     private void validateNoDuplicateWithArgs() throws HBqlException {
         if (this.multipleSetValues.size() > 0) {
@@ -236,16 +225,6 @@ public class WithArgs {
         this.serverExpressionTree = serverExpressionTree;
     }
 
-    public ExpressionTree getIndexExpressionTree() {
-        return this.indexExpressionTree;
-    }
-
-    public void setIndexExpressionTree(final ExpressionTree indexExpressionTree) {
-        if (this.getIndexExpressionTree() != null)
-            this.addError("Index Where");
-        this.indexExpressionTree = indexExpressionTree;
-    }
-
     public long getLimit() throws HBqlException {
         return (this.getLimitArgs() != null) ? this.getLimitArgs().getValue() : 0;
     }
@@ -268,9 +247,6 @@ public class WithArgs {
 
         if (this.getLimitArgs() != null)
             sbuf.append(this.getLimitArgs().asString() + "\n");
-
-        if (this.getIndexExpressionTree() != null)
-            sbuf.append("INDEX FILTER " + this.getIndexExpressionTree().asString() + "\n");
 
         if (this.getServerExpressionTree() != null)
             sbuf.append("SERVER FILTER " + this.getServerExpressionTree().asString() + "\n");
@@ -300,9 +276,6 @@ public class WithArgs {
         if (this.getLimitArgs() != null)
             parameterList.addAll(this.getLimitArgs().getParameterList());
 
-        if (this.getIndexExpressionTree() != null)
-            parameterList.addAll(this.getIndexExpressionTree().getParameterList());
-
         if (this.getServerExpressionTree() != null)
             parameterList.addAll(this.getServerExpressionTree().getParameterList());
 
@@ -329,9 +302,6 @@ public class WithArgs {
         if (this.getLimitArgs() != null)
             this.getLimitArgs().reset();
 
-        if (this.getIndexExpressionTree() != null)
-            this.getIndexExpressionTree().reset();
-
         if (this.getServerExpressionTree() != null)
             this.getServerExpressionTree().reset();
 
@@ -357,9 +327,6 @@ public class WithArgs {
 
         if (this.getLimitArgs() != null)
             cnt += this.getLimitArgs().setParameter(name, val);
-
-        if (this.getIndexExpressionTree() != null)
-            cnt += this.getIndexExpressionTree().setParameter(name, val);
 
         if (this.getServerExpressionTree() != null)
             cnt += this.getServerExpressionTree().setParameter(name, val);

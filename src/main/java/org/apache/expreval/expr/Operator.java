@@ -20,68 +20,50 @@
 
 package org.apache.expreval.expr;
 
-import org.apache.hadoop.hbase.client.idx.exp.Comparison;
 import org.apache.hadoop.hbase.filter.CompareFilter;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 
 public enum Operator {
-    PLUS("+", null, null, null, null),
-    MINUS("-", null, null, null, null),
-    MULT("*", null, null, null, null),
-    DIV("/", null, null, null, null),
-    MOD("%", null, null, null, null),
-    NEGATIVE("-", null, null, null, null),
+
+    PLUS("+", null, null),
+    MINUS("-", null, null),
+    MULT("*", null, null),
+    DIV("/", null, null),
+    MOD("%", null, null),
+    NEGATIVE("-", null, null),
 
     EQ("==",
        CompareFilter.CompareOp.EQUAL,
-       CompareFilter.CompareOp.EQUAL,
-       Comparison.Operator.EQ,
-       Comparison.Operator.EQ),
+       CompareFilter.CompareOp.EQUAL),
     GT("<",
        CompareFilter.CompareOp.GREATER,
-       CompareFilter.CompareOp.LESS_OR_EQUAL,
-       Comparison.Operator.GT,
-       Comparison.Operator.LTE),
+       CompareFilter.CompareOp.LESS_OR_EQUAL),
     GTEQ(">=",
          CompareFilter.CompareOp.GREATER_OR_EQUAL,
-         CompareFilter.CompareOp.LESS,
-         Comparison.Operator.GTE,
-         Comparison.Operator.LT),
+         CompareFilter.CompareOp.LESS),
     LT("<",
        CompareFilter.CompareOp.LESS,
-       CompareFilter.CompareOp.GREATER_OR_EQUAL,
-       Comparison.Operator.LT,
-       Comparison.Operator.GTE),
+       CompareFilter.CompareOp.GREATER_OR_EQUAL),
     LTEQ("<=",
          CompareFilter.CompareOp.LESS_OR_EQUAL,
-         CompareFilter.CompareOp.GREATER,
-         Comparison.Operator.LTE,
-         Comparison.Operator.GT),
+         CompareFilter.CompareOp.GREATER),
     NOTEQ("!=",
           CompareFilter.CompareOp.NOT_EQUAL,
-          CompareFilter.CompareOp.NOT_EQUAL,
-          null,
-          null),
+          CompareFilter.CompareOp.NOT_EQUAL),
 
-    AND("AND", null, null, null, null),
-    OR("OR", null, null, null, null);
+    AND("AND", null, null),
+    OR("OR", null, null);
 
     final String opStr;
     final CompareFilter.CompareOp compareOpLeft;
     final CompareFilter.CompareOp compareOpRight;
-    final Comparison.Operator comparisonLeft;
-    final Comparison.Operator comparisonRight;
 
     Operator(final String opStr,
              final CompareFilter.CompareOp compareOpLeft,
-             final CompareFilter.CompareOp compareOpRight,
-             final Comparison.Operator comparisonLeft,
-             final Comparison.Operator comparisonRight) {
+             final CompareFilter.CompareOp compareOpRight) {
         this.opStr = opStr;
         this.compareOpLeft = compareOpLeft;
         this.compareOpRight = compareOpRight;
-        this.comparisonLeft = comparisonLeft;
-        this.comparisonRight = comparisonRight;
     }
 
     public String toString() {
@@ -98,17 +80,5 @@ public enum Operator {
         if (this.compareOpRight == null)
             throw new HBqlException("Invalid operator: " + this);
         return this.compareOpRight;
-    }
-
-    public Comparison.Operator getComparisonLeft() throws HBqlException {
-        if (this.compareOpRight == null)
-            throw new HBqlException("Invalid operator: " + this);
-        return this.comparisonLeft;
-    }
-
-    public Comparison.Operator getComparisonRight() throws HBqlException {
-        if (this.compareOpRight == null)
-            throw new HBqlException("Invalid operator: " + this);
-        return this.comparisonRight;
     }
 }

@@ -172,7 +172,7 @@ public class NumberCompare extends GenericCompare {
 
         public LongComparable(final FieldType fieldType, final long value) {
             this.setFieldType(fieldType);
-            this.setValue(value);
+            this.setTypedValue(value);
         }
 
         public int compareTo(final byte[] bytes) {
@@ -183,7 +183,7 @@ public class NumberCompare extends GenericCompare {
             try {
                 long columnValue = IO.getSerialization().getNumberFromBytes(this.getFieldType(), bytes).longValue();
                 // Test for equality again in case the byte[] lengths were different above
-                final long val = this.getValue();
+                final long val = this.getTypedValue();
                 if (columnValue == val)
                     return 0;
                 else
@@ -198,14 +198,14 @@ public class NumberCompare extends GenericCompare {
 
         public void write(final DataOutput dataOutput) throws IOException {
             dataOutput.writeUTF(this.getFieldType().name());
-            dataOutput.writeLong(this.getValue());
+            dataOutput.writeLong(this.getTypedValue());
         }
 
         public void readFields(final DataInput dataInput) throws IOException {
             this.setFieldType(FieldType.valueOf(dataInput.readUTF()));
-            this.setValue(dataInput.readLong());
+            this.setTypedValue(dataInput.readLong());
 
-            this.setValueInBytes(this.getValue());
+            this.setValueInBytes(this.getTypedValue());
         }
     }
 
@@ -216,7 +216,7 @@ public class NumberCompare extends GenericCompare {
 
         public DoubleComparable(final FieldType fieldType, final double value) {
             this.setFieldType(fieldType);
-            this.setValue(value);
+            this.setTypedValue(value);
         }
 
         public int compareTo(final byte[] bytes) {
@@ -227,7 +227,7 @@ public class NumberCompare extends GenericCompare {
             try {
                 double columnValue = IO.getSerialization().getNumberFromBytes(this.getFieldType(), bytes).doubleValue();
                 // Test for equality again in case the byte[] lengths were different above
-                final double val = this.getValue();
+                final double val = this.getTypedValue();
                 if (columnValue == val)
                     return 0;
                 else
@@ -242,14 +242,14 @@ public class NumberCompare extends GenericCompare {
 
         public void write(final DataOutput dataOutput) throws IOException {
             dataOutput.writeUTF(this.getFieldType().name());
-            dataOutput.writeDouble(this.getValue());
+            dataOutput.writeDouble(this.getTypedValue());
         }
 
         public void readFields(final DataInput dataInput) throws IOException {
             this.setFieldType(FieldType.valueOf(dataInput.readUTF()));
-            this.setValue(dataInput.readDouble());
+            this.setTypedValue(dataInput.readDouble());
 
-            this.setValueInBytes(this.getValue());
+            this.setValueInBytes(this.getTypedValue());
         }
     }
 }

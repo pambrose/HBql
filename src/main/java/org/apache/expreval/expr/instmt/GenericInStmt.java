@@ -81,7 +81,7 @@ public abstract class GenericInStmt extends NotValue<GenericInStmt> implements B
         return true;
     }
 
-    protected abstract static class GenericInComparable<T> implements WritableByteArrayComparable {
+    protected abstract static class GenericInComparable<T> extends WritableByteArrayComparable {
 
         private List<T> inValues;
 

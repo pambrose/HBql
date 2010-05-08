@@ -5,14 +5,14 @@
 
 Releases
 
-    *{{{./downloads/hbql-0.9.26-alpha.zip}0.9.26-alpha.zip}}
+    *{{{./downloads/hbql-0.9.27-alpha.zip}0.9.27-alpha.zip}}
     
-    *{{{./downloads/hbql-0.9.26-alpha.tar.gz}0.9.26-alpha.tar.gz}}
+    *{{{./downloads/hbql-0.9.27-alpha.tar.gz}0.9.27-alpha.tar.gz}}
 
 
 Javadocs
 
-    *{{{./downloads/javadocs-0.9.26-alpha.zip}javadocs-0.9.26-alpha.zip}}
+    *{{{./downloads/javadocs-0.9.27-alpha.zip}javadocs-0.9.27-alpha.zip}}
     
 
 Source
@@ -25,6 +25,12 @@ git clone git://github.com/pambrose/HBql.git
 
 
 Release Notes
+
+    0.9.27-alpha -- 05/08/10
+
+        * Removed IHBase support
+
+        * Added support for HBase 0.20.4
 
     0.9.26-alpha -- 04/12/10
 
@@ -155,7 +161,7 @@ Release Notes
 
         * Made HBase-specific values available through the JDBC driver via ResultSetImpl.getCurrentHRecord() method
 
-        * Added build support for HBase 0.20.2
+        * Added support for HBase 0.20.2
 
     0.9.5-alpha -- 11/18/09
 

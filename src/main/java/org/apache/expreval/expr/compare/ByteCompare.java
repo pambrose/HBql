@@ -108,7 +108,7 @@ public class ByteCompare extends GenericCompare implements BooleanValue {
         }
 
         public ByteComparable(final Byte value) {
-            this.setValue(value);
+            this.setTypedValue(value);
         }
 
         public int compareTo(final byte[] bytes) {
@@ -118,7 +118,7 @@ public class ByteCompare extends GenericCompare implements BooleanValue {
 
             try {
                 final Byte columnValue = IO.getSerialization().getByteFromBytes(bytes);
-                return (this.getValue().compareTo(columnValue));
+                return (this.getTypedValue().compareTo(columnValue));
             }
             catch (HBqlException e) {
                 e.printStackTrace();
@@ -128,13 +128,13 @@ public class ByteCompare extends GenericCompare implements BooleanValue {
         }
 
         public void write(final DataOutput dataOutput) throws IOException {
-            dataOutput.writeByte(this.getValue());
+            dataOutput.writeByte(this.getTypedValue());
         }
 
         public void readFields(final DataInput dataInput) throws IOException {
-            this.setValue(dataInput.readByte());
+            this.setTypedValue(dataInput.readByte());
 
-            this.setValueInBytes(FieldType.ByteType, this.getValue());
+            this.setValueInBytes(FieldType.ByteType, this.getTypedValue());
         }
     }
 }

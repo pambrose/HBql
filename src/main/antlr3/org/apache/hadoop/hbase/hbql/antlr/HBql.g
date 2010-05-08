@@ -245,7 +245,6 @@ options {backtrack=true;}
 	| k=keyIN_MEMORY COLON v=exprValue		 {retval = new FamilyProperty($k.retval, $v.retval);}
 	| k=keyBLOOM_FILTER COLON v=exprValue		 {retval = new FamilyProperty($k.retval, $v.retval);}
 	| k=keyCOMPRESSION_TYPE COLON c=compressionType	 {retval = new CompressionTypeProperty($k.retval, $c.text);}
-	| k=keyINDEX keyON col=simpleId type=simpleId	 {retval = new IndexProperty($k.retval, $col.text, $type.text);}
 	;
 
 compressionType
@@ -286,9 +285,7 @@ options {memoize=true;}
 	| keySCANNER_CACHE_SIZE v=exprValue		{withArgs.setScannerCacheArgs(new ScannerCacheArgs($v.retval));}
 	| keyLIMIT v=exprValue				{withArgs.setLimitArgs(new LimitArgs($v.retval));}
 	| keyVERBOSE  					{withArgs.setVerbose(true);}
-	| keySERVER keyFILTER keyWHERE fe=filterExpr (keyUSING keyINDEX keyWHERE ie=filterExpr)?
-							{withArgs.setServerExpressionTree($fe.retval); 
-							 withArgs.setIndexExpressionTree($ie.retval);}
+	| keySERVER keyFILTER keyWHERE fe=filterExpr	{withArgs.setServerExpressionTree($fe.retval);}
 	| keyCLIENT keyFILTER keyWHERE fe=filterExpr	{withArgs.setClientExpressionTree($fe.retval);}
 	;
 	
@@ -684,7 +681,6 @@ keyTHEN                         : {isKeyword(input, "THEN")}? ID;
 keyTIMESTAMP                    : {isKeyword(input, "TIMESTAMP")}? ID;
 keyTO                           : {isKeyword(input, "TO")}? ID;
 keyTRUE                         : {isKeyword(input, "TRUE")}? ID;
-keyUSING                        : {isKeyword(input, "USING")}? ID;
 keyVALUES                       : {isKeyword(input, "VALUES")}? ID;
 keyVERBOSE                      : {isKeyword(input, "VERBOSE")}? ID;
 keyVERSION                      : {isKeyword(input, "VERSION")}? ID;

@@ -110,7 +110,7 @@ public class DateCompare extends GenericCompare {
         }
 
         public DateComparable(final Long value) {
-            this.setValue(value);
+            this.setTypedValue(value);
         }
 
         public int compareTo(final byte[] bytes) {
@@ -121,7 +121,7 @@ public class DateCompare extends GenericCompare {
             try {
                 final Date dateValue = (Date)IO.getSerialization().getScalarFromBytes(FieldType.DateType, bytes);
                 final long columnValue = dateValue.getTime();
-                return (columnValue > this.getValue()) ? -1 : 1;
+                return (columnValue > this.getTypedValue()) ? -1 : 1;
             }
             catch (HBqlException e) {
                 e.printStackTrace();
@@ -131,13 +131,13 @@ public class DateCompare extends GenericCompare {
         }
 
         public void write(final DataOutput dataOutput) throws IOException {
-            dataOutput.writeLong(this.getValue());
+            dataOutput.writeLong(this.getTypedValue());
         }
 
         public void readFields(final DataInput dataInput) throws IOException {
-            this.setValue(dataInput.readLong());
+            this.setTypedValue(dataInput.readLong());
 
-            this.setValueInBytes(FieldType.LongType, this.getValue());
+            this.setValueInBytes(FieldType.LongType, this.getTypedValue());
         }
     }
 }

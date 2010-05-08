@@ -36,7 +36,7 @@ queryLimit:
     LIMIT limit_value
 
 serverFilter:
-    SERVER FILTER WHERE where_clause [USING INDEX WHERE where_clause]
+    SERVER FILTER WHERE where_clause
 
 clientFilter:
     CLIENT FILTER WHERE where_clause
@@ -71,11 +71,6 @@ clientFilter:
 
         The SERVER FILTER where_clause is evaluated on the server,
         while the CLIENT FILTER where_clause is evaluated on the client.
-
-    * The USING INDEX WHERE option for the serverFilter uses the IHBase index package.  As mentioned in the
-    org.apache.hadoop.hbase.client.idx package documentation, the index where expression must return
-    the same records returned by the server filter (the server filter can also narrow 
-    the records returned).
 
 
 *Example

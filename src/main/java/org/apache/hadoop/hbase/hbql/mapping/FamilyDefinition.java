@@ -21,13 +21,8 @@
 package org.apache.hadoop.hbase.hbql.mapping;
 
 import org.apache.hadoop.hbase.HColumnDescriptor;
-import org.apache.hadoop.hbase.client.idx.IdxColumnDescriptor;
-import org.apache.hadoop.hbase.client.idx.IdxIndexDescriptor;
-import org.apache.hadoop.hbase.client.idx.IdxQualifierType;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.util.Lists;
 
-import java.io.IOException;
 import java.util.List;
 
 public class FamilyDefinition {
@@ -43,7 +38,6 @@ public class FamilyDefinition {
     private FamilyProperty bloomFilterEnabled = null;
     private FamilyProperty inMemoryEnabled = null;
     private CompressionTypeProperty compressionType = null;
-    private List<ColumnDefinition> indexDefinitionList = Lists.newArrayList();
 
     public FamilyDefinition(final String familyName, final List<FamilyProperty> familyPropertyList) {
         this.familyName = familyName;
@@ -58,35 +52,11 @@ public class FamilyDefinition {
         return this.familyPropertyList;
     }
 
-    private List<ColumnDefinition> getIndexDefinitionList() {
-        return indexDefinitionList;
-    }
-
     public HColumnDescriptor getColumnDescription() throws HBqlException {
 
         this.validateFamilyPropertyList();
 
-        final HColumnDescriptor columnDescriptor;
-
-        if (this.getIndexDefinitionList().size() == 0) {
-            columnDescriptor = new HColumnDescriptor(this.getFamilyName());
-        }
-        else {
-            final IdxColumnDescriptor idxColumnDescriptor = new IdxColumnDescriptor(this.getFamilyName());
-            for (final ColumnDefinition columnDefinition : this.getIndexDefinitionList()) {
-                final byte[] columnBytes = columnDefinition.getColumnName().getBytes();
-                final IdxQualifierType indexType = columnDefinition.getFieldType().getIndexType();
-                final IdxIndexDescriptor indexDescriptor = new IdxIndexDescriptor(columnBytes, indexType);
-                try {
-                    idxColumnDescriptor.addIndexDescriptor(indexDescriptor);
-                }
-                catch (IOException e) {
-                    throw new HBqlException("Invalid index for: " + columnDefinition.getColumnName()
-                                            + " " + columnDefinition.getFieldType());
-                }
-            }
-            columnDescriptor = idxColumnDescriptor;
-        }
+        final HColumnDescriptor columnDescriptor = new HColumnDescriptor(this.getFamilyName());
 
         this.assignFamilyProperties(columnDescriptor);
         return columnDescriptor;
@@ -161,10 +131,6 @@ public class FamilyDefinition {
 
                 case COMPRESSION_TYPE:
                     this.compressionType = (CompressionTypeProperty)this.validateProperty(this.compressionType, familyProperty);
-                    break;
-
-                case INDEX:
-                    this.getIndexDefinitionList().add(((IndexProperty)familyProperty).getColumnDefinition());
                     break;
             }
         }

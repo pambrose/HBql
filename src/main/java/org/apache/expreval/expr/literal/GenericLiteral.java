@@ -24,12 +24,10 @@ import org.apache.expreval.client.InternalErrorException;
 import org.apache.expreval.expr.MultipleExpressionContext;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.hadoop.hbase.client.Result;
-import org.apache.hadoop.hbase.client.idx.exp.Expression;
 import org.apache.hadoop.hbase.filter.Filter;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.impl.AggregateValue;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
-import org.apache.hadoop.hbase.hbql.impl.InvalidIndexExpressionException;
 import org.apache.hadoop.hbase.hbql.impl.InvalidServerFilterException;
 
 import java.io.Serializable;
@@ -99,9 +97,5 @@ public abstract class GenericLiteral<T extends Serializable> implements GenericV
 
     public Filter getFilter() throws HBqlException {
         throw new InvalidServerFilterException();
-    }
-
-    public Expression getIndexExpression() throws HBqlException {
-        throw new InvalidIndexExpressionException();
     }
 }

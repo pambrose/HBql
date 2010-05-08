@@ -108,7 +108,7 @@ public class StringCompare extends GenericCompare {
         }
 
         public StringComparable(final String value) {
-            this.setValue(value);
+            this.setTypedValue(value);
         }
 
         public int compareTo(final byte[] bytes) {
@@ -118,7 +118,7 @@ public class StringCompare extends GenericCompare {
 
             try {
                 final String columnValue = IO.getSerialization().getStringFromBytes(bytes);
-                return (this.getValue().compareTo(columnValue));
+                return (this.getTypedValue().compareTo(columnValue));
             }
             catch (HBqlException e) {
                 e.printStackTrace();
@@ -128,13 +128,13 @@ public class StringCompare extends GenericCompare {
         }
 
         public void write(final DataOutput dataOutput) throws IOException {
-            dataOutput.writeUTF(this.getValue());
+            dataOutput.writeUTF(this.getTypedValue());
         }
 
         public void readFields(final DataInput dataInput) throws IOException {
-            this.setValue(dataInput.readUTF());
+            this.setTypedValue(dataInput.readUTF());
 
-            this.setValueInBytes(FieldType.StringType, this.getValue());
+            this.setValueInBytes(FieldType.StringType, this.getTypedValue());
         }
     }
 }

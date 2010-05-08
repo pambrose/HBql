@@ -38,8 +38,7 @@ public class FamilyProperty extends ExpressionProperty {
         BLOCK_SIZE(new ArgumentListTypeSignature(IntegerValue.class), "BLOCK_SIZE"),
         BLOCK_CACHE_ENABLED(new ArgumentListTypeSignature(BooleanValue.class), "BLOCK_CACHE_ENABLED"),
         BLOOM_FILTER(new ArgumentListTypeSignature(BooleanValue.class), "BLOOM_FILTER"),
-        COMPRESSION_TYPE(new ArgumentListTypeSignature(), "COMPRESSION_TYPE"),
-        INDEX(new ArgumentListTypeSignature(), "INDEX");
+        COMPRESSION_TYPE(new ArgumentListTypeSignature(), "COMPRESSION_TYPE");
 
         private final ArgumentListTypeSignature typeSignature;
         private final String description;

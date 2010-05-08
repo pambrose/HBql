@@ -56,7 +56,7 @@ type:
 
     * A WIDTH value on a KEY column is required if a secondary index is present.
 
-    * If a WIDTH value is specified (for KEY columns or indexed columns), then
+    * If a WIDTH value is specified (for KEY columns), then
     the corresponding range values and INSERT values are validated against the
     specified width value.
 

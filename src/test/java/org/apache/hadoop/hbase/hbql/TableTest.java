@@ -22,18 +22,12 @@ package org.apache.hadoop.hbase.hbql;
 
 import org.apache.hadoop.hbase.HColumnDescriptor;
 import org.apache.hadoop.hbase.HTableDescriptor;
-import org.apache.hadoop.hbase.client.idx.IdxColumnDescriptor;
-import org.apache.hadoop.hbase.client.idx.IdxIndexDescriptor;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.client.HConnectionManager;
 import org.apache.hadoop.hbase.hbql.util.TestSupport;
-import org.apache.hadoop.hbase.io.ImmutableBytesWritable;
 import org.apache.hadoop.hbase.io.hfile.Compression;
 import org.junit.Test;
-
-import java.io.IOException;
-import java.util.Map;
 
 public class TableTest extends TestSupport {
 
@@ -107,58 +101,6 @@ public class TableTest extends TestSupport {
         assertTrue(family.isInMemory());
         assertTrue(family.getValue(HColumnDescriptor.MAPFILE_INDEX_INTERVAL).equals("230"));
         assertTrue(family.getTimeToLive() == 440);
-
-        connection.disableTable(tableName);
-        connection.dropTable(tableName);
-
-        assertFalse(connection.mappingExists(tableName));
-    }
-
-    @Test
-    public void indexedTable() throws HBqlException, IOException {
-
-        HConnection connection = HConnectionManager.newConnection();
-
-        String tableName = "indextabletest";
-        if (connection.tableExists(tableName)) {
-            connection.disableTable(tableName);
-            connection.dropTable(tableName);
-        }
-        assertFalse(connection.tableExists(tableName));
-        connection.execute("CREATE TABLE " + tableName
-                           + " (family1 ("
-                           + "MAX_VERSIONS:  12, "
-                           + "BLOOM_FILTER:  TRUE, "
-                           + "BLOCK_SIZE: 123, "
-                           + "BLOCK_CACHE_ENABLED: TRUE, "
-                           + "COMPRESSION_TYPE: GZ, "
-                           + "IN_MEMORY: TRUE, "
-                           + "MAP_FILE_INDEX_INTERVAL:  230, "
-                           + "TTL: 440, "
-                           + "INDEX ON col1 int,"
-                           + "INDEX ON col2 short"
-                           + "))");
-        assertTrue(connection.tableExists(tableName));
-        HTableDescriptor table = connection.getHTableDescriptor(tableName);
-        HColumnDescriptor[] hcd = table.getColumnFamilies();
-        assertTrue((hcd.length == 1));
-        assertTrue(table.hasFamily("family1".getBytes()));
-        assertTrue(table.getNameAsString().equals(tableName));
-
-        HColumnDescriptor family = table.getFamily("family1".getBytes());
-
-        assertTrue(family.getNameAsString().equals("family1"));
-        assertTrue(family.getMaxVersions() == 12);
-        assertTrue(family.isBloomfilter());
-        assertTrue(family.getBlocksize() == 123);
-        assertTrue(family.isBlockCacheEnabled());
-        assertTrue(family.getCompressionType() == Compression.Algorithm.GZ);
-        assertTrue(family.isInMemory());
-        assertTrue(family.getValue(HColumnDescriptor.MAPFILE_INDEX_INTERVAL).equals("230"));
-        assertTrue(family.getTimeToLive() == 440);
-
-        Map<ImmutableBytesWritable, IdxIndexDescriptor> idxs = IdxColumnDescriptor.getIndexDescriptors(family);
-        assertTrue(idxs.size() == 2);
 
         connection.disableTable(tableName);
         connection.dropTable(tableName);

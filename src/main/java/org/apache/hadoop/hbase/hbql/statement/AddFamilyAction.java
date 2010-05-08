@@ -42,7 +42,9 @@ public class AddFamilyAction implements AlterTableAction {
     public void execute(final HConnectionImpl conn,
                         final HBaseAdmin admin,
                         final String tableName) throws HBqlException {
+
         final HColumnDescriptor columnDescriptor = this.getFamilyDefinition().getColumnDescription();
+
         try {
             admin.addColumn(tableName, columnDescriptor);
         }

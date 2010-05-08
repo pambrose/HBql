@@ -27,8 +27,6 @@ import org.apache.expreval.expr.TypeSupport;
 import org.apache.expreval.expr.node.GenericValue;
 import org.apache.hadoop.hbase.client.Get;
 import org.apache.hadoop.hbase.client.Scan;
-import org.apache.hadoop.hbase.client.idx.IdxScan;
-import org.apache.hadoop.hbase.client.idx.exp.Expression;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.io.IO;
 import org.apache.hadoop.hbase.hbql.mapping.ColumnAttrib;
@@ -98,7 +96,7 @@ public class KeyRange extends SelectStatementArgs {
         this.validateTypes(this.allowColumns(), this.isSingleKey());
     }
 
-    // This returns an object because it might be a collection in the case of a param
+    // This returns an Object because it might be a collection in the case of a named param
     private Object getFirstArg(final boolean allowCollections) throws HBqlException {
         return this.evaluateConstant(0, allowCollections);
     }
@@ -190,23 +188,12 @@ public class KeyRange extends SelectStatementArgs {
                                             final ColumnAttrib keyAttrib,
                                             final Set<ColumnAttrib> columnAttribs) throws HBqlException {
 
-        final RowRequest rowRequest;
-        if (withArgs.getIndexExpressionTree() == null) {
-            final Scan scan = new Scan();
-            this.setStartStopRows(scan, keyAttrib);
-            withArgs.setScanArgs(scan, columnAttribs);
-            rowRequest = withArgs.hasAnIndex()
-                         ? new IndexRequest(scan.getStartRow(), scan.getStopRow(), columnAttribs)
-                         : new ScanRequest(scan);
-        }
-        else {
-            final IdxScan scan = new IdxScan();
-            final Expression indexExpr = withArgs.getIndexExpressionTree().getIndexExpression();
-            scan.setExpression(indexExpr);
-            this.setStartStopRows(scan, keyAttrib);
-            withArgs.setScanArgs(scan, columnAttribs);
-            rowRequest = new ScanRequest(scan);
-        }
+        final Scan scan = new Scan();
+        this.setStartStopRows(scan, keyAttrib);
+        withArgs.setScanArgs(scan, columnAttribs);
+        final RowRequest rowRequest = withArgs.hasAnIndex()
+                                      ? new IndexRequest(scan.getStartRow(), scan.getStopRow(), columnAttribs)
+                                      : new ScanRequest(scan);
 
         return Lists.newArrayList(rowRequest);
     }

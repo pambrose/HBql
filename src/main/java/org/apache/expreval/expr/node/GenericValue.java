@@ -24,7 +24,6 @@ import org.apache.expreval.client.NullColumnValueException;
 import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.MultipleExpressionContext;
 import org.apache.hadoop.hbase.client.Result;
-import org.apache.hadoop.hbase.client.idx.exp.Expression;
 import org.apache.hadoop.hbase.filter.Filter;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.impl.AggregateValue;
@@ -43,8 +42,6 @@ public interface GenericValue extends Serializable {
                                                                       NullColumnValueException;
 
     Filter getFilter() throws HBqlException;
-
-    Expression getIndexExpression() throws HBqlException;
 
     GenericValue getOptimizedValue() throws HBqlException;
 
