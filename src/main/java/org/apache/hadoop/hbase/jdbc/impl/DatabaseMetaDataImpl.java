@@ -20,11 +20,7 @@
 
 package org.apache.hadoop.hbase.jdbc.impl;
 
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.ResultSet;
-import java.sql.RowIdLifetime;
-import java.sql.SQLException;
+import java.sql.*;
 
 public class DatabaseMetaDataImpl implements DatabaseMetaData {
 
@@ -69,7 +65,7 @@ public class DatabaseMetaDataImpl implements DatabaseMetaData {
     }
 
     public String getDatabaseProductVersion() throws SQLException {
-        return "0.20.4";
+        return "0.20.6";
     }
 
     public String getDriverName() throws SQLException {
@@ -77,7 +73,7 @@ public class DatabaseMetaDataImpl implements DatabaseMetaData {
     }
 
     public String getDriverVersion() throws SQLException {
-        return "0.9.27-alpha";
+        return "0.9.28-alpha";
     }
 
     public int getDriverMajorVersion() {

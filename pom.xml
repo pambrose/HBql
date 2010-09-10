@@ -26,7 +26,7 @@
     <artifactId>HBql</artifactId>
     <name>HBql</name>
     <packaging>jar</packaging>
-    <version>0.9.27-alpha</version>
+    <version>0.9.28-alpha</version>
 
     <scm>
         <connection>scm:git://github.com/pambrose/HBql.git/</connection>
@@ -66,20 +66,7 @@
 
     <repositories>
 
-        <repository>
-            <id>java.net</id>
-            <name>java.net Repository</name>
-            <url>http://download.java.net/maven/2</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-        </repository>
-
         <!--
-
         <repository>
             <id>maven.javarants.com</id>
             <name>javarants</name>
@@ -87,25 +74,24 @@
         </repository>
 
         <repository>
-            <id>jboss.com</id>
-            <name>JBoss.com Repository</name>
-            <url>http://repository.jboss.com/maven2/</url>
-        </repository>
-
-
-        <repository>
-            <id>apache.org</id>
-            <name>apache.org</name>
-            <url>http://repo1.maven.org/maven2</url>
+            <id>mirror.facebook.net</id>
+            <name>facebook mirror</name>
+            <url>http://mirror.facebook.net/maven/repository/</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
         </repository>
         -->
 
         <repository>
-            <id>asf-releases</id>
-            <name>Apache Public Releases</name>
-            <url>https://repository.apache.org/content/repositories/releases</url>
+            <id>googlecode</id>
+            <name>Google Code</name>
+            <url>http://google-maven-repository.googlecode.com/svn/repository/</url>
             <snapshots>
-                <enabled>true</enabled>
+                <enabled>false</enabled>
             </snapshots>
             <releases>
                 <enabled>true</enabled>
@@ -128,20 +114,21 @@
 
     <dependencies>
 
+
         <dependency>
             <groupId>org.apache.hbase</groupId>
             <artifactId>hbase</artifactId>
-            <version>0.20.4</version>
+            <version>0.20.6</version>
         </dependency>
 
         <!--
         This is a hack.
-        In order to get this to work, I renamed hbase-0.20.4-transactional.jar to hbase-transactional-0.20.4.jar
+        In order to get this to work, I renamed hbase-0.20.6-transactional.jar to hbase-transactional-0.20.6.jar
         -->
         <dependency>
             <groupId>org.apache.hbase</groupId>
             <artifactId>hbase-transactional</artifactId>
-            <version>0.20.4</version>
+            <version>0.20.6</version>
         </dependency>
 
         <dependency>
