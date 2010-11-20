@@ -36,23 +36,18 @@ import org.apache.hadoop.hbase.hbql.mapping.MappingContext;
 import org.apache.hadoop.hbase.hbql.mapping.TableMapping;
 import org.apache.hadoop.hbase.util.Bytes;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.DataInput;
-import java.io.DataOutput;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.util.Arrays;
+import java.util.List;
 
 public class RecordFilter implements InstrumentedFilter {
 
     private static final Log LOG = LogFactory.getLog(RecordFilter.class);
 
-    private boolean verbose = false;
+    private boolean        verbose        = false;
     private ExpressionTree expressionTree = null;
 
-    public HRecordImpl record = new HRecordImpl((MappingContext)null);
+    public HRecordImpl record = new HRecordImpl((MappingContext) null);
 
     public RecordFilter() {
     }
@@ -64,6 +59,10 @@ public class RecordFilter implements InstrumentedFilter {
 
     public static RecordFilter newRecordFilter(final ExpressionTree expressionTree) {
         return (expressionTree == null) ? null : new RecordFilter(expressionTree);
+    }
+
+    public boolean hasFilterRow() {
+        return true;
     }
 
     private HRecordImpl getHRecord() {
@@ -113,6 +112,10 @@ public class RecordFilter implements InstrumentedFilter {
         return false;
     }
 
+    public void filterRow(List<KeyValue> keyValues) {
+        // TODO This is new
+    }
+
     public ReturnCode filterKeyValue(KeyValue v) {
 
         if (this.getVerbose())
@@ -154,8 +157,7 @@ public class RecordFilter implements InstrumentedFilter {
             if (this.getVerbose())
                 LOG.debug("In filterRow() had invalid hasValidExpressionTree(): ");
             filterRow = false;
-        }
-        else {
+        } else {
             try {
                 filterRow = !this.getExpressionTree().evaluate(null, this.getHRecord());
                 if (this.getVerbose())
@@ -201,7 +203,7 @@ public class RecordFilter implements InstrumentedFilter {
         try {
             this.verbose = in.readBoolean();
             final byte[] b = Bytes.readByteArray(in);
-            this.expressionTree = (ExpressionTree)IO.getSerialization().getScalarFromBytes(FieldType.ObjectType, b);
+            this.expressionTree = (ExpressionTree) IO.getSerialization().getScalarFromBytes(FieldType.ObjectType, b);
 
             this.getHRecord().setMappingContext(this.getExpressionTree().getMappingContext());
             this.getMapping().resetDefaultValues();
@@ -233,10 +235,10 @@ public class RecordFilter implements InstrumentedFilter {
         final String family = "family1";
         final String column = "author";
         final String[] vals = {"An author value-81252702162528282000",
-                               "An author value-812527021593753270002009",
-                               "An author value-81252702156610125000",
-                               "An author value-812527021520532270002009",
-                               "An author value-81252702147337884000"
+                "An author value-812527021593753270002009",
+                "An author value-81252702156610125000",
+                "An author value-812527021520532270002009",
+                "An author value-81252702147337884000"
         };
 
         for (String val : vals) {

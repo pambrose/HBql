@@ -20,20 +20,20 @@
 
 package org.apache.hadoop.hbase.hbql.impl;
 
-import org.apache.hadoop.hbase.client.HTable;
+import org.apache.hadoop.hbase.client.HTableInterface;
 import org.apache.hadoop.hbase.client.HTablePool;
 
 public class HTableWrapper {
 
-    private final HTable htable;
-    private final HTablePool tablePool;
+    private final HTableInterface htable;
+    private final HTablePool      tablePool;
 
-    public HTableWrapper(final HTable htable, final HTablePool tablePool) {
+    public HTableWrapper(final HTableInterface htable, final HTablePool tablePool) {
         this.htable = htable;
         this.tablePool = tablePool;
     }
 
-    public HTable getHTable() {
+    public HTableInterface getHTable() {
         return this.htable;
     }
 

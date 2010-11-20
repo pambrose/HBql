@@ -21,6 +21,7 @@
 package org.apache.hadoop.hbase.hbql.impl;
 
 import org.apache.hadoop.hbase.client.Delete;
+import org.apache.hadoop.hbase.client.HTableInterface;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 
 import java.io.IOException;
@@ -37,7 +38,7 @@ public class DeleteAction implements BatchAction {
         return this.actionValue;
     }
 
-    public void apply(final org.apache.hadoop.hbase.client.HTable table) throws HBqlException {
+    public void apply(final HTableInterface table) throws HBqlException {
         try {
             table.delete(this.getActionValue());
         }

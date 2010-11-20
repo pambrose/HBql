@@ -20,9 +20,10 @@
 
 package org.apache.hadoop.hbase.hbql.impl;
 
+import org.apache.hadoop.hbase.client.HTableInterface;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 
 public interface BatchAction {
 
-    void apply(org.apache.hadoop.hbase.client.HTable table) throws HBqlException;
+    void apply(HTableInterface table) throws HBqlException;
 }
