@@ -21,29 +21,14 @@
 package org.apache.hadoop.hbase.hbql.impl;
 
 import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.hbase.HBaseConfiguration;
-import org.apache.hadoop.hbase.HColumnDescriptor;
-import org.apache.hadoop.hbase.HTableDescriptor;
-import org.apache.hadoop.hbase.MasterNotRunningException;
+import org.apache.hadoop.hbase.*;
 import org.apache.hadoop.hbase.client.HBaseAdmin;
 import org.apache.hadoop.hbase.client.HTablePool;
 import org.apache.hadoop.hbase.client.tableindexed.IndexSpecification;
 import org.apache.hadoop.hbase.client.tableindexed.IndexedTable;
 import org.apache.hadoop.hbase.client.tableindexed.IndexedTableAdmin;
 import org.apache.hadoop.hbase.client.tableindexed.IndexedTableDescriptor;
-import org.apache.hadoop.hbase.hbql.client.AsyncExecutor;
-import org.apache.hadoop.hbase.hbql.client.AsyncExecutorManager;
-import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
-import org.apache.hadoop.hbase.hbql.client.HBatch;
-import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.client.HConnection;
-import org.apache.hadoop.hbase.hbql.client.HMapping;
-import org.apache.hadoop.hbase.hbql.client.HPreparedStatement;
-import org.apache.hadoop.hbase.hbql.client.HRecord;
-import org.apache.hadoop.hbase.hbql.client.HResultSet;
-import org.apache.hadoop.hbase.hbql.client.HStatement;
-import org.apache.hadoop.hbase.hbql.client.QueryExecutorPool;
-import org.apache.hadoop.hbase.hbql.client.QueryExecutorPoolManager;
+import org.apache.hadoop.hbase.hbql.client.*;
 import org.apache.hadoop.hbase.hbql.mapping.AnnotationResultAccessor;
 import org.apache.hadoop.hbase.hbql.mapping.FamilyMapping;
 import org.apache.hadoop.hbase.hbql.mapping.TableMapping;
@@ -65,26 +50,29 @@ import java.util.concurrent.atomic.AtomicReference;
 public class HConnectionImpl extends PoolableElement<HConnectionImpl> implements HConnection {
 
     public static final String MAXTABLEREFS = "maxtablerefs";
-    public static final String MASTER = "hbase.master";
+    public static final String MASTER       = "hbase.master";
 
     private final AtomicBoolean atomicClosed = new AtomicBoolean(false);
-    private final HBaseConfiguration hbaseConfiguration;
-    private final HTablePool tablePool;
-    private final int maxTablePoolReferencesPerTable;
+    private final Configuration  hbaseConfiguration;
+    private final HTablePool     tablePool;
+    private final int            maxTablePoolReferencesPerTable;
     private final MappingManager mappingManager;
 
-    private final AtomicReference<Map<Class, AnnotationResultAccessor>> atomicAnnoMapping = AtomicReferences.newAtomicReference();
-    private final AtomicReference<HBaseAdmin> atomicHbaseAdmin = AtomicReferences.newAtomicReference();
-    private final AtomicReference<IndexedTableAdmin> atomicIndexTableAdmin = AtomicReferences.newAtomicReference();
+    private final AtomicReference<Map<Class, AnnotationResultAccessor>> atomicAnnoMapping     = AtomicReferences
+            .newAtomicReference();
+    private final AtomicReference<HBaseAdmin>                           atomicHbaseAdmin      = AtomicReferences
+            .newAtomicReference();
+    private final AtomicReference<IndexedTableAdmin>                    atomicIndexTableAdmin = AtomicReferences
+            .newAtomicReference();
 
     private String queryExecutorPoolName = null;
-    private String asyncExecutorName = null;
+    private String asyncExecutorName     = null;
 
-    public HConnectionImpl(final HBaseConfiguration hbaseConfiguration,
+    public HConnectionImpl(final Configuration hbaseConfiguration,
                            final HConnectionPoolImpl connectionPool,
                            final int maxTablePoolReferencesPerTable) throws HBqlException {
         super(connectionPool);
-        this.hbaseConfiguration = (hbaseConfiguration == null) ? new HBaseConfiguration() : hbaseConfiguration;
+        this.hbaseConfiguration = (hbaseConfiguration == null) ? HBaseConfiguration.create() : hbaseConfiguration;
         this.maxTablePoolReferencesPerTable = maxTablePoolReferencesPerTable;
         this.tablePool = new HTablePool(this.getHBaseConfiguration(), this.getMaxTablePoolReferencesPerTable());
         this.mappingManager = new MappingManager(this);
@@ -92,10 +80,10 @@ public class HConnectionImpl extends PoolableElement<HConnectionImpl> implements
         this.getMappingManager().validatePersistentMetadata();
     }
 
-    public static HBaseConfiguration getHBaseConfiguration(final String master) {
+    public static Configuration getHBaseConfiguration(final String master) {
         final Configuration configuration = new Configuration();
         configuration.set(HConnectionImpl.MASTER, master);
-        return new HBaseConfiguration(configuration);
+        return HBaseConfiguration.create(configuration);
     }
 
     private AtomicReference<Map<Class, AnnotationResultAccessor>> getAtomicAnnoMapping() {
@@ -122,7 +110,7 @@ public class HConnectionImpl extends PoolableElement<HConnectionImpl> implements
         return this.getElementPool() != null;
     }
 
-    public HBaseConfiguration getHBaseConfiguration() {
+    public Configuration getHBaseConfiguration() {
         return this.hbaseConfiguration;
     }
 
@@ -161,8 +149,7 @@ public class HConnectionImpl extends PoolableElement<HConnectionImpl> implements
 
         if (accessor != null) {
             return accessor;
-        }
-        else {
+        } else {
             accessor = AnnotationResultAccessor.newAnnotationMapping(this, clazz);
             getAnnotationMappingMap().put(clazz, accessor);
             return accessor;
@@ -184,6 +171,9 @@ public class HConnectionImpl extends PoolableElement<HConnectionImpl> implements
                     catch (MasterNotRunningException e) {
                         throw new HBqlException(e);
                     }
+                    catch (ZooKeeperConnectionException e) {
+                        throw new HBqlException(e);
+                    }
                 }
             }
         }
@@ -203,6 +193,9 @@ public class HConnectionImpl extends PoolableElement<HConnectionImpl> implements
                         this.getAtomicIndexTableAdmin().set(new IndexedTableAdmin(this.getHBaseConfiguration()));
                     }
                     catch (MasterNotRunningException e) {
+                        throw new HBqlException(e);
+                    }
+                    catch (ZooKeeperConnectionException e) {
                         throw new HBqlException(e);
                     }
                 }
@@ -410,6 +403,9 @@ public class HConnectionImpl extends PoolableElement<HConnectionImpl> implements
         catch (MasterNotRunningException e) {
             throw new HBqlException(e);
         }
+        catch (IOException e) {
+            throw new HBqlException(e);
+        }
     }
 
     public HTableDescriptor getHTableDescriptor(final String tableName) throws HBqlException {
@@ -496,7 +492,7 @@ public class HConnectionImpl extends PoolableElement<HConnectionImpl> implements
         this.validateQueryExecutorPoolNameExists(this.getQueryExecutorPoolName());
 
         final QueryExecutorPool pool = QueryExecutorPoolManager.getQueryExecutorPool(this.getQueryExecutorPoolName());
-        final CompletionQueueExecutor executorQueue = ((QueryExecutorPoolImpl)pool).take();
+        final CompletionQueueExecutor executorQueue = ((QueryExecutorPoolImpl) pool).take();
 
         // Reset it prior to handing it out
         executorQueue.resetElement();
@@ -513,7 +509,7 @@ public class HConnectionImpl extends PoolableElement<HConnectionImpl> implements
 
         final AsyncExecutor executor = AsyncExecutorManager.getAsyncExecutor(this.getAsyncExecutorName());
 
-        return ((AsyncExecutorImpl)executor);
+        return ((AsyncExecutorImpl) executor);
     }
 
 

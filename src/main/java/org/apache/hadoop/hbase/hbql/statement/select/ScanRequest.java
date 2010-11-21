@@ -20,7 +20,7 @@
 
 package org.apache.hadoop.hbase.hbql.statement.select;
 
-import org.apache.hadoop.hbase.client.HTable;
+import org.apache.hadoop.hbase.client.HTableInterface;
 import org.apache.hadoop.hbase.client.ResultScanner;
 import org.apache.hadoop.hbase.client.Scan;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
@@ -43,7 +43,7 @@ public class ScanRequest implements RowRequest {
 
     public ResultScanner getResultScanner(final Mapping mapping,
                                           final WithArgs withArgs,
-                                          final HTable table) throws HBqlException {
+                                          final HTableInterface table) throws HBqlException {
         try {
             return table.getScanner(this.getScanValue());
         }

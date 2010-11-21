@@ -25,6 +25,7 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.KeyValue;
 import org.apache.hadoop.hbase.filter.Filter;
+import org.apache.hadoop.hbase.filter.FilterBase;
 import org.apache.hadoop.hbase.io.HbaseObjectWritable;
 import org.apache.hadoop.io.Writable;
 
@@ -43,7 +44,7 @@ import java.util.List;
  * Defaults to {@link Operator#MUST_PASS_ALL}.
  * <p>TODO: Fix creation of Configuration on serialization and deserialization.
  */
-public class RecordFilterList implements Filter {
+public class RecordFilterList extends FilterBase {
 
     private static final Log LOG = LogFactory.getLog(RecordFilterList.class);
 
@@ -61,8 +62,8 @@ public class RecordFilterList implements Filter {
         MUST_PASS_ONE
     }
 
-    private Operator operator = Operator.MUST_PASS_ALL;
-    private List<Filter> filters = new ArrayList<Filter>();
+    private Operator     operator = Operator.MUST_PASS_ALL;
+    private List<Filter> filters  = new ArrayList<Filter>();
 
     /**
      * Default constructor, filters nothing. Required though for RPC
@@ -139,13 +140,12 @@ public class RecordFilterList implements Filter {
         for (Filter filter : filters) {
             if (this.operator == Operator.MUST_PASS_ALL) {
                 if (filter.filterAllRemaining() ||
-                    filter.filterRowKey(rowKey, offset, length)) {
+                        filter.filterRowKey(rowKey, offset, length)) {
                     return true;
                 }
-            }
-            else if (this.operator == Operator.MUST_PASS_ONE) {
+            } else if (this.operator == Operator.MUST_PASS_ONE) {
                 if (!filter.filterAllRemaining() &&
-                    !filter.filterRowKey(rowKey, offset, length)) {
+                        !filter.filterRowKey(rowKey, offset, length)) {
                     return false;
                 }
             }
@@ -159,8 +159,7 @@ public class RecordFilterList implements Filter {
                 if (operator == Operator.MUST_PASS_ALL) {
                     return true;
                 }
-            }
-            else {
+            } else {
                 if (operator == Operator.MUST_PASS_ONE) {
                     return false;
                 }
@@ -184,8 +183,7 @@ public class RecordFilterList implements Filter {
                     case SKIP:
                         return ReturnCode.SKIP;
                 }
-            }
-            else if (operator == Operator.MUST_PASS_ONE) {
+            } else if (operator == Operator.MUST_PASS_ONE) {
                 if (filter.filterAllRemaining()) {
                     continue;
                 }
@@ -208,10 +206,9 @@ public class RecordFilterList implements Filter {
                 if (filter.filterAllRemaining() || filter.filterRow()) {
                     return true;
                 }
-            }
-            else if (operator == Operator.MUST_PASS_ONE) {
+            } else if (operator == Operator.MUST_PASS_ONE) {
                 if (!filter.filterAllRemaining()
-                    && !filter.filterRow()) {
+                        && !filter.filterRow()) {
                     return false;
                 }
             }
@@ -220,21 +217,21 @@ public class RecordFilterList implements Filter {
     }
 
     public void readFields(final DataInput in) throws IOException {
-        Configuration conf = new HBaseConfiguration();
+        Configuration conf = HBaseConfiguration.create();
         byte opByte = in.readByte();
         operator = Operator.values()[opByte];
         int size = in.readInt();
         if (size > 0) {
             filters = new ArrayList<Filter>(size);
             for (int i = 0; i < size; i++) {
-                Filter filter = (Filter)HbaseObjectWritable.readObject(in, conf);
+                Filter filter = (Filter) HbaseObjectWritable.readObject(in, conf);
                 filters.add(filter);
             }
         }
     }
 
     public void write(final DataOutput out) throws IOException {
-        Configuration conf = new HBaseConfiguration();
+        Configuration conf = HBaseConfiguration.create();
         out.writeByte(operator.ordinal());
         out.writeInt(filters.size());
         for (Filter filter : filters) {

@@ -24,7 +24,7 @@ import org.apache.expreval.client.NullColumnValueException;
 import org.apache.expreval.client.ResultMissingColumnException;
 import org.apache.expreval.expr.ExpressionTree;
 import org.apache.hadoop.hbase.client.Delete;
-import org.apache.hadoop.hbase.client.HTable;
+import org.apache.hadoop.hbase.client.HTableInterface;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.client.ResultScanner;
 import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
@@ -45,10 +45,10 @@ public class DeleteStatement extends StatementWithParameters implements Connecti
 
     private final List<String> deleteItemList = Lists.newArrayList();
     private final List<String> originaltemList;
-    private final WithArgs withArgs;
+    private final WithArgs     withArgs;
 
     private HConnectionImpl connection = null;
-    private boolean validated = false;
+    private boolean         validated  = false;
 
     public DeleteStatement(final StatementPredicate predicate,
                            final List<String> originaltemList,
@@ -100,8 +100,7 @@ public class DeleteStatement extends StatementWithParameters implements Connecti
         for (final String deleteItem : this.originaltemList) {
             if (deleteItem.contains(":")) {
                 this.getDeleteItemList().add(deleteItem);
-            }
-            else {
+            } else {
                 final TableMapping mapping = this.getMappingContext().getTableMapping();
                 final ColumnAttrib attrib = mapping.getAttribByVariableName(deleteItem);
                 if (attrib == null)
@@ -162,7 +161,7 @@ public class DeleteStatement extends StatementWithParameters implements Connecti
                        final WithArgs withArgs,
                        final RowRequest rowRequest) throws HBqlException {
 
-        final HTable table = tableWrapper.getHTable();
+        final HTableInterface table = tableWrapper.getHTable();
         final ExpressionTree clientExpressionTree = withArgs.getClientExpressionTree();
         final ResultScanner resultScanner = rowRequest.getResultScanner(this.getMappingContext().getMapping(),
                                                                         withArgs,
@@ -181,9 +180,11 @@ public class DeleteStatement extends StatementWithParameters implements Connecti
                             if (deleteItem.endsWith(":*")) {
                                 final String familyName = deleteItem.substring(0, deleteItem.length() - 2);
                                 rowDelete.deleteFamily(familyName.getBytes());
-                            }
-                            else {
-                                rowDelete.deleteColumns(deleteItem.getBytes());
+                            } else {
+                                final int delim = deleteItem.indexOf(":");
+                                String family = deleteItem.substring(0, delim);
+                                String qualifier = deleteItem.substring(delim + 1, deleteItem.length());
+                                rowDelete.deleteColumns(family.getBytes(), qualifier.getBytes());
                             }
                         }
 

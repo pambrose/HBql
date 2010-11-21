@@ -44,13 +44,13 @@ import java.io.IOException;
  * individual HRegions by making sure that the page size is never exceeded
  * locally.
  */
-public class PageFilter implements InstrumentedFilter {
+public class PageFilter extends InstrumentedFilter {
 
     private static final Log LOG = LogFactory.getLog(PageFilter.class);
 
-    private boolean verbose = false;
-    private long pageSize = Long.MAX_VALUE;
-    private int rowsAccepted = 0;
+    private boolean verbose      = false;
+    private long    pageSize     = Long.MAX_VALUE;
+    private int     rowsAccepted = 0;
     private Filter filter;
 
     /**
@@ -88,10 +88,11 @@ public class PageFilter implements InstrumentedFilter {
             this.getFilter().reset();
     }
 
+
     public boolean filterAllRemaining() {
         if (this.getVerbose())
             LOG.debug("In PageFilter.filterAllRemaining() " + (this.rowsAccepted >= this.pageSize)
-                      + " " + this.rowsAccepted + " of " + this.pageSize);
+                              + " " + this.rowsAccepted + " of " + this.pageSize);
         return this.rowsAccepted >= this.pageSize;
     }
 
@@ -120,18 +121,19 @@ public class PageFilter implements InstrumentedFilter {
         }
 
         this.rowsAccepted++;
+
         return this.rowsAccepted > this.pageSize;
     }
 
     public void readFields(final DataInput in) throws IOException {
-        Configuration conf = new HBaseConfiguration();
+        Configuration conf = HBaseConfiguration.create();
         this.pageSize = in.readLong();
         this.verbose = in.readBoolean();
-        this.filter = (Filter)HbaseObjectWritable.readObject(in, conf);
+        this.filter = (Filter) HbaseObjectWritable.readObject(in, conf);
     }
 
     public void write(final DataOutput out) throws IOException {
-        Configuration conf = new HBaseConfiguration();
+        Configuration conf = HBaseConfiguration.create();
         out.writeLong(this.pageSize);
         out.writeBoolean(this.getVerbose());
         HbaseObjectWritable.writeObject(out, this.getFilter(), Writable.class, conf);

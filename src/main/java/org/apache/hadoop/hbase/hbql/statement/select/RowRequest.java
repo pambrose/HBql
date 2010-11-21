@@ -20,7 +20,7 @@
 
 package org.apache.hadoop.hbase.hbql.statement.select;
 
-import org.apache.hadoop.hbase.client.HTable;
+import org.apache.hadoop.hbase.client.HTableInterface;
 import org.apache.hadoop.hbase.client.ResultScanner;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.mapping.Mapping;
@@ -28,5 +28,5 @@ import org.apache.hadoop.hbase.hbql.statement.args.WithArgs;
 
 public interface RowRequest {
 
-    ResultScanner getResultScanner(Mapping mapping, WithArgs withArgs, HTable table) throws HBqlException;
+    ResultScanner getResultScanner(Mapping mapping, WithArgs withArgs, HTableInterface table) throws HBqlException;
 }

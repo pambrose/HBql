@@ -9,7 +9,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -18,13 +18,27 @@
  * limitations under the License.
  */
 
-package org.apache.hadoop.hbase.hbql.filter;
+package org.apache.hadoop.hbase.hbql.mapping;
 
-import org.apache.hadoop.hbase.filter.FilterBase;
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.regionserver.StoreFile;
 
-public abstract class InstrumentedFilter extends FilterBase {
+public class BloomFilterTypeProperty extends FamilyProperty {
 
-    public abstract void setVerbose(boolean verbose);
+    final String type;
 
-    public abstract boolean getVerbose();
+    public BloomFilterTypeProperty(final String text, final String type) {
+        super(text);
+        this.type = type;
+    }
+
+    public StoreFile.BloomType getBloomValue() throws HBqlException {
+
+        try {
+            return StoreFile.BloomType.valueOf(this.type.toUpperCase());
+        }
+        catch (Exception e) {
+            throw new HBqlException("Invalid bloom filter type: " + this.type);
+        }
+    }
 }

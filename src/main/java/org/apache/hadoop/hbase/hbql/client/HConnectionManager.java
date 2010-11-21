@@ -20,7 +20,7 @@
 
 package org.apache.hadoop.hbase.hbql.client;
 
-import org.apache.hadoop.hbase.HBaseConfiguration;
+import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 
 public class HConnectionManager {
@@ -31,7 +31,7 @@ public class HConnectionManager {
         return HConnectionManager.newConnection(null);
     }
 
-    public static HConnection newConnection(final HBaseConfiguration config) throws HBqlException {
+    public static HConnection newConnection(final Configuration config) throws HBqlException {
         return new HConnectionImpl(config, null, getMaxPoolReferencesPerTablePerConnection());
     }
 

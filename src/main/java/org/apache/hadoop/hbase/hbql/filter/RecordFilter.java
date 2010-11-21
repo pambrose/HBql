@@ -40,7 +40,7 @@ import java.io.*;
 import java.util.Arrays;
 import java.util.List;
 
-public class RecordFilter implements InstrumentedFilter {
+public class RecordFilter extends InstrumentedFilter {
 
     private static final Log LOG = LogFactory.getLog(RecordFilter.class);
 

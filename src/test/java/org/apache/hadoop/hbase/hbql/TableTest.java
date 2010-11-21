@@ -27,6 +27,7 @@ import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.client.HConnectionManager;
 import org.apache.hadoop.hbase.hbql.util.TestSupport;
 import org.apache.hadoop.hbase.io.hfile.Compression;
+import org.apache.hadoop.hbase.regionserver.StoreFile;
 import org.junit.Test;
 
 public class TableTest extends TestSupport {
@@ -73,16 +74,15 @@ public class TableTest extends TestSupport {
         }
         assertFalse(connection.tableExists(tableName));
         connection.execute("CREATE TABLE " + tableName
-                           + " (family1 ("
-                           + "MAX_VERSIONS:  12, "
-                           + "BLOOM_FILTER:  TRUE, "
-                           + "BLOCK_SIZE: 123, "
-                           + "BLOCK_CACHE_ENABLED: TRUE, "
-                           + "COMPRESSION_TYPE: GZ, "
-                           + "IN_MEMORY: TRUE, "
-                           + "MAP_FILE_INDEX_INTERVAL:  230, "
-                           + "TTL: 440"
-                           + "))");
+                                   + " (family1 ("
+                                   + "MAX_VERSIONS:  12, "
+                                   + "BLOOMFILTER_TYPE:  ROW, "
+                                   + "BLOCK_SIZE: 123, "
+                                   + "BLOCK_CACHE_ENABLED: TRUE, "
+                                   + "COMPRESSION_TYPE: GZ, "
+                                   + "IN_MEMORY: TRUE, "
+                                   + "TTL: 440"
+                                   + "))");
         assertTrue(connection.tableExists(tableName));
         HTableDescriptor table = connection.getHTableDescriptor(tableName);
         HColumnDescriptor[] hcd = table.getColumnFamilies();
@@ -94,12 +94,11 @@ public class TableTest extends TestSupport {
 
         assertTrue(family.getNameAsString().equals("family1"));
         assertTrue(family.getMaxVersions() == 12);
-        assertTrue(family.isBloomfilter());
+        assertTrue(family.getBloomFilterType() == StoreFile.BloomType.ROW);
         assertTrue(family.getBlocksize() == 123);
         assertTrue(family.isBlockCacheEnabled());
         assertTrue(family.getCompressionType() == Compression.Algorithm.GZ);
         assertTrue(family.isInMemory());
-        assertTrue(family.getValue(HColumnDescriptor.MAPFILE_INDEX_INTERVAL).equals("230"));
         assertTrue(family.getTimeToLive() == 440);
 
         connection.disableTable(tableName);

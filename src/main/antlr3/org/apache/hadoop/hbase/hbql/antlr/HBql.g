@@ -238,14 +238,16 @@ familyPropertyList returns [List<FamilyProperty> retval]
 familyProperty returns [FamilyProperty retval]
 options {backtrack=true;}	
 	: k=keyMAX_VERSIONS COLON v=exprValue		 {retval = new FamilyProperty($k.retval, $v.retval);}
-	| k=keyMAP_FILE_INDEX_INTERVAL COLON v=exprValue {retval = new FamilyProperty($k.retval, $v.retval);}
 	| k=keyTTL COLON v=exprValue			 {retval = new FamilyProperty($k.retval, $v.retval);}
 	| k=keyBLOCK_SIZE COLON v=exprValue		 {retval = new FamilyProperty($k.retval, $v.retval);}
 	| k=keyBLOCK_CACHE_ENABLED COLON v=exprValue	 {retval = new FamilyProperty($k.retval, $v.retval);}
 	| k=keyIN_MEMORY COLON v=exprValue		 {retval = new FamilyProperty($k.retval, $v.retval);}
-	| k=keyBLOOM_FILTER COLON v=exprValue		 {retval = new FamilyProperty($k.retval, $v.retval);}
+	| k=keyBLOOMFILTER_TYPE COLON b=bloomFilterType	 {retval = new BloomFilterTypeProperty($k.retval, $b.text);}
 	| k=keyCOMPRESSION_TYPE COLON c=compressionType	 {retval = new CompressionTypeProperty($k.retval, $c.text);}
 	;
+
+bloomFilterType
+	: keyROW | keyROWCOL | keyNONE;
 
 compressionType
 	: keyGZ | keyLZO | keyNONE;
@@ -596,10 +598,9 @@ keyCOMPLETION_QUEUE_SIZE returns [String retval]   : {isKeyword(input, "COMPLETI
 // Any changes to these require a change in the FamilyProperty.Type enums
 keyBLOCK_CACHE_ENABLED returns [String retval]	   : {isKeyword(input, "BLOCK_CACHE_ENABLED")}? id=ID {retval = $id.text;};
 keyBLOCK_SIZE returns [String retval]              : {isKeyword(input, "BLOCK_SIZE")}? id=ID {retval = $id.text;};
-keyBLOOM_FILTER returns [String retval]            : {isKeyword(input, "BLOOM_FILTER")}? id=ID {retval = $id.text;};
+keyBLOOMFILTER_TYPE returns [String retval]        : {isKeyword(input, "BLOOMFILTER_TYPE")}? id=ID {retval = $id.text;};
 keyCOMPRESSION_TYPE returns [String retval]        : {isKeyword(input, "COMPRESSION_TYPE")}? id=ID {retval = $id.text;};
 keyIN_MEMORY returns [String retval]               : {isKeyword(input, "IN_MEMORY")}? id=ID {retval = $id.text;};
-keyMAP_FILE_INDEX_INTERVAL returns [String retval] : {isKeyword(input, "MAP_FILE_INDEX_INTERVAL")}? id=ID {retval = $id.text;};
 keyMAX_VERSIONS returns [String retval] 	   : {isKeyword(input, "MAX_VERSIONS")}? id=ID {retval = $id.text;};
 keyTTL returns [String retval]     		   : {isKeyword(input, "TTL")}? id=ID {retval = $id.text;};
 keyINDEX returns [String retval]                   : {isKeyword(input, "INDEX")}? id=ID  {retval = $id.text;};
@@ -669,6 +670,8 @@ keyPOOL                         : {isKeyword(input, "POOL")}? ID;
 keyPOOLS                        : {isKeyword(input, "POOLS")}? ID;
 keyQUERY	                : {isKeyword(input, "QUERY")}? ID;
 keyRANGE                        : {isKeyword(input, "RANGE")}? ID;
+keyROW                        	: {isKeyword(input, "ROW")}? ID;
+keyROWCOL                       : {isKeyword(input, "ROWCOL")}? ID;
 keySCANNER_CACHE_SIZE           : {isKeyword(input, "SCANNER_CACHE_SIZE")}? ID;
 keySELECT                       : {isKeyword(input, "SELECT")}? ID;
 keySERVER                       : {isKeyword(input, "SERVER")}? ID;

@@ -20,7 +20,7 @@
 
 package org.apache.hadoop.hbase.jdbc;
 
-import org.apache.hadoop.hbase.HBaseConfiguration;
+import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 import org.apache.hadoop.hbase.hbql.util.Maps;
 import org.apache.hadoop.hbase.jdbc.impl.ConnectionImpl;
@@ -52,7 +52,7 @@ public class Driver implements java.sql.Driver {
                 final String var = vals[0].toLowerCase();
 
                 if (!var.equals(HConnectionImpl.MAXTABLEREFS)
-                    && !var.equals(HConnectionImpl.MASTER))
+                        && !var.equals(HConnectionImpl.MASTER))
                     throw new SQLException("Unknown JDBC URL option: " + var);
 
                 retval.put(var, vals[1]);
@@ -65,7 +65,7 @@ public class Driver implements java.sql.Driver {
 
         final Map<String, String> argMap = getArgMap(url);
 
-        final HBaseConfiguration config;
+        final Configuration config;
         if (argMap.containsKey(HConnectionImpl.MASTER))
             config = HConnectionImpl.getHBaseConfiguration(argMap.get(HConnectionImpl.MASTER));
         else
@@ -74,14 +74,14 @@ public class Driver implements java.sql.Driver {
         return getConnection(url, config);
     }
 
-    public static Connection getConnection(final String url, final HBaseConfiguration config) throws SQLException {
+    public static Connection getConnection(final String url, final Configuration config) throws SQLException {
         if (!validURL(url))
             return null;
 
         final Map<String, String> argMap = getArgMap(url);
 
         final int maxtablerefs = argMap.containsKey(HConnectionImpl.MAXTABLEREFS)
-                                 ? Integer.parseInt(argMap.get(HConnectionImpl.MAXTABLEREFS)) : Integer.MAX_VALUE;
+                ? Integer.parseInt(argMap.get(HConnectionImpl.MAXTABLEREFS)) : Integer.MAX_VALUE;
         return new ConnectionImpl(config, maxtablerefs);
     }
 

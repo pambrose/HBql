@@ -32,16 +32,15 @@ public class FamilyProperty extends ExpressionProperty {
     public static enum Type implements PropertyType {
 
         MAX_VERSIONS(new ArgumentListTypeSignature(IntegerValue.class), "MAX_VERSIONS"),
-        MAP_FILE_INDEX_INTERVAL(new ArgumentListTypeSignature(IntegerValue.class), "MAP_FILE_INDEX_INTERVAL"),
         TTL(new ArgumentListTypeSignature(IntegerValue.class), "TTL"),
         IN_MEMORY(new ArgumentListTypeSignature(BooleanValue.class), "IN_MEMORY"),
         BLOCK_SIZE(new ArgumentListTypeSignature(IntegerValue.class), "BLOCK_SIZE"),
         BLOCK_CACHE_ENABLED(new ArgumentListTypeSignature(BooleanValue.class), "BLOCK_CACHE_ENABLED"),
-        BLOOM_FILTER(new ArgumentListTypeSignature(BooleanValue.class), "BLOOM_FILTER"),
+        BLOOMFILTER_TYPE(new ArgumentListTypeSignature(), "BLOOMFILTER_TYPE"),
         COMPRESSION_TYPE(new ArgumentListTypeSignature(), "COMPRESSION_TYPE");
 
         private final ArgumentListTypeSignature typeSignature;
-        private final String description;
+        private final String                    description;
 
         Type(final ArgumentListTypeSignature typeSignature, final String description) {
             this.typeSignature = typeSignature;
@@ -66,7 +65,7 @@ public class FamilyProperty extends ExpressionProperty {
     }
 
     public Type getEnumType() {
-        return (Type)this.getPropertyType();
+        return (Type) this.getPropertyType();
     }
 
     public String asString() {

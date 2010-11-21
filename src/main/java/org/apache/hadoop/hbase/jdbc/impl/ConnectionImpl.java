@@ -20,34 +20,15 @@
 
 package org.apache.hadoop.hbase.jdbc.impl;
 
-import org.apache.hadoop.hbase.HBaseConfiguration;
+import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 import org.apache.hadoop.hbase.hbql.util.AtomicReferences;
 import org.apache.hadoop.hbase.hbql.util.Lists;
 
-import javax.sql.ConnectionEvent;
-import javax.sql.ConnectionEventListener;
-import javax.sql.PooledConnection;
-import javax.sql.StatementEvent;
-import javax.sql.StatementEventListener;
-import java.sql.Array;
-import java.sql.Blob;
-import java.sql.CallableStatement;
-import java.sql.Clob;
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.NClob;
-import java.sql.PreparedStatement;
-import java.sql.SQLClientInfoException;
-import java.sql.SQLException;
-import java.sql.SQLFeatureNotSupportedException;
-import java.sql.SQLWarning;
-import java.sql.SQLXML;
-import java.sql.Savepoint;
-import java.sql.Statement;
-import java.sql.Struct;
+import javax.sql.*;
+import java.sql.*;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -57,15 +38,17 @@ public class ConnectionImpl implements Connection, PooledConnection {
 
     private final HConnectionImpl hconnectionImpl;
 
-    private AtomicReference<List<ConnectionEventListener>> connectionEventListenerList = AtomicReferences.newAtomicReference();
-    private AtomicReference<List<StatementEventListener>> statementEventListenerList = AtomicReferences.newAtomicReference();
+    private AtomicReference<List<ConnectionEventListener>> connectionEventListenerList = AtomicReferences
+            .newAtomicReference();
+    private AtomicReference<List<StatementEventListener>>  statementEventListenerList  = AtomicReferences
+            .newAtomicReference();
 
-    public ConnectionImpl(final HBaseConfiguration config, final int maxPoolReferencesPerTable) throws HBqlException {
+    public ConnectionImpl(final Configuration config, final int maxPoolReferencesPerTable) throws HBqlException {
         this.hconnectionImpl = new HConnectionImpl(config, null, maxPoolReferencesPerTable);
     }
 
     public ConnectionImpl(final HConnection hconnectionImpl) {
-        this.hconnectionImpl = (HConnectionImpl)hconnectionImpl;
+        this.hconnectionImpl = (HConnectionImpl) hconnectionImpl;
     }
 
     public HConnectionImpl getHConnectionImpl() {

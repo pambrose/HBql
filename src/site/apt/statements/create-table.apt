@@ -17,12 +17,11 @@ familyDescription:
 
 familyProperty:
       MAX_VERSIONS ':' int_expr
-	| BLOOM_FILTER ':' bool_expr
 	| BLOCK_SIZE ':' int_expr
 	| BLOCK_CACHE_ENABLED ':' bool_expr
-	| COMPRESSION_TYPE ':' {GZ | LZO | NONE}	
+	| BLOOMFILTER_TYPE ':' {ROW | ROWCOL | NONE}
+	| COMPRESSION_TYPE ':' {GZ | LZO | NONE}
 	| IN_MEMORY ':' bool_expr
-	| MAP_FILE_INDEX_INTERVAL ':' int_expr
 	| TTL ':' int_expr
 
  type:

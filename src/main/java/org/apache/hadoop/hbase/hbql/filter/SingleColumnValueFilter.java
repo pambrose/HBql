@@ -61,17 +61,17 @@ import java.util.Arrays;
  * <p/>
  * To filter based on the value of all scanned columns, use {@link org.apache.hadoop.hbase.filter.ValueFilter}.
  */
-public class SingleColumnValueFilter implements InstrumentedFilter {
+public class SingleColumnValueFilter extends InstrumentedFilter {
     static final Log LOG = LogFactory.getLog(SingleColumnValueFilter.class);
 
     private boolean verbose = false;
-    private byte[] columnFamily;
-    private byte[] columnQualifier;
-    private CompareFilter.CompareOp compareOp;
+    private byte[]                      columnFamily;
+    private byte[]                      columnQualifier;
+    private CompareFilter.CompareOp     compareOp;
     private WritableByteArrayComparable comparator;
-    private boolean foundColumn = false;
-    private boolean matchedColumn = false;
-    private boolean filterIfMissing = false;
+    private boolean foundColumn       = false;
+    private boolean matchedColumn     = false;
+    private boolean filterIfMissing   = false;
     private boolean latestVersionOnly = true;
 
     /**
@@ -137,8 +137,7 @@ public class SingleColumnValueFilter implements InstrumentedFilter {
         if (this.matchedColumn) {
             // We already found and matched the single column, all keys now pass
             return ReturnCode.INCLUDE;
-        }
-        else if (this.latestVersionOnly && this.foundColumn) {
+        } else if (this.latestVersionOnly && this.foundColumn) {
             // We found but did not match the single column, skip to next row
             return ReturnCode.NEXT_ROW;
         }
@@ -251,7 +250,7 @@ public class SingleColumnValueFilter implements InstrumentedFilter {
         }
         this.compareOp = CompareFilter.CompareOp.valueOf(in.readUTF());
         this.comparator =
-                (WritableByteArrayComparable)HbaseObjectWritable.readObject(in, null);
+                (WritableByteArrayComparable) HbaseObjectWritable.readObject(in, null);
         this.foundColumn = in.readBoolean();
         this.matchedColumn = in.readBoolean();
         this.filterIfMissing = in.readBoolean();

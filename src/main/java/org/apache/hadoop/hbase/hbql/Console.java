@@ -23,7 +23,7 @@ package org.apache.hadoop.hbase.hbql;
 import jline.ArgumentCompletor;
 import jline.ConsoleReader;
 import jline.SimpleCompletor;
-import org.apache.hadoop.hbase.HBaseConfiguration;
+import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnectionManager;
@@ -43,9 +43,9 @@ import java.util.Map;
 
 public class Console {
 
-    private static HConnectionImpl conn = null;
-    private static boolean processCommandLine = true;
-    private static HBaseConfiguration config = null;
+    private static HConnectionImpl conn               = null;
+    private static boolean         processCommandLine = true;
+    private static Configuration   config             = null;
 
     public static void main(String[] args) throws HBqlException, IOException {
 
@@ -101,8 +101,7 @@ public class Console {
                 System.out.println("Incorrect syntax: " + option);
                 usage();
                 return false;
-            }
-            else {
+            } else {
                 config = HConnectionImpl.getHBaseConfiguration(vals[1]);
                 return true;
             }
@@ -113,8 +112,7 @@ public class Console {
             System.out.println("Unknown option: " + option);
             usage();
             return false;
-        }
-        else {
+        } else {
             // Assume that an arg without "-" prefix is a filename
             processCommandLine = false;
             final ImportStatement importStmt = new ImportStatement(option);
@@ -127,7 +125,7 @@ public class Console {
     private synchronized static HConnectionImpl getConnection() throws HBqlException {
 
         if (conn == null)
-            conn = (HConnectionImpl)HConnectionManager.newConnection(config);
+            conn = (HConnectionImpl) HConnectionManager.newConnection(config);
 
         return conn;
     }
@@ -136,8 +134,8 @@ public class Console {
 
         final List<SimpleCompletor> completors = Lists.newArrayList();
         completors.add(new SimpleCompletor(new String[]{"select", "insert", "create", "table", "mapping",
-                                                        "describe", "drop", "enable", "disable", "show",
-                                                        "executor", "pool"}));
+                "describe", "drop", "enable", "disable", "show",
+                "executor", "pool"}));
 
         final ConsoleReader reader = new ConsoleReader();
         reader.setBellEnabled(false);

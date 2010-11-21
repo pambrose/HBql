@@ -20,7 +20,7 @@
 
 package org.apache.hadoop.hbase.hbql.client;
 
-import org.apache.hadoop.hbase.HBaseConfiguration;
+import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HTableDescriptor;
 
 import java.util.List;
@@ -28,7 +28,7 @@ import java.util.Set;
 
 public interface HConnection {
 
-    HBaseConfiguration getHBaseConfiguration();
+    Configuration getHBaseConfiguration();
 
     // org.apache.hadoop.hbase.client.HTable newHTable(String tableName) throws HBqlException;
 

@@ -21,7 +21,7 @@
 package org.apache.hadoop.hbase.hbql.statement.select;
 
 import org.apache.hadoop.hbase.HConstants;
-import org.apache.hadoop.hbase.client.HTable;
+import org.apache.hadoop.hbase.client.HTableInterface;
 import org.apache.hadoop.hbase.client.ResultScanner;
 import org.apache.hadoop.hbase.client.tableindexed.IndexedTable;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
@@ -39,8 +39,8 @@ import java.util.Set;
 
 public class IndexRequest implements RowRequest {
 
-    private final byte[] startRow;
-    private final byte[] stopRow;
+    private final byte[]            startRow;
+    private final byte[]            stopRow;
     private final Set<ColumnAttrib> columnAttribs;
 
     public IndexRequest(final byte[] startRow, final byte[] stopRow, final Set<ColumnAttrib> columnAttribs) {
@@ -67,12 +67,11 @@ public class IndexRequest implements RowRequest {
 
         if (this.getColumnAttribs() == null) {
             attribs = null;
-        }
-        else {
+        } else {
             final List<String> columnList = Lists.newArrayList();
             for (final ColumnAttrib columnAttrib : this.getColumnAttribs())
                 columnList.add(columnAttrib.isASelectFamilyAttrib() ? columnAttrib.getFamilyName()
-                                                                    : columnAttrib.getFamilyQualifiedName());
+                                       : columnAttrib.getFamilyQualifiedName());
             attribs = Util.getStringsAsBytes(columnList);
         }
         return attribs;
@@ -80,22 +79,22 @@ public class IndexRequest implements RowRequest {
 
     public ResultScanner getResultScanner(final Mapping mapping,
                                           final WithArgs withArgs,
-                                          final HTable table) throws HBqlException {
+                                          final HTableInterface table) throws HBqlException {
 
-        final IndexedTable index = (IndexedTable)table;
+        final IndexedTable index = (IndexedTable) table;
 
         byte[] startKey = null;
         byte[] stopKey = null;
 
         if (this.getStartRow() != HConstants.EMPTY_START_ROW) {
-            final TableMapping tableMapping = (TableMapping)mapping;
+            final TableMapping tableMapping = (TableMapping) mapping;
             tableMapping.validateKeyInfo(withArgs.getIndexName());
             final int width = tableMapping.getKeyInfo().getWidth();
             startKey = Bytes.add(this.getStartRow(), Util.getFixedWidthString(Character.MIN_VALUE, width));
         }
 
         if (this.getStopRow() != HConstants.EMPTY_END_ROW) {
-            final TableMapping tableMapping = (TableMapping)mapping;
+            final TableMapping tableMapping = (TableMapping) mapping;
             tableMapping.validateKeyInfo(withArgs.getIndexName());
             final int width = tableMapping.getKeyInfo().getWidth();
             stopKey = Bytes.add(this.getStopRow(), Util.getFixedWidthString(Character.MAX_VALUE, width));

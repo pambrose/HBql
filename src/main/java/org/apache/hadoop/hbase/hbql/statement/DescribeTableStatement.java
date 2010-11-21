@@ -46,23 +46,22 @@ public class DescribeTableStatement extends TableStatement {
         retval.out.println("\nFamilies:");
         for (final HColumnDescriptor columnDesc : tableDesc.getFamilies()) {
             retval.out.println("  " + columnDesc.getNameAsString()
-                               + "\n    Max versions: " + columnDesc.getMaxVersions()
-                               + "\n    TTL: " + columnDesc.getTimeToLive()
-                               + "\n    Block size: " + columnDesc.getBlocksize()
-                               + "\n    Compression: " + columnDesc.getCompression().getName()
-                               + "\n    Compression type: " + columnDesc.getCompressionType().getName()
-                               + "\n    Block cache enabled: " + columnDesc.isBlockCacheEnabled()
-                               + "\n    Bloom filter: " + columnDesc.isBloomfilter()
-                               + "\n    In memory: " + columnDesc.isInMemory()
-                               + "\n");
+                                       + "\n    Max versions: " + columnDesc.getMaxVersions()
+                                       + "\n    TTL: " + columnDesc.getTimeToLive()
+                                       + "\n    Block size: " + columnDesc.getBlocksize()
+                                       + "\n    Compression: " + columnDesc.getCompression().getName()
+                                       + "\n    Compression type: " + columnDesc.getCompressionType().getName()
+                                       + "\n    Block cache enabled: " + columnDesc.isBlockCacheEnabled()
+                                       + "\n    Bloomfilter type: " + columnDesc.getBloomFilterType().name()
+                                       + "\n    In memory: " + columnDesc.isInMemory()
+                                       + "\n");
         }
 
         final IndexedTableDescriptor indexDesc = conn.newIndexedTableDescriptor(this.getTableName());
         final Collection<IndexSpecification> indexes = indexDesc.getIndexes();
         if (indexes.isEmpty()) {
             retval.out.println("No table indexes.");
-        }
-        else {
+        } else {
             retval.out.println("Table indexes:");
             for (final IndexSpecification index : indexes) {
                 retval.out.println("  " + index.getIndexId());
