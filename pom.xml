@@ -26,7 +26,7 @@
     <artifactId>HBql</artifactId>
     <name>HBql</name>
     <packaging>jar</packaging>
-    <version>0.10.01-alpha</version>
+    <version>0.89.20100924.1</version>
 
     <scm>
         <connection>scm:git://github.com/pambrose/HBql.git/</connection>
@@ -48,25 +48,21 @@
             <id>website</id>
             <url>scp://hbql@www.hbql.com/home/hbql/public_html/</url>
         </site>
-
-        <!--
-        <repository>
-            <id>javarants</id>
-            <name>libs-releases</name>
-            <url>http://maven.javarants.com/artifactory/libs-releases</url>
-        </repository>
-
-        <snapshotRepository>
-            <id>javarants</id>
-            <name>libs-snapshots</name>
-            <url>http://maven.javarants.com/artifactory/libs-snapshots</url>
-        </snapshotRepository>
-        -->
     </distributionManagement>
 
     <repositories>
 
-        <!--
+        <repository>
+            <id>asf-releases</id>
+            <name>Apache Public Releases</name>
+            <url>https://repository.apache.org/content/repositories/public/</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+        </repository>
 
         <repository>
             <id>java.net</id>
@@ -80,12 +76,7 @@
             </releases>
         </repository>
 
-        <repository>
-            <id>maven.javarants.com</id>
-            <name>javarants</name>
-            <url>http://maven.javarants.com/artifactory/libs-releases/</url>
-        </repository>
-
+        <!--
         <repository>
             <id>mirror.facebook.net</id>
             <name>facebook mirror</name>
@@ -98,18 +89,6 @@
             </releases>
         </repository>
         -->
-
-        <repository>
-            <id>asf-releases</id>
-            <name>Apache Public Releases</name>
-            <url>https://repository.apache.org/content/repositories/public/</url>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-        </repository>
 
         <repository>
             <id>googlecode</id>

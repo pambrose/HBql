@@ -2,7 +2,7 @@
 
 export MAVEN_OPTS="-Xms2048m -Xmx2048m -DskipTests=true"
 
-export VERSION="0.9.28-alpha"
+export VERSION="0.89.20100924.1"
 export DIST="hbql-"${VERSION}
 export DOCS="javadocs-"${VERSION}
 export HBQL="/Users/pambrose/git/hbql"
