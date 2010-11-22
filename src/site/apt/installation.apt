@@ -30,23 +30,25 @@ Installation
       and {{{statements/show-tables.html}SHOW TABLES}} commands.
 
 
-* THBase Index Support (org.apache.hadoop.hbase.client.tableindexed)
+* THBase Index Support (https://github.com/hbase-trx/hbase-transactional-tableindexed)
 
-    ** As described in the org.apache.hadoop.hbase.client.tableindexed package description: \
-       "Modify hbase-site.xml to turn on the IndexedRegionServer.  This is done by setting \
-       hbase.regionserver.class to org.apache.hadoop.hbase.ipc.IndexedRegionInterface
-       and hbase.regionserver.impl to org.apache.hadoop.hbase.regionserver.tableindexed.IndexedRegionServer".
+    ** As described on the github tableindexed home: \
+       Modify hbase-site.xml to turn on the IndexedRegionServer.  This is done by setting \
+       hbase.regionserver.class, hbase.regionserver.impl, and hbase.hregion.impl as shown:
 
 ---------------------------
 
-<property>
+ <property>
     <name>hbase.regionserver.class</name>
     <value>org.apache.hadoop.hbase.ipc.IndexedRegionInterface</value>
 </property>
-
 <property>
     <name>hbase.regionserver.impl</name>
     <value>org.apache.hadoop.hbase.regionserver.tableindexed.IndexedRegionServer</value>
+</property>
+<property>
+    <name>hbase.hregion.impl</name>
+    <value>org.apache.hadoop.hbase.regionserver.tableindexed.IndexedRegion</value>
 </property>
 
 ---------------------------

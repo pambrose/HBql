@@ -55,6 +55,12 @@
         <hbase-trx.version>0.90.0-DEV-2</hbase-trx.version>
         <hadoop.version>0.20.3-append-r964955-1240</hadoop.version>
         <guava.version>r07</guava.version>
+        <zookeeper.version>3.3.1</zookeeper.version>
+        <jline.version>0.9.9</jline.version>
+        <antlr.version>3.2</antlr.version>
+        <jmx.version>1.2.1</jmx.version>
+        <logging.version>1.0.4</logging.version>
+        <log4j.version>1.2.15</log4j.version>
         <jdk.version>1.6</jdk.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
@@ -85,20 +91,6 @@
             </releases>
         </repository>
 
-        <!--
-        <repository>
-            <id>mirror.facebook.net</id>
-            <name>facebook mirror</name>
-            <url>http://mirror.facebook.net/maven/repository/</url>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-        </repository>
-        -->
-
         <repository>
             <id>googlecode</id>
             <name>Google Code</name>
@@ -121,6 +113,12 @@
             <releases>
                 <enabled>true</enabled>
             </releases>
+        </repository>
+
+        <repository>
+            <id>jline</id>
+            <name>JLine Project Repository</name>
+            <url>http://jline.sourceforge.net/m2repo</url>
         </repository>
 
     </repositories>
@@ -149,13 +147,13 @@
         <dependency>
             <groupId>commons-logging</groupId>
             <artifactId>commons-logging</artifactId>
-            <version>1.0.4</version>
+            <version>${logging.version}</version>
         </dependency>
 
         <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
-            <version>1.2.15</version>
+            <version>${log4j.version}</version>
         </dependency>
 
         <dependency>
@@ -167,25 +165,25 @@
         <dependency>
             <groupId>org.apache.hadoop</groupId>
             <artifactId>zookeeper</artifactId>
-            <version>3.3.1</version>
+            <version>${zookeeper.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.antlr</groupId>
             <artifactId>antlr-runtime</artifactId>
-            <version>3.2</version>
+            <version>${antlr.version}</version>
         </dependency>
 
         <dependency>
             <groupId>jline</groupId>
             <artifactId>jline</artifactId>
-            <version>0.9.9</version>
+            <version>${jline.version}</version>
         </dependency>
 
         <dependency>
             <groupId>com.sun.jmx</groupId>
             <artifactId>jmxri</artifactId>
-            <version>1.2.1</version>
+            <version>${jmx.version}</version>
         </dependency>
 
         <dependency>
