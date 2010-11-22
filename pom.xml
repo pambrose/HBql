@@ -50,6 +50,15 @@
         </site>
     </distributionManagement>
 
+    <properties>
+        <hbase.version>0.89.20100924</hbase.version>
+        <hbase-trx.version>0.90.0-DEV-2</hbase-trx.version>
+        <hadoop.version>0.20.3-append-r964955-1240</hadoop.version>
+        <guava.version>r07</guava.version>
+        <jdk.version>1.6</jdk.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
     <repositories>
 
         <repository>
@@ -118,19 +127,23 @@
 
     <dependencies>
 
-        <!--
-        <dependency>
-            <groupId>org.apache.hbase</groupId>
-            <artifactId>hbase</artifactId>
-            <version>${hbase.version}</version>
-        </dependency>
-        -->
-
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.6</version>
             <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.hbase</groupId>
+            <artifactId>hbase</artifactId>
+            <version>${hbase.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache</groupId>
+            <artifactId>hbase-trx</artifactId>
+            <version>${hbase-trx.version}</version>
         </dependency>
 
         <dependency>
@@ -176,9 +189,9 @@
         </dependency>
 
         <dependency>
-            <groupId>com.google.collections</groupId>
-            <artifactId>google-collections</artifactId>
-            <version>1.0</version>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>${guava.version}</version>
         </dependency>
 
     </dependencies>
@@ -396,12 +409,5 @@
 
         </plugins>
     </reporting>
-
-    <properties>
-        <hbase.version>0.89.0-SNAPSHOT</hbase.version>
-        <hadoop.version>0.20.3-append-r964955-1240</hadoop.version>
-        <jdk.version>1.6</jdk.version>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
 
 </project>

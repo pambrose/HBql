@@ -7,11 +7,13 @@ Installation
 
     * Define the environment variables $HBQL_HOME and unzip the distribution to $HBQL_HOME.
 
+    * Clone https://github.com/hbase-trx/hbase-transactional-tableindexed to $TRX_HOME and build branch 0.90.0-DEV-2
+
     * Add the following jars to your client classpath.
 
         ** $HBQL_HOME/hbql-0.89.20100924.1.jar
 
-        ** $HBASE_HOME/contrib/transactional/hbase-0.20.6-transactional.jar
+        ** $TRX_HOME/org/apache/hbase-trx-0.90.0-DEV-2.jar
 
         ** $HBQL_HOME/lib/antlr-runtime-3.1.3.jar
 
@@ -21,7 +23,7 @@ Installation
 
         ** $HBQL_HOME/hbql-0.89.20100924.1.jar
 
-        ** $HBASE_HOME/contrib/transactional/hbase-0.20.6-transactional.jar
+        ** $TRX_HOME/org/apache/hbase-trx-0.90.0-DEV-2.jar
 
     * To verify your installation, run the {{{./console/console.html}console}}
       and enter the {{{./statements/version.html}VERSION}}
