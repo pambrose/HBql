@@ -20,6 +20,7 @@
 
 package org.apache.hadoop.hbase.hbql.impl;
 
+import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.client.HConnection;
@@ -27,25 +28,25 @@ import org.apache.hadoop.hbase.hbql.client.HConnectionPool;
 
 public class HConnectionPoolImpl extends ElementPool<HConnectionImpl> implements HConnectionPool {
 
-    private final HBaseConfiguration hbaseConfiguration;
-    private final int maxReferencesPerTable;
+    private final Configuration configuration;
+    private final int           maxReferencesPerTable;
 
     public HConnectionPoolImpl(final int initPoolSize,
                                final int maxPoolSize,
                                final String poolName,
-                               final HBaseConfiguration hbaseConfiguration,
+                               final Configuration configuration,
                                final int maxPoolReferencesPerTablePerConnection) throws HBqlException {
         super(poolName, maxPoolSize);
 
-        this.hbaseConfiguration = (hbaseConfiguration == null) ? new HBaseConfiguration() : hbaseConfiguration;
+        this.configuration = (configuration == null) ? HBaseConfiguration.create() : configuration;
         this.maxReferencesPerTable = maxPoolReferencesPerTablePerConnection;
 
         for (int i = 0; i < initPoolSize; i++)
             this.addElementToPool();
     }
 
-    public HBaseConfiguration getHBaseConfiguration() {
-        return this.hbaseConfiguration;
+    public Configuration getConfiguration() {
+        return this.configuration;
     }
 
     public int getMaxReferencesPerTable() {
@@ -53,7 +54,7 @@ public class HConnectionPoolImpl extends ElementPool<HConnectionImpl> implements
     }
 
     protected HConnectionImpl newElement() throws HBqlException {
-        return new HConnectionImpl(this.getHBaseConfiguration(), this, this.getMaxReferencesPerTable());
+        return new HConnectionImpl(this.getConfiguration(), this, this.getMaxReferencesPerTable());
     }
 
     public HConnection takeConnection() throws HBqlException {

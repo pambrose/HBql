@@ -102,7 +102,7 @@ public class Console {
                 usage();
                 return false;
             } else {
-                config = HConnectionImpl.getHBaseConfiguration(vals[1]);
+                config = HConnectionImpl.getConfiguration(vals[1]);
                 return true;
             }
         }

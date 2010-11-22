@@ -67,7 +67,7 @@ public class Driver implements java.sql.Driver {
 
         final Configuration config;
         if (argMap.containsKey(HConnectionImpl.MASTER))
-            config = HConnectionImpl.getHBaseConfiguration(argMap.get(HConnectionImpl.MASTER));
+            config = HConnectionImpl.getConfiguration(argMap.get(HConnectionImpl.MASTER));
         else
             config = null;
 

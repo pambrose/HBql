@@ -38,8 +38,8 @@ import java.util.List;
 public class SimpleFilter {
 
     static byte[] family = Bytes.toBytes("f1");
-    static byte[] val1 = Bytes.toBytes("val1");
-    static byte[] val2 = Bytes.toBytes("val2");
+    static byte[] val1   = Bytes.toBytes("val1");
+    static byte[] val2   = Bytes.toBytes("val2");
 
     public static void main(String[] args) throws HBqlException, IOException {
 
@@ -58,7 +58,7 @@ public class SimpleFilter {
 
     static void doQuery(String msg, Filter... filters) throws IOException {
 
-        HTable table = new HTable(new HBaseConfiguration(), "table20");
+        HTable table = new HTable(HBaseConfiguration.create(), "table20");
 
         Scan scan = new Scan();
         scan.addColumn(family, val1);
@@ -72,7 +72,7 @@ public class SimpleFilter {
 
         for (Result result : table.getScanner(scan))
             System.out.println(Bytes.toString(result.getRow()) + " - "
-                               + Bytes.toString(result.getValue(family, val1)) + " - "
-                               + Bytes.toInt(result.getValue(family, val2)));
+                                       + Bytes.toString(result.getValue(family, val1)) + " - "
+                                       + Bytes.toInt(result.getValue(family, val2)));
     }
 }

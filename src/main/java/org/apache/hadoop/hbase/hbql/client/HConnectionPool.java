@@ -20,13 +20,13 @@
 
 package org.apache.hadoop.hbase.hbql.client;
 
-import org.apache.hadoop.hbase.HBaseConfiguration;
+import org.apache.hadoop.conf.Configuration;
 
 public interface HConnectionPool {
 
     String getName();
 
-    HBaseConfiguration getHBaseConfiguration();
+    Configuration getConfiguration();
 
     HConnection takeConnection() throws HBqlException;
 }

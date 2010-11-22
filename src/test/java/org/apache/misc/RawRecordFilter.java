@@ -46,29 +46,30 @@ public class RawRecordFilter {
         HConnection connection = HConnectionManager.newConnection();
 
         connection.execute("CREATE TEMP MAPPING testobjects alias testobjects2"
-                           + "("
-                           + "keyval key, "
-                           + "family1 ("
-                           + "  author string alias author, "
-                           + "  title string  alias title"
-                           + "))");
+                                   + "("
+                                   + "keyval key, "
+                                   + "family1 ("
+                                   + "  author string alias author, "
+                                   + "  title string  alias title"
+                                   + "))");
 
         HMapping mapping = connection.getMapping("testobjects");
 
-        final RecordFilter filter = ((TableMapping)mapping).newRecordFilter("title LIKE '.*3.*' OR family1:author LIKE '.*4.*'");
+        final RecordFilter filter = ((TableMapping) mapping)
+                .newRecordFilter("title LIKE '.*3.*' OR family1:author LIKE '.*4.*'");
 
         Scan scan = new Scan();
         scan.addColumn(family, author);
         scan.addColumn(family, title);
         scan.setFilter(filter);
 
-        HTable table = new HTable(new HBaseConfiguration(), "testobjects");
+        HTable table = new HTable(HBaseConfiguration.create(), "testobjects");
         ResultScanner scanner = table.getScanner(scan);
 
         for (Result result : scanner) {
             System.out.println(Bytes.toString(result.getRow()) + " - "
-                               + Bytes.toString(result.getValue(family, author)) + " - "
-                               + Bytes.toString(result.getValue(family, title)));
+                                       + Bytes.toString(result.getValue(family, author)) + " - "
+                                       + Bytes.toString(result.getValue(family, title)));
         }
     }
 }

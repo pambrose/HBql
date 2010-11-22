@@ -53,7 +53,7 @@ public class HConnectionImpl extends PoolableElement<HConnectionImpl> implements
     public static final String MASTER       = "hbase.master";
 
     private final AtomicBoolean atomicClosed = new AtomicBoolean(false);
-    private final Configuration  hbaseConfiguration;
+    private final Configuration  configuration;
     private final HTablePool     tablePool;
     private final int            maxTablePoolReferencesPerTable;
     private final MappingManager mappingManager;
@@ -68,19 +68,19 @@ public class HConnectionImpl extends PoolableElement<HConnectionImpl> implements
     private String queryExecutorPoolName = null;
     private String asyncExecutorName     = null;
 
-    public HConnectionImpl(final Configuration hbaseConfiguration,
+    public HConnectionImpl(final Configuration configuration,
                            final HConnectionPoolImpl connectionPool,
                            final int maxTablePoolReferencesPerTable) throws HBqlException {
         super(connectionPool);
-        this.hbaseConfiguration = (hbaseConfiguration == null) ? HBaseConfiguration.create() : hbaseConfiguration;
+        this.configuration = (configuration == null) ? HBaseConfiguration.create() : configuration;
         this.maxTablePoolReferencesPerTable = maxTablePoolReferencesPerTable;
-        this.tablePool = new HTablePool(this.getHBaseConfiguration(), this.getMaxTablePoolReferencesPerTable());
+        this.tablePool = new HTablePool(this.getConfiguration(), this.getMaxTablePoolReferencesPerTable());
         this.mappingManager = new MappingManager(this);
 
         this.getMappingManager().validatePersistentMetadata();
     }
 
-    public static Configuration getHBaseConfiguration(final String master) {
+    public static Configuration getConfiguration(final String master) {
         final Configuration configuration = new Configuration();
         configuration.set(HConnectionImpl.MASTER, master);
         return HBaseConfiguration.create(configuration);
@@ -110,8 +110,8 @@ public class HConnectionImpl extends PoolableElement<HConnectionImpl> implements
         return this.getElementPool() != null;
     }
 
-    public Configuration getHBaseConfiguration() {
-        return this.hbaseConfiguration;
+    public Configuration getConfiguration() {
+        return this.configuration;
     }
 
     private HTablePool getTablePool() {
@@ -166,14 +166,16 @@ public class HConnectionImpl extends PoolableElement<HConnectionImpl> implements
             synchronized (this) {
                 if (this.getAtomicHbaseAdmin().get() == null) {
                     try {
-                        this.getAtomicHbaseAdmin().set(new HBaseAdmin(this.getHBaseConfiguration()));
+                        this.getAtomicHbaseAdmin().set(new HBaseAdmin(this.getConfiguration()));
                     }
                     catch (MasterNotRunningException e) {
                         throw new HBqlException(e);
                     }
+                    /*
                     catch (ZooKeeperConnectionException e) {
                         throw new HBqlException(e);
                     }
+                    */
                 }
             }
         }
@@ -190,7 +192,7 @@ public class HConnectionImpl extends PoolableElement<HConnectionImpl> implements
             synchronized (this) {
                 if (this.getAtomicIndexTableAdmin().get() == null) {
                     try {
-                        this.getAtomicIndexTableAdmin().set(new IndexedTableAdmin(this.getHBaseConfiguration()));
+                        this.getAtomicIndexTableAdmin().set(new IndexedTableAdmin(this.getConfiguration()));
                     }
                     catch (MasterNotRunningException e) {
                         throw new HBqlException(e);
@@ -384,7 +386,7 @@ public class HConnectionImpl extends PoolableElement<HConnectionImpl> implements
 
         try {
             if (withArgs != null && withArgs.hasAnIndex())
-                return new HTableWrapper(new IndexedTable(this.getHBaseConfiguration(), tableName.getBytes()), null);
+                return new HTableWrapper(new IndexedTable(this.getConfiguration(), tableName.getBytes()), null);
             else
                 return new HTableWrapper(this.getTablePool().getTable(tableName), this.getTablePool());
         }

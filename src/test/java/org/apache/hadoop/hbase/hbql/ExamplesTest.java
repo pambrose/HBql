@@ -20,33 +20,15 @@
 
 package org.apache.hadoop.hbase.hbql;
 
+import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HBaseConfiguration;
-import org.apache.hadoop.hbase.hbql.client.AsyncExecutorManager;
-import org.apache.hadoop.hbase.hbql.client.HBatch;
-import org.apache.hadoop.hbase.hbql.client.HBqlException;
-import org.apache.hadoop.hbase.hbql.client.HConnection;
-import org.apache.hadoop.hbase.hbql.client.HConnectionManager;
-import org.apache.hadoop.hbase.hbql.client.HConnectionPool;
-import org.apache.hadoop.hbase.hbql.client.HConnectionPoolManager;
-import org.apache.hadoop.hbase.hbql.client.HMapping;
-import org.apache.hadoop.hbase.hbql.client.HPreparedStatement;
-import org.apache.hadoop.hbase.hbql.client.HRecord;
-import org.apache.hadoop.hbase.hbql.client.HResultSet;
-import org.apache.hadoop.hbase.hbql.client.HStatement;
-import org.apache.hadoop.hbase.hbql.client.QueryExecutorPoolManager;
-import org.apache.hadoop.hbase.hbql.client.QueryFuture;
-import org.apache.hadoop.hbase.hbql.client.QueryListenerAdapter;
-import org.apache.hadoop.hbase.hbql.client.Util;
+import org.apache.hadoop.hbase.hbql.client.*;
 import org.apache.hadoop.hbase.hbql.util.TestSupport;
 import org.apache.hadoop.hbase.jdbc.ConnectionPool;
 import org.junit.Test;
 
 import javax.sql.PooledConnection;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.Set;
 
 public class ExamplesTest extends TestSupport {
@@ -224,15 +206,15 @@ public class ExamplesTest extends TestSupport {
         HConnection conn = HConnectionManager.newConnection();
 
         conn.execute("CREATE TEMP MAPPING fooMapping FOR TABLE foo "
-                     + "("
-                     + "keyval KEY, "
-                     + "family1 ("
-                     + "  val1 INT ALIAS val1, "
-                     + "  val2 STRING ALIAS val2"
-                     + "))");
+                             + "("
+                             + "keyval KEY, "
+                             + "family1 ("
+                             + "  val1 INT ALIAS val1, "
+                             + "  val2 STRING ALIAS val2"
+                             + "))");
 
         conn.execute("INSERT INTO fooMapping (keyval, val1, val2) "
-                     + "VALUES (ZEROPAD(2, 10), 123, 'test val')");
+                             + "VALUES (ZEROPAD(2, 10), 123, 'test val')");
 
         // Or using the Record interface
         HRecord rec = conn.getMapping("fooMapping").newHRecord();
@@ -255,15 +237,15 @@ public class ExamplesTest extends TestSupport {
         HConnection conn = HConnectionManager.newConnection();
 
         conn.execute("CREATE TEMP MAPPING fooMapping FOR TABLE foo "
-                     + "("
-                     + "keyval KEY, "
-                     + "family1 ("
-                     + "  val1 INT ALIAS val11, "
-                     + "  val2 INT ALIAS val12, "
-                     + "  val3 INT ALIAS val13, "
-                     + "  val4 INT ALIAS val14, "
-                     + "  val5 STRING ALIAS val15"
-                     + "))");
+                             + "("
+                             + "keyval KEY, "
+                             + "family1 ("
+                             + "  val1 INT ALIAS val11, "
+                             + "  val2 INT ALIAS val12, "
+                             + "  val3 INT ALIAS val13, "
+                             + "  val4 INT ALIAS val14, "
+                             + "  val5 STRING ALIAS val15"
+                             + "))");
 
         conn.execute("DELETE FROM fooMapping WITH CLIENT FILTER WHERE val1 > 4");
 
@@ -283,15 +265,15 @@ public class ExamplesTest extends TestSupport {
 
         // A column with a default value.
         conn.execute("CREATE TEMP MAPPING fooMapping FOR TABLE foo "
-                     + "("
-                     + "keyval KEY, "
-                     + "family1 ("
-                     + "  val1 INT ALIAS val1, "
-                     + "  val2 STRING ALIAS val2 DEFAULT 'this is a default value'"
-                     + "))");
+                             + "("
+                             + "keyval KEY, "
+                             + "family1 ("
+                             + "  val1 INT ALIAS val1, "
+                             + "  val2 STRING ALIAS val2 DEFAULT 'this is a default value'"
+                             + "))");
 
         HPreparedStatement ps = conn.prepareStatement("INSERT INTO fooMapping (keyval, val1, val2) "
-                                                      + "VALUES (:key, :val1, DEFAULT)");
+                                                              + "VALUES (:key, :val1, DEFAULT)");
 
         ps.setParameter("key", Util.getZeroPaddedNonNegativeNumber(2, 10));
         ps.setParameter("val1", 123);
@@ -307,16 +289,16 @@ public class ExamplesTest extends TestSupport {
 
         // START SNIPPET: insert3
         conn.execute("CREATE MAPPING fooMapping FOR TABLE foo_table "
-                     + "("
-                     + "keyval KEY, "
-                     + "family1 ("
-                     + "  val1 STRING ALIAS val1, "
-                     + "  val2 STRING ALIAS val2, "
-                     + "  val3 STRING ALIAS val3, "
-                     + "  val4 STRING ALIAS val4 "
-                     + "))");
+                             + "("
+                             + "keyval KEY, "
+                             + "family1 ("
+                             + "  val1 STRING ALIAS val1, "
+                             + "  val2 STRING ALIAS val2, "
+                             + "  val3 STRING ALIAS val3, "
+                             + "  val4 STRING ALIAS val4 "
+                             + "))");
         conn.execute("INSERT INTO fooMapping (keyval, val1, val2) "
-                     + "SELECT keyval, val3, val4 FROM foo2");
+                             + "SELECT keyval, val3, val4 FROM foo2");
 
         // END SNIPPET: insert3
 
@@ -328,16 +310,16 @@ public class ExamplesTest extends TestSupport {
 
         // START SNIPPET: insert4
         conn.execute("CREATE MAPPING fooMapping FOR TABLE foo_table "
-                     + "("
-                     + "keyval KEY, "
-                     + "family1 ("
-                     + "  val1 STRING, "
-                     + "  val2 STRING, "
-                     + "  val3 STRING ALIAS val3, "
-                     + "  val4 STRING ALIAS val4 "
-                     + "))");
+                             + "("
+                             + "keyval KEY, "
+                             + "family1 ("
+                             + "  val1 STRING, "
+                             + "  val2 STRING, "
+                             + "  val3 STRING ALIAS val3, "
+                             + "  val4 STRING ALIAS val4 "
+                             + "))");
         conn.execute("INSERT INTO fooMapping (keyval, family1(val1, val2)) "
-                     + "SELECT keyval, val3, val4 FROM foo2");
+                             + "SELECT keyval, val3, val4 FROM foo2");
 
         // END SNIPPET: insert4
 
@@ -364,22 +346,22 @@ public class ExamplesTest extends TestSupport {
 
         // A column with a default value.
         conn.execute("CREATE MAPPING mapping1 FOR TABLE foo "
-                     + "("
-                     + "keyval key, "
-                     + "family1 (val1 STRING ALIAS val1 DEFAULT 'this is a default value')"
-                     + ")");
+                             + "("
+                             + "keyval key, "
+                             + "family1 (val1 STRING ALIAS val1 DEFAULT 'this is a default value')"
+                             + ")");
         // END SNIPPET: create-mapping3
 
         // START SNIPPET: create-mapping4
 
         // A Mapping with a with an INCLUDE UNMAPPED clause.
         conn.execute("CREATE TEMP MAPPING mapping1 FOR TABLE foo "
-                     + "("
-                     + "keyval key, "
-                     + "family1 INCLUDE UNMAPPED ("
-                     + "  val1 STRING ALIAS val1, "
-                     + "  val2 STRING ALIAS val3 "
-                     + "))");
+                             + "("
+                             + "keyval key, "
+                             + "family1 INCLUDE UNMAPPED ("
+                             + "  val1 STRING ALIAS val1, "
+                             + "  val2 STRING ALIAS val3 "
+                             + "))");
 
         // END SNIPPET: create-mapping4
 
@@ -464,24 +446,24 @@ public class ExamplesTest extends TestSupport {
         HConnection conn = HConnectionManager.newConnection();
 
         conn.execute("CREATE TEMP MAPPING tab1 FOR TABLE table1"
-                     + "("
-                     + "keyval KEY WIDTH 15, "
-                     + "f1 INCLUDE UNMAPPED ("
-                     + "  val1 STRING WIDTH 10 ALIAS val1, "
-                     + "  val2 INT ALIAS val5"
-                     + "),  "
-                     + "f2 INCLUDE UNMAPPED, "
-                     + "f3 INCLUDE UNMAPPED ("
-                     + "  val2 INT ALIAS val6, "
-                     + "  val3 INT ALIAS val7 "
-                     + "))");
+                             + "("
+                             + "keyval KEY WIDTH 15, "
+                             + "f1 INCLUDE UNMAPPED ("
+                             + "  val1 STRING WIDTH 10 ALIAS val1, "
+                             + "  val2 INT ALIAS val5"
+                             + "),  "
+                             + "f2 INCLUDE UNMAPPED, "
+                             + "f3 INCLUDE UNMAPPED ("
+                             + "  val2 INT ALIAS val6, "
+                             + "  val3 INT ALIAS val7 "
+                             + "))");
 
         conn.execute("CREATE INDEX val1idx ON tab1 (val1) INCLUDE (val5, val6) IF NOT indexExistsForTable('val1idx', 'tab1')");
 
         HPreparedStatement pstmt = conn.prepareStatement("SELECT keyval, f1:val1, val5 FROM tab1 "
-                                                         + "WITH INDEX val1idx KEYS FIRST TO :endkey "
-                                                         + "INDEX FILTER WHERE val5 < 8 "
-                                                         + "CLIENT FILTER WHERE val6 > 4");
+                                                                 + "WITH INDEX val1idx KEYS FIRST TO :endkey "
+                                                                 + "INDEX FILTER WHERE val5 < 8 "
+                                                                 + "CLIENT FILTER WHERE val6 > 4");
 
         pstmt.setParameter("endkey", Util.getZeroPaddedNonNegativeNumber(34, 10));
 
@@ -502,22 +484,22 @@ public class ExamplesTest extends TestSupport {
         HConnection conn = HConnectionManager.newConnection();
 
         conn.execute("CREATE TEMP MAPPING tab1 FOR TABLE table1"
-                     + "("
-                     + "keyval KEY, "
-                     + "f1 INCLUDE UNMAPPED ("
-                     + "  val1 STRING ALIAS val1, "
-                     + "  val2 INT ALIAS val5"
-                     + "),  "
-                     + "f2 INCLUDE UNMAPPED, "
-                     + "f3 INCLUDE UNMAPPED ("
-                     + "  val2 INT ALIAS val6, "
-                     + "  val3 INT ALIAS val7 "
-                     + "))");
+                             + "("
+                             + "keyval KEY, "
+                             + "f1 INCLUDE UNMAPPED ("
+                             + "  val1 STRING ALIAS val1, "
+                             + "  val2 INT ALIAS val5"
+                             + "),  "
+                             + "f2 INCLUDE UNMAPPED, "
+                             + "f3 INCLUDE UNMAPPED ("
+                             + "  val2 INT ALIAS val6, "
+                             + "  val3 INT ALIAS val7 "
+                             + "))");
 
         HPreparedStatement pstmt = conn.prepareStatement("SELECT keyval, f1:val1, val5 FROM tab1 "
-                                                         + "WITH KEYS FIRST TO :endkey "
-                                                         + "VERSIONS 4 "
-                                                         + "CLIENT FILTER WHERE val6 > 4");
+                                                                 + "WITH KEYS FIRST TO :endkey "
+                                                                 + "VERSIONS 4 "
+                                                                 + "CLIENT FILTER WHERE val6 > 4");
 
         pstmt.setParameter("endkey", Util.getZeroPaddedNonNegativeNumber(34, 10));
 
@@ -541,13 +523,13 @@ public class ExamplesTest extends TestSupport {
 
         // CREATE TEMP MAPPING
         conn.execute("CREATE TEMP MAPPING demo1 FOR TABLE example1"
-                     + "("
-                     + "keyval KEY, "
-                     + "f1 ("
-                     + "  val1 STRING ALIAS val1, "
-                     + "  val2 INT ALIAS val2, "
-                     + "  val3 STRING DEFAULT 'This is a default value' "
-                     + "))");
+                             + "("
+                             + "keyval KEY, "
+                             + "f1 ("
+                             + "  val1 STRING ALIAS val1, "
+                             + "  val2 INT ALIAS val2, "
+                             + "  val3 STRING DEFAULT 'This is a default value' "
+                             + "))");
 
         // Clean up table
         if (!conn.tableExists("example1"))
@@ -557,8 +539,8 @@ public class ExamplesTest extends TestSupport {
 
         // Add some records using an INSERT stmt
         HPreparedStatement stmt = conn.prepareStatement("INSERT INTO demo1 " +
-                                                        "(keyval, val1, val2, f1:val3) VALUES " +
-                                                        "(ZEROPAD(:key, 10), :val1, :val2, DEFAULT)");
+                                                                "(keyval, val1, val2, f1:val3) VALUES " +
+                                                                "(ZEROPAD(:key, 10), :val1, :val2, DEFAULT)");
 
         for (int i = 0; i < 5; i++) {
             stmt.setParameter("key", i);
@@ -605,24 +587,24 @@ public class ExamplesTest extends TestSupport {
         stmt.execute("CREATE TABLE table12 (f1(), f3()) IF NOT tableexists('table12')");
 
         stmt.execute("CREATE TEMP MAPPING sch9 FOR TABLE table12"
-                     + "("
-                     + "keyval key, "
-                     + "f1 ("
-                     + "    val1 string alias val1, "
-                     + "    val2 string alias val2 "
-                     + "), "
-                     + "f3 ("
-                     + "    val1 int alias val5, "
-                     + "    val2 int alias val6 "
-                     + "))");
+                             + "("
+                             + "keyval key, "
+                             + "f1 ("
+                             + "    val1 string alias val1, "
+                             + "    val2 string alias val2 "
+                             + "), "
+                             + "f3 ("
+                             + "    val1 int alias val5, "
+                             + "    val2 int alias val6 "
+                             + "))");
 
         HResultSet<HRecord> rs = stmt.executeQuery("select * from sch9");
 
         for (HRecord rec : rs) {
-            int val5 = (Integer)rec.getCurrentValue("val5");
-            int val6 = (Integer)rec.getCurrentValue("val6");
-            String val1 = (String)rec.getCurrentValue("val1");
-            String val2 = (String)rec.getCurrentValue("val2");
+            int val5 = (Integer) rec.getCurrentValue("val5");
+            int val6 = (Integer) rec.getCurrentValue("val6");
+            String val1 = (String) rec.getCurrentValue("val1");
+            String val2 = (String) rec.getCurrentValue("val2");
 
             System.out.print("val5: " + val5);
             System.out.print(", val6: " + val6);
@@ -677,16 +659,16 @@ public class ExamplesTest extends TestSupport {
         stmt.execute("CREATE TABLE table12 (f1(), f3()) IF NOT tableexists('table12')");
 
         stmt.execute("CREATE TEMP MAPPING sch9 FOR TABLE table12"
-                     + "("
-                     + "keyval key, "
-                     + "f1 ("
-                     + "    val1 string alias val1, "
-                     + "    val2 string alias val2 "
-                     + "), "
-                     + "f3 ("
-                     + "    val1 int alias val5, "
-                     + "    val2 int alias val6 "
-                     + "))");
+                             + "("
+                             + "keyval key, "
+                             + "f1 ("
+                             + "    val1 string alias val1, "
+                             + "    val2 string alias val2 "
+                             + "), "
+                             + "f3 ("
+                             + "    val1 int alias val5, "
+                             + "    val2 int alias val6 "
+                             + "))");
 
         if (!AsyncExecutorManager.asyncExecutorExists("async1"))
             AsyncExecutorManager.newAsyncExecutor("async1", 1, 10, Long.MAX_VALUE);
@@ -696,10 +678,10 @@ public class ExamplesTest extends TestSupport {
         QueryFuture future = stmt.executeQueryAsync("select * from sch9",
                                                     new QueryListenerAdapter<HRecord>() {
                                                         public void onEachRow(final HRecord rec) throws HBqlException {
-                                                            int val5 = (Integer)rec.getCurrentValue("val5");
-                                                            int val6 = (Integer)rec.getCurrentValue("val6");
-                                                            String val1 = (String)rec.getCurrentValue("val1");
-                                                            String val2 = (String)rec.getCurrentValue("val2");
+                                                            int val5 = (Integer) rec.getCurrentValue("val5");
+                                                            int val6 = (Integer) rec.getCurrentValue("val6");
+                                                            String val1 = (String) rec.getCurrentValue("val1");
+                                                            String val2 = (String) rec.getCurrentValue("val2");
 
                                                             System.out.print("val5: " + val5);
                                                             System.out.print(", val6: " + val6);
@@ -740,23 +722,23 @@ public class ExamplesTest extends TestSupport {
         Connection conn2 = DriverManager.getConnection("jdbc:hbql;maxtablerefs=10;hbase.master=192.168.1.90:60000");
 
         // or if you want to connect with a HBaseConfiguration object, then you would call:
-        HBaseConfiguration config = new HBaseConfiguration();
+        Configuration config = HBaseConfiguration.create();
         Connection conn3 = org.apache.hadoop.hbase.jdbc.Driver.getConnection("jdbc:hbql;maxtablerefs=10", config);
 
         Statement stmt = conn.createStatement();
         stmt.execute("CREATE TABLE table12 (f1(), f3()) IF NOT tableexists('table12')");
 
         stmt.execute("CREATE TEMP MAPPING sch9 FOR TABLE table12"
-                     + "("
-                     + "keyval key, "
-                     + "f1 ("
-                     + "    val1 string alias val1, "
-                     + "    val2 string alias val2 "
-                     + "), "
-                     + "f3 ("
-                     + "    val1 int alias val5, "
-                     + "    val2 int alias val6 "
-                     + "))");
+                             + "("
+                             + "keyval key, "
+                             + "f1 ("
+                             + "    val1 string alias val1, "
+                             + "    val2 string alias val2 "
+                             + "), "
+                             + "f3 ("
+                             + "    val1 int alias val5, "
+                             + "    val2 int alias val6 "
+                             + "))");
 
         ResultSet rs = stmt.executeQuery("select * from sch9");
 
@@ -812,13 +794,13 @@ public class ExamplesTest extends TestSupport {
         HConnection conn = HConnectionManager.newConnection();
 
         conn.execute("CREATE TEMP MAPPING demo2 FOR TABLE example2"
-                     + "("
-                     + "keyval KEY, "
-                     + "f1 ("
-                     + "  val1 STRING ALIAS val1, "
-                     + "  val2 INT ALIAS val2, "
-                     + "  val3 STRING ALIAS val3 DEFAULT 'This is a default value' "
-                     + "))");
+                             + "("
+                             + "keyval KEY, "
+                             + "f1 ("
+                             + "  val1 STRING ALIAS val1, "
+                             + "  val2 INT ALIAS val2, "
+                             + "  val3 STRING ALIAS val3 DEFAULT 'This is a default value' "
+                             + "))");
 
         // Clean up table
         if (!conn.tableExists("example2"))
@@ -828,8 +810,8 @@ public class ExamplesTest extends TestSupport {
 
         // Add some records using an INSERT stmt
         HPreparedStatement stmt = conn.prepareStatement("INSERT INTO demo2 " +
-                                                        "(keyval, val1, val2, val3) VALUES " +
-                                                        "(ZEROPAD(:key, 10), :val1, :val2, DEFAULT)");
+                                                                "(keyval, val1, val2, val3) VALUES " +
+                                                                "(ZEROPAD(:key, 10), :val1, :val2, DEFAULT)");
 
         for (int i = 0; i < 5; i++) {
             stmt.setParameter("key", i);
