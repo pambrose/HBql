@@ -40,11 +40,9 @@ public class FlushTableStatement extends TableStatement {
         catch (IOException e) {
             throw new HBqlException(e);
         }
-        /*
         catch (InterruptedException e) {
             throw new HBqlException(e);
         }
-         */
         return new ExecutionResults("Table " + this.getTableName() + " flushed.");
     }
 

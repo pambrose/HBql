@@ -7,7 +7,7 @@ Installation
 
     * Define the environment variables $HBQL_HOME and unzip the distribution to $HBQL_HOME.
 
-    * Clone https://github.com/hbase-trx/hbase-transactional-tableindexed to $TRX_HOME and build branch 0.90.0-DEV-2
+    * Clone https://github.com/hbase-trx/hbase-transactional-tableindexed to $TRX_HOME and build with branch 0.90.0-DEV-2
 
     * Add the following jars to your client classpath.
 
@@ -32,8 +32,8 @@ Installation
 
 * THBase Index Support (https://github.com/hbase-trx/hbase-transactional-tableindexed)
 
-    ** As described on the github tableindexed home: \
-       Modify hbase-site.xml to turn on the IndexedRegionServer.  This is done by setting \
+    ** As described on the github hbase-trx home, modify hbase-site.xml to turn \
+       on the IndexedRegionServer.  This is done by setting the properties \
        hbase.regionserver.class, hbase.regionserver.impl, and hbase.hregion.impl as shown:
 
 ---------------------------

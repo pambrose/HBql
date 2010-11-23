@@ -45,17 +45,18 @@
 
     <distributionManagement>
         <site>
-            <id>website</id>
+            <id>hbql.website</id>
+            <name>HBql Website</name>
             <url>scp://hbql@www.hbql.com/home/hbql/public_html/</url>
         </site>
     </distributionManagement>
 
     <properties>
-        <hbase.version>0.89.20100924</hbase.version>
+        <hbase.version>0.89.0-SNAPSHOT</hbase.version>
         <hbase-trx.version>0.90.0-DEV-2</hbase-trx.version>
         <hadoop.version>0.20.3-append-r964955-1240</hadoop.version>
-        <guava.version>r07</guava.version>
         <zookeeper.version>3.3.1</zookeeper.version>
+        <guava.version>r07</guava.version>
         <jline.version>0.9.9</jline.version>
         <antlr.version>3.2</antlr.version>
         <jmx.version>1.2.1</jmx.version>

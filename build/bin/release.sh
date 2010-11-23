@@ -25,8 +25,8 @@ rm -rf ${RELEASE}/src/main/antlr3/org/apache/hadoop/hbase/hbql/antlr/output
 
 mvn antlr3:antlr
 mvn compiler:compile
-mvn javadoc:javadoc
-mvn site:site
+mvn -DskipTests=true javadoc:javadoc
+mvn -DskipTests=true site:site
 
 rm -rf ${SITE}/testapidocs
 rm -rf ${SITE}/xref-test

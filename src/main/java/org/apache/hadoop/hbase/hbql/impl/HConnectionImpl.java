@@ -171,11 +171,9 @@ public class HConnectionImpl extends PoolableElement<HConnectionImpl> implements
                     catch (MasterNotRunningException e) {
                         throw new HBqlException(e);
                     }
-                    /*
                     catch (ZooKeeperConnectionException e) {
                         throw new HBqlException(e);
                     }
-                    */
                 }
             }
         }

@@ -65,7 +65,7 @@ public class DatabaseMetaDataImpl implements DatabaseMetaData {
     }
 
     public String getDatabaseProductVersion() throws SQLException {
-        return "0.20.6";
+        return "0.89.20100924";
     }
 
     public String getDriverName() throws SQLException {

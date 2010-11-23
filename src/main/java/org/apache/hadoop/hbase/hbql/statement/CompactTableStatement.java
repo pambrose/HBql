@@ -46,11 +46,9 @@ public class CompactTableStatement extends TableStatement {
         catch (IOException e) {
             throw new HBqlException(e);
         }
-        /*
         catch (InterruptedException e) {
             throw new HBqlException(e);
         }
-        */
 
         return new ExecutionResults("Table " + this.getTableName() + (isMajor ? " major" : "") + " compacted.");
     }
