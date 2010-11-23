@@ -1,7 +1,9 @@
 HBql
 ====
 
-The goal of HBql is to simplify the usage of {{{http://hadoop.apache.org/hbase}HBase}}.
+The goal of HBql is to simplify the usage of [HBase] [hl].
+
+  [hl]: http://hadoop.apache.org/hbase
 
 Getting Started
 ---------------
