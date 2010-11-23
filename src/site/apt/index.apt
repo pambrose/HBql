@@ -5,7 +5,7 @@
 
 Introduction
 
-    The goal of HBql is to simplify the usage of {{{http://hadoop.apache.org/hbase}HBase}}.
+    The goal of HBql is to simplify the usage of {{{http://hbase.apache.org/}HBase}}.
 
 Getting Started
 
@@ -26,9 +26,9 @@ Documentation
 
     * {{{./annotations/annotations.html}Annotations}}
 
-    * {{{./console/console.html}Console usage}}
+    * {{{./console/console.html}Console Usage}}
 
-    * {{{./jdbc/jdbc_support.html}JDBC support}}
+    * {{{./jdbc/jdbc_support.html}JDBC Support}}
 
     * {{{./apidocs/org/apache/hadoop/hbase/hbql/client/package-summary.html}HBql Client API}}
 

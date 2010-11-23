@@ -3,7 +3,7 @@ HBql
 
 The goal of HBql is to simplify the usage of [HBase] [hl].
 
-  [hl]: http://hadoop.apache.org/hbase
+  [hl]: http://hbase.apache.org/
 
 Getting Started
 ---------------
@@ -20,8 +20,8 @@ Documentation
 * [Functions](http://www.hbql.com/statements/functions.html)
 * [Expressions](http://www.hbql.com/statements/expressions.html)
 * [Annotations](http://www.hbql.com/annotations/annotations.html)
-* [Console usage](http://www.hbql.com/console/console.html)
-* [JDBC support](http://www.hbql.com/jdbc/jdbc_support.html)
+* [Console Usage](http://www.hbql.com/console/console.html)
+* [JDBC Support](http://www.hbql.com/jdbc/jdbc_support.html)
 * [HBql Client API](http://www.hbql.com/apidocs/org/apache/hadoop/hbase/hbql/client/package-summary.html)
 * [Javadocs](http://www.hbql.com/apidocs/index.html) [(cross-reference)](http://www.hbql.com/xref/index.html)
 * [FAQ](http://www.hbql.com/faq.html)
