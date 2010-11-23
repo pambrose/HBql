@@ -30,14 +30,19 @@ Documentation
 Support
 -------
 
-    HBql is a work in progress.  If you have problems (or success), please send
-    me a note @ <pambrose AT NOSPAM gmail DOT com>.
+HBql is a work in progress.  If you have problems (or success), please send
+me a note @ <pambrose AT NOSPAM gmail DOT com>.
 
-    A blog for announcements is at <http://hbql.blogspot.com>.
+A blog for announcements is [here] [al].
+
+   [al]: http://hbql.blogspot.com
 
 
 Supported Platforms
+-------------------
 
-    HBql is compatible with Java 1.6 and HBase 0.20.4+ and HBase 0.89.20100924.  The console is limited to
-    those platforms supported by JLine <http://jline.sourceforge.net/>.
+HBql is compatible with Java 1.6 and HBase 0.20.4+ and HBase 0.89.20100924.  The console is limited to
+those platforms supported by [JLine] [jl].
+
+   [jl]: http://jline.sourceforge.net/
 
