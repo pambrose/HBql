@@ -31,7 +31,7 @@ Support
 -------
 
 HBql is a work in progress.  If you have problems (or success), please send
-me a note @ <pambrose AT NOSPAM gmail DOT com>.
+me a note @ pambrose AT NOSPAM gmail DOT com.
 
 A blog for announcements is [here] [al].
 
