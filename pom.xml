@@ -58,7 +58,7 @@
         <zookeeper.version>3.3.1</zookeeper.version>
         <guava.version>r07</guava.version>
         <jline.version>0.9.9</jline.version>
-        <antlr.version>3.2</antlr.version>
+        <antlr.version>3.3</antlr.version>
         <jmx.version>1.2.1</jmx.version>
         <logging.version>1.0.4</logging.version>
         <log4j.version>1.2.15</log4j.version>
@@ -203,15 +203,7 @@
             <plugin>
                 <groupId>org.antlr</groupId>
                 <artifactId>antlr3-maven-plugin</artifactId>
-                <version>3.2</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>antlr</goal>
-                        </goals>
-                    </execution>
-                </executions>
-
+                <version>${antlr.version}</version>
             </plugin>
 
 
@@ -251,19 +243,6 @@
 
             <plugin>
                 <artifactId>maven-dependency-plugin</artifactId>
-            </plugin>
-
-            <plugin>
-                <groupId>org.antlr</groupId>
-                <artifactId>antlr3-maven-plugin</artifactId>
-                <version>3.2</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>antlr</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
 
             <plugin>
