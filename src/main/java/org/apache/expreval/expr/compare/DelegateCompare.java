@@ -33,6 +33,7 @@ import org.apache.expreval.expr.node.StringValue;
 import org.apache.hadoop.hbase.filter.Filter;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
+import org.apache.hadoop.hbase.hbql.impl.InvalidTypeException;
 
 public class DelegateCompare extends GenericCompare {
 
@@ -63,7 +64,7 @@ public class DelegateCompare extends GenericCompare {
         else if (TypeSupport.isParentClass(ByteValue.class, type0, type1))
             this.typedExpr = new ByteCompare(this.getExprArg(0), this.getOperator(), this.getExprArg(1));
         else
-            this.throwInvalidTypeException(type0, type1);
+            throw new InvalidTypeException(this.getInvalidTypeMsg(type0, type1));
 
         return this.getTypedExpr().validateTypes(parentExpr, false);
     }

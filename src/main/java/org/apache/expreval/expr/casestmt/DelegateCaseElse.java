@@ -30,6 +30,7 @@ import org.apache.expreval.expr.node.NumberValue;
 import org.apache.expreval.expr.node.StringValue;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
+import org.apache.hadoop.hbase.hbql.impl.InvalidTypeException;
 
 public class DelegateCaseElse extends GenericCaseElse {
 
@@ -40,18 +41,18 @@ public class DelegateCaseElse extends GenericCaseElse {
     public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,
                                                        final boolean allowCollections) throws HBqlException {
 
-        final Class<? extends GenericValue> valueType = this.getExprArg(0).validateTypes(this, false);
+        final Class<? extends GenericValue> type0 = this.getExprArg(0).validateTypes(this, false);
 
-        if (TypeSupport.isParentClass(StringValue.class, valueType))
+        if (TypeSupport.isParentClass(StringValue.class, type0))
             this.setTypedExpr(new StringCaseElse(this.getExprArg(0)));
-        else if (TypeSupport.isParentClass(NumberValue.class, valueType))
+        else if (TypeSupport.isParentClass(NumberValue.class, type0))
             this.setTypedExpr(new NumberCaseElse(this.getExprArg(0)));
-        else if (TypeSupport.isParentClass(DateValue.class, valueType))
+        else if (TypeSupport.isParentClass(DateValue.class, type0))
             this.setTypedExpr(new DateCaseElse(this.getExprArg(0)));
-        else if (TypeSupport.isParentClass(BooleanValue.class, valueType))
+        else if (TypeSupport.isParentClass(BooleanValue.class, type0))
             this.setTypedExpr(new BooleanCaseElse(this.getExprArg(0)));
         else
-            this.throwInvalidTypeException(valueType);
+            throw new InvalidTypeException(this.getInvalidTypeMsg(type0));
 
         return this.getTypedExpr().validateTypes(parentExpr, false);
     }

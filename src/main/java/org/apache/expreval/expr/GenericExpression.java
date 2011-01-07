@@ -54,18 +54,18 @@ public abstract class GenericExpression implements GenericValue {
 
     // These are used to cache type of the args for exprs with numberic args
     private Class<? extends GenericValue> highestRankingNumericArgFoundInValidate = NumberValue.class;
-    private Class rankingClass = null;
-    private boolean useDecimal = false;
-    private boolean useByte = false;
-    private boolean useShort = false;
-    private boolean useInteger = false;
-    private boolean useLong = false;
-    private boolean useFloat = false;
-    private boolean useDouble = false;
+    private Class                         rankingClass                            = null;
+    private boolean                       useDecimal                              = false;
+    private boolean                       useByte                                 = false;
+    private boolean                       useShort                                = false;
+    private boolean                       useInteger                              = false;
+    private boolean                       useLong                                 = false;
+    private boolean                       useFloat                                = false;
+    private boolean                       useDouble                               = false;
 
     private final ExpressionType type;
     private final List<GenericValue> genericValueList = Lists.newArrayList();
-    private final AtomicBoolean allArgsOptimized = new AtomicBoolean(false);
+    private final AtomicBoolean      allArgsOptimized = new AtomicBoolean(false);
 
     private MultipleExpressionContext expressionContext = null;
 
@@ -402,11 +402,11 @@ public abstract class GenericExpression implements GenericValue {
         }
     }
 
-    public void throwInvalidTypeException(final Class<? extends GenericValue>... clazzes) throws InvalidTypeException {
+    public String getInvalidTypeMsg(final Class<? extends GenericValue>... classes) {
 
         final List<Class> classList = Lists.newArrayList();
 
-        for (final Class clazz : clazzes)
+        for (final Class clazz : classes)
             if (clazz != null)
                 classList.add(clazz);
 
@@ -414,7 +414,7 @@ public abstract class GenericExpression implements GenericValue {
         sbuf.append(((classList.size() > 1) ? "s " : " "));
 
         boolean first = true;
-        for (final Class<? extends GenericValue> clazz : clazzes) {
+        for (final Class<? extends GenericValue> clazz : classes) {
             if (!first)
                 sbuf.append(", ");
             sbuf.append(clazz.getSimpleName());
@@ -422,7 +422,7 @@ public abstract class GenericExpression implements GenericValue {
         }
         sbuf.append(" in expression " + this.asString());
 
-        throw new InvalidTypeException(sbuf.toString());
+        return sbuf.toString();
     }
 
     final List<Class<? extends GenericValue>> types = Arrays.asList(StringValue.class,
@@ -437,9 +437,7 @@ public abstract class GenericExpression implements GenericValue {
             if (TypeSupport.isParentClass(type, clazz))
                 return type;
 
-        this.throwInvalidTypeException(clazz);
-
-        return null;
+        throw new InvalidTypeException(this.getInvalidTypeMsg(clazz));
     }
 
     public Filter getFilter() throws HBqlException {

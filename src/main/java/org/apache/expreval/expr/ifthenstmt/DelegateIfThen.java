@@ -31,6 +31,7 @@ import org.apache.expreval.expr.node.NumberValue;
 import org.apache.expreval.expr.node.StringValue;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
+import org.apache.hadoop.hbase.hbql.impl.InvalidTypeException;
 
 public class DelegateIfThen extends GenericIfThen {
 
@@ -57,7 +58,7 @@ public class DelegateIfThen extends GenericIfThen {
         else if (TypeSupport.isParentClass(ByteValue.class, type1, type2))
             this.setTypedExpr(new ByteIfThen(this.getExprArg(0), this.getExprArg(1), this.getExprArg(2)));
         else
-            this.throwInvalidTypeException(type1, type2);
+            throw new InvalidTypeException(this.getInvalidTypeMsg(type1, type2));
 
         return this.getTypedExpr().validateTypes(parentExpr, false);
     }

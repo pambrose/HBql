@@ -30,6 +30,7 @@ import org.apache.expreval.expr.node.NumberValue;
 import org.apache.expreval.expr.node.StringValue;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
+import org.apache.hadoop.hbase.hbql.impl.InvalidTypeException;
 
 import java.util.ArrayList;
 
@@ -60,7 +61,7 @@ public class DelegateCase extends GenericCase {
         else if (TypeSupport.isParentClass(BooleanValue.class, argType))
             this.setTypedExpr(new BooleanCase(this.getWhenExprList(), this.getElseExpr()));
         else
-            this.throwInvalidTypeException(argType);
+            throw new InvalidTypeException(this.getInvalidTypeMsg(argType));
 
         return this.getTypedExpr().validateTypes(parentExpr, false);
     }

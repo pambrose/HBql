@@ -30,6 +30,7 @@ import org.apache.expreval.expr.node.NumberValue;
 import org.apache.expreval.expr.node.StringValue;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
+import org.apache.hadoop.hbase.hbql.impl.InvalidTypeException;
 
 public class DelegateCalculation extends GenericCalculation {
 
@@ -40,17 +41,17 @@ public class DelegateCalculation extends GenericCalculation {
     public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,
                                                        final boolean allowCollections) throws HBqlException {
 
-        final Class<? extends GenericValue> type1 = this.getExprArg(0).validateTypes(this, false);
-        final Class<? extends GenericValue> type2 = this.getExprArg(1).validateTypes(this, false);
+        final Class<? extends GenericValue> type0 = this.getExprArg(0).validateTypes(this, false);
+        final Class<? extends GenericValue> type1 = this.getExprArg(1).validateTypes(this, false);
 
-        if (TypeSupport.isParentClass(StringValue.class, type1, type2))
+        if (TypeSupport.isParentClass(StringValue.class, type0, type1))
             this.setTypedExpr(new StringCalculation(this.getExprArg(0), this.getOperator(), this.getExprArg(1)));
-        else if (TypeSupport.isParentClass(NumberValue.class, type1, type2))
+        else if (TypeSupport.isParentClass(NumberValue.class, type0, type1))
             this.setTypedExpr(new NumberCalculation(this.getExprArg(0), this.getOperator(), this.getExprArg(1)));
-        else if (TypeSupport.isParentClass(DateValue.class, type1, type2))
+        else if (TypeSupport.isParentClass(DateValue.class, type0, type1))
             this.setTypedExpr(new DateCalculation(this.getExprArg(0), this.getOperator(), this.getExprArg(1)));
         else
-            this.throwInvalidTypeException(type1, type2);
+            throw new InvalidTypeException(this.getInvalidTypeMsg(type0, type1));
 
         return this.getTypedExpr().validateTypes(parentExpr, false);
     }

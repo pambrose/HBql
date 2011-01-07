@@ -37,8 +37,8 @@ public class AnnotationResultAccessor extends ResultAccessor {
 
 
     private final Class<?> clazz;
-    private final Map<String, CurrentValueAnnotationAttrib> columnMap = Maps.newHashMap();
-    private final Map<String, VersionAnnotationAttrib> columnVersionMap = Maps.newHashMap();
+    private final Map<String, CurrentValueAnnotationAttrib> columnMap        = Maps.newHashMap();
+    private final Map<String, VersionAnnotationAttrib>      columnVersionMap = Maps.newHashMap();
 
     private AnnotationResultAccessor(final TableMapping tableMapping, final Class clazz) throws HBqlException {
 
@@ -76,7 +76,7 @@ public class AnnotationResultAccessor extends ResultAccessor {
     public static AnnotationResultAccessor newAnnotationMapping(final HConnectionImpl conn,
                                                                 final Class<?> clazz) throws HBqlException {
 
-        Mapping mappingAnnotation = clazz.getAnnotation(Mapping.class);
+        final Mapping mappingAnnotation = clazz.getAnnotation(Mapping.class);
 
         if (mappingAnnotation == null)
             throw new HBqlException("Class " + clazz.getName() + " is missing @Mapping annotation");

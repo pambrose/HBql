@@ -31,6 +31,7 @@ import org.apache.expreval.expr.node.ObjectValue;
 import org.apache.expreval.expr.node.StringValue;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
+import org.apache.hadoop.hbase.hbql.impl.InvalidTypeException;
 
 public class DelegateNullCompare extends GenericNullCompare {
 
@@ -60,7 +61,7 @@ public class DelegateNullCompare extends GenericNullCompare {
             typedExpr = new ObjectNullCompare(this.isNot(), this.getExprArg(0));
         else {
             typedExpr = null;
-            this.throwInvalidTypeException(type);
+            throw new InvalidTypeException(this.getInvalidTypeMsg(type));
         }
 
         this.setTypedExpr(typedExpr);

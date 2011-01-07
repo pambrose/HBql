@@ -31,6 +31,7 @@ import org.apache.expreval.expr.node.StringValue;
 import org.apache.hadoop.hbase.filter.Filter;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
+import org.apache.hadoop.hbase.hbql.impl.InvalidTypeException;
 
 public class DelegateBetweenStmt extends GenericBetweenStmt {
 
@@ -44,20 +45,20 @@ public class DelegateBetweenStmt extends GenericBetweenStmt {
     public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,
                                                        final boolean allowCollections) throws HBqlException {
 
-        final Class<? extends GenericValue> type1 = this.getExprArg(0).validateTypes(this, false);
-        final Class<? extends GenericValue> type2 = this.getExprArg(1).validateTypes(this, false);
-        final Class<? extends GenericValue> type3 = this.getExprArg(2).validateTypes(this, false);
+        final Class<? extends GenericValue> type0 = this.getExprArg(0).validateTypes(this, false);
+        final Class<? extends GenericValue> type1 = this.getExprArg(1).validateTypes(this, false);
+        final Class<? extends GenericValue> type2 = this.getExprArg(2).validateTypes(this, false);
 
-        if (TypeSupport.isParentClass(StringValue.class, type1, type2, type3))
+        if (TypeSupport.isParentClass(StringValue.class, type0, type1, type2))
             this.setTypedExpr(new StringBetweenStmt(this.getExprArg(0), this.isNot(), this.getExprArg(1), this.getExprArg(2)));
-        else if (TypeSupport.isParentClass(NumberValue.class, type1, type2, type3))
+        else if (TypeSupport.isParentClass(NumberValue.class, type0, type1, type2))
             this.setTypedExpr(new NumberBetweenStmt(this.getExprArg(0), this.isNot(), this.getExprArg(1), this.getExprArg(2)));
-        else if (TypeSupport.isParentClass(DateValue.class, type1, type2, type3))
+        else if (TypeSupport.isParentClass(DateValue.class, type0, type1, type2))
             this.setTypedExpr(new DateBetweenStmt(this.getExprArg(0), this.isNot(), this.getExprArg(1), this.getExprArg(2)));
-        else if (TypeSupport.isParentClass(ByteValue.class, type1, type2, type3))
+        else if (TypeSupport.isParentClass(ByteValue.class, type0, type1, type2))
             this.setTypedExpr(new ByteBetweenStmt(this.getExprArg(0), this.isNot(), this.getExprArg(1), this.getExprArg(2)));
         else
-            this.throwInvalidTypeException(type1, type2, type3);
+            throw new InvalidTypeException(this.getInvalidTypeMsg(type0, type1, type2));
 
         return this.getTypedExpr().validateTypes(parentExpr, false);
     }

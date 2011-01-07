@@ -32,6 +32,7 @@ import org.apache.expreval.expr.node.StringValue;
 import org.apache.hadoop.hbase.filter.Filter;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
+import org.apache.hadoop.hbase.hbql.impl.InvalidTypeException;
 
 import java.util.List;
 
@@ -61,7 +62,7 @@ public class DelegateInStmt extends GenericInStmt {
         else if (TypeSupport.isParentClass(BooleanValue.class, type))
             this.setTypedExpr(new BooleanInStmt(this.getExprArg(0), this.isNot(), this.getInList()));
         else
-            this.throwInvalidTypeException(type);
+            throw new InvalidTypeException(this.getInvalidTypeMsg(type));
 
         return this.getTypedExpr().validateTypes(parentExpr, false);
     }
