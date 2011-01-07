@@ -29,9 +29,9 @@ import org.apache.expreval.expr.node.NumberValue;
 import org.apache.hadoop.hbase.hbql.client.HBqlException;
 import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 
-public class NumberCalculation extends GenericCalculation implements NumberValue {
+public class NumericCalculation extends GenericCalculation implements NumberValue {
 
-    public NumberCalculation(final GenericValue arg0, final Operator operator, final GenericValue arg1) {
+    public NumericCalculation(final GenericValue arg0, final Operator operator, final GenericValue arg1) {
         super(ExpressionType.NUMBERCALCULATION, arg0, operator, arg1);
     }
 
