@@ -119,7 +119,7 @@ options {backtrack=true;}
 							{retval = new DeleteStatement($p.retval, $di.retval, $t.text, $w.retval);}
 	| keyINSERT keyINTO keyMAPPING? t=simpleId LPAREN e=exprList RPAREN ins=insertValues p=pred?
 							{retval = new InsertStatement($p.retval, $t.text, $e.retval, $ins.retval);}
-	| keyCREATE tmp=keyTEMP? sys=keySYSTEM? keyMAPPING t=simpleId (keyFOR keyTABLE a=simpleId)? am=attribMapping? p=pred? 
+	| keyCREATE tmp=keyTEMP? sys=keySYSTEM? keyMAPPING t=simpleId (keyFOR keyTABLE a=simpleId)? am=attribMapping? p=pred?
 							{retval = new CreateMappingStatement($p.retval, $tmp.retval!=null,  $sys.retval!=null, $t.text, $a.text, $am.retval);}
 	| keyDROP keyMAPPING t=simpleId p=pred?		{retval = new DropMappingStatement($p.retval, $t.text);}
 	| keyDESCRIBE keyMAPPING t=simpleId 		{retval = new DescribeMappingStatement($t.text);}
@@ -437,9 +437,7 @@ valueFunctions returns [GenericValue retval]
 options {backtrack=true; memoize=true;}	
 	: keyIF t1=exprValue keyTHEN t2=exprValue keyELSE t3=exprValue keyEND	
 							{retval = new DelegateIfThen($t1.retval, $t2.retval, $t3.retval);}
-	
 	| c=caseStmt					{retval = $c.retval;} 						
-
 	| t=simpleId LPAREN a=exprList? RPAREN		{retval = new DelegateFunction($t.text, $a.retval);}
 	;
 

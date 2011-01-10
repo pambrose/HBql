@@ -31,11 +31,8 @@ import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 
 public class BooleanNot extends GenericExpression implements BooleanValue {
 
-    private final boolean not;
-
-    public BooleanNot(final boolean not, final GenericValue arg0) {
+    public BooleanNot(final GenericValue arg0) {
         super(null, arg0);
-        this.not = not;
     }
 
     public Class<? extends GenericValue> validateTypes(final GenericValue parentExpr,
@@ -64,10 +61,10 @@ public class BooleanNot extends GenericExpression implements BooleanValue {
                                                                                     ResultMissingColumnException,
                                                                                     NullColumnValueException {
         final boolean retval = (Boolean)this.getExprArg(0).getValue(conn, object);
-        return (this.not) ? !retval : retval;
+        return !retval;
     }
 
     public String asString() {
-        return (this.not ? "NOT " : "") + this.getExprArg(0).asString();
+        return "NOT " + this.getExprArg(0).asString();
     }
 }

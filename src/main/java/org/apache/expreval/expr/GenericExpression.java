@@ -158,6 +158,28 @@ public abstract class GenericExpression implements GenericValue {
         return this.getRankingClass();
     }
 
+    protected Class<? extends GenericValue> validateNumericTypes() throws HBqlException {
+
+        if (this.getGenericValueList().size() != this.getTypeSignature().getArgCount())
+            throw new InvalidTypeException("Incorrect number of arguments in " + this.asString());
+
+        // Return the type of the highest ranking numeric arg
+        int highestRank = -1;
+        for (int i = 0; i < this.getTypeSignature().getArgCount(); i++) {
+
+            final Class<? extends GenericValue> clazz = this.getExprArg(i).validateTypes(this, false);
+            this.validateParentClass(this.getTypeSignature().getArg(i), clazz);
+
+            final int rank = NumericType.getTypeRanking(clazz);
+            if (rank > highestRank) {
+                highestRank = rank;
+                this.highestRankingNumericArgFoundInValidate = clazz;
+            }
+        }
+
+        return this.getHighestRankingNumericArgFoundInValidate();
+    }
+
     public boolean isAConstant() {
 
         if (this.getGenericValueList().size() == 0)
@@ -277,28 +299,6 @@ public abstract class GenericExpression implements GenericValue {
             this.validateParentClass(typeSignature.getArg(i), this.getExprArg(i).validateTypes(this, false));
 
         return typeSignature.getReturnType();
-    }
-
-    protected Class<? extends GenericValue> validateNumericTypes() throws HBqlException {
-
-        if (this.getGenericValueList().size() != this.getTypeSignature().getArgCount())
-            throw new InvalidTypeException("Incorrect number of arguments in " + this.asString());
-
-        // Return the type of the highest ranking numeric arg
-        int highestRank = -1;
-        for (int i = 0; i < this.getTypeSignature().getArgCount(); i++) {
-
-            final Class<? extends GenericValue> clazz = this.getExprArg(i).validateTypes(this, false);
-            this.validateParentClass(this.getTypeSignature().getArg(i), clazz);
-
-            final int rank = NumericType.getTypeRanking(clazz);
-            if (rank > highestRank) {
-                highestRank = rank;
-                this.highestRankingNumericArgFoundInValidate = clazz;
-            }
-        }
-
-        return this.getHighestRankingNumericArgFoundInValidate();
     }
 
     public GenericValue getOptimizedValue() throws HBqlException {
