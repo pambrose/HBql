@@ -163,6 +163,8 @@ public class ParserSupport extends Parser {
             return "\"";
         if (str.equals("\\'"))
             return "\'";
+        if (str.equals("\\\""))
+            return "\"";
         if (str.equals("\\\\"))
             return "\\";
 

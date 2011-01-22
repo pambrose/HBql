@@ -351,7 +351,7 @@ andExpr returns [GenericValue retval]
 							{retval = getLeftAssociativeBooleanCompare(exprList, opList);};
 
 notExpr returns [GenericValue retval]			 
-	: (n=keyNOT)? p=eqneExpr			{retval = ($n.retval!=null) ? new BooleanNot(true, $p.retval) : $p.retval;};
+	: (n=keyNOT)? p=eqneExpr			{retval = ($n.retval!=null) ? new BooleanNot($p.retval) : $p.retval;};
 
 eqneExpr returns [GenericValue retval]
 options {backtrack=true; memoize=true;}	
@@ -578,11 +578,11 @@ fragment
 HEX_DIGIT : ('0'..'9'|'a'..'f'|'A'..'F') ;
 
 COMMENT
-    :   '//' ~('\n'|'\r')* '\r'? '\n' {skip();}
-    |   '/*' ( options {greedy=false;} : . )* '*/' {skip();}
+    :   '//' ~('\n'|'\r')* '\r'? '\n' 		    	{skip();}
+    |   '/*' ( options {greedy=false;} : . )* '*/' 	{skip();}
     ;
 
-WS 	: (' ' |'\t' |'\n' |'\r' )+ {skip();};
+WS 	: (' ' |'\t' |'\n' |'\r' )+ 			{skip();};
 
 
 // Any changes in these require a change in the ExecutorPool.Type enums

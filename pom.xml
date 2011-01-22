@@ -26,7 +26,7 @@
     <artifactId>HBql</artifactId>
     <name>HBql</name>
     <packaging>jar</packaging>
-    <version>0.89.20100924.1</version>
+    <version>0.90.0</version>
 
     <scm>
         <connection>scm:git://github.com/pambrose/HBql.git/</connection>
@@ -52,13 +52,13 @@
     </distributionManagement>
 
     <properties>
-        <hbase.version>0.89.0-SNAPSHOT</hbase.version>
+        <hbase.version>0.90.0-SNAPSHOT</hbase.version>
         <hbase-trx.version>0.90.0-DEV-2</hbase-trx.version>
         <hadoop.version>0.20.3-append-r964955-1240</hadoop.version>
         <zookeeper.version>3.3.1</zookeeper.version>
         <guava.version>r07</guava.version>
         <jline.version>0.9.9</jline.version>
-        <antlr.version>3.3</antlr.version>
+        <antlr.version>3.2</antlr.version>
         <jmx.version>1.2.1</jmx.version>
         <logging.version>1.0.4</logging.version>
         <log4j.version>1.2.15</log4j.version>

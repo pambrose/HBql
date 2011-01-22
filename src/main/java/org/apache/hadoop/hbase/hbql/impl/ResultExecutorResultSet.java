@@ -45,43 +45,44 @@ public class ResultExecutorResultSet<T> extends HResultSetImpl<T, Result> {
         // This will submit jobs until a job is rejected, at which point, execution will take place in
         // the context of this thread
         for (final RowRequest rowRequest : rowRequestList) {
-            this.getCompletionQueueExecutor().submitWorkToThreadPool(new Runnable() {
-                public void run() {
-                    HBqlException outerException = null;
-                    try {
-                        final ResultScanner scanner = rowRequest.getResultScanner(getMappingContext().getMapping(),
-                                                                                  getWithArgs(),
-                                                                                  getTableWrapper().getHTable());
-                        for (final Result result : scanner) {
-
+            this.getCompletionQueueExecutor().submitWorkToThreadPool(
+                    new Runnable() {
+                        public void run() {
+                            HBqlException outerException = null;
                             try {
-                                if (getClientExpressionTree() != null
-                                    && !getClientExpressionTree().evaluate(getHConnectionImpl(), result))
-                                    continue;
-                            }
-                            catch (ResultMissingColumnException e) {
-                                continue;
-                            }
-                            catch (NullColumnValueException e) {
-                                continue;
-                            }
+                                final ResultScanner scanner = rowRequest.getResultScanner(getMappingContext().getMapping(),
+                                                                                          getWithArgs(),
+                                                                                          getTableWrapper().getHTable());
+                                for (final Result result : scanner) {
 
-                            getCompletionQueueExecutor().putElement(result);
+                                    try {
+                                        if (getClientExpressionTree() != null
+                                            && !getClientExpressionTree().evaluate(getHConnectionImpl(), result))
+                                            continue;
+                                    }
+                                    catch (ResultMissingColumnException e) {
+                                        continue;
+                                    }
+                                    catch (NullColumnValueException e) {
+                                        continue;
+                                    }
+
+                                    getCompletionQueueExecutor().putElement(result);
+                                }
+
+                                scanner.close();
+                            }
+                            catch (HBqlException e) {
+                                outerException = e;
+                            }
+                            finally {
+                                if (outerException != null)
+                                    getCompletionQueueExecutor().addException(outerException);
+
+                                getCompletionQueueExecutor().putCompletion();
+                            }
                         }
-
-                        scanner.close();
-                    }
-                    catch (HBqlException e) {
-                        outerException = e;
-                    }
-                    finally {
-                        if (outerException != null)
-                            getCompletionQueueExecutor().addException(outerException);
-
-                        getCompletionQueueExecutor().putCompletion();
-                    }
-                }
-            });
+                    });
         }
     }
 
