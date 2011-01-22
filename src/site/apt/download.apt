@@ -3,7 +3,7 @@
     ------
     ------
 
-Releases for HBase 0.90.0.1
+Releases for HBase 0.90.0
 
     *{{{./downloads/hbql-0.90.0.1.zip}hbql-0.90.0.1.zip}}
 
@@ -16,7 +16,7 @@ Releases for HBase 0.20
     *{{{./downloads/hbql-0.9.27-alpha.tar.gz}hbql-0.9.27-alpha.tar.gz}}
 
 
-Javadocs for HBase 0.90.0.1
+Javadocs for HBase 0.90.0
 
     *{{{./downloads/javadocs-0.90.0.1.zip}javadocs-0.90.0.1.zip}}
 
