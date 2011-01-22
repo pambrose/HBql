@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010.  The Apache Software Foundation
+ * Copyright (c) 2011.  The Apache Software Foundation
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -46,16 +46,16 @@ import java.util.Set;
 
 public class WithArgs {
 
-    private String indexName = null;
-    private KeyRangeArgs keyRangeArgs = null;
-    private TimestampArgs timestampArgs = null;
-    private VersionArgs versionArgs = null;
-    private ScannerCacheArgs scannerCacheArgs = null;
-    private LimitArgs limitArgs = null;
-    private boolean verbose = false;
-    private ExpressionTree clientExpressionTree = null;
-    private ExpressionTree serverExpressionTree = null;
-    private MappingContext mappingContext = null;
+    private String           indexName            = null;
+    private KeyRangeArgs     keyRangeArgs         = null;
+    private TimestampArgs    timestampArgs        = null;
+    private VersionArgs      versionArgs          = null;
+    private ScannerCacheArgs scannerCacheArgs     = null;
+    private LimitArgs        limitArgs            = null;
+    private boolean          verbose              = false;
+    private ExpressionTree   clientExpressionTree = null;
+    private ExpressionTree   serverExpressionTree = null;
+    private MappingContext   mappingContext       = null;
 
     // Keep track of args set multiple times
     private final Set<String> multipleSetValues = Sets.newHashSet();

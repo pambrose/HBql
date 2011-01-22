@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010.  The Apache Software Foundation
+ * Copyright (c) 2011.  The Apache Software Foundation
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -40,7 +40,7 @@ public enum NumericType {
     NumberType(NumberValue.class, Number.class);  // NumberType is not explicitly referenced, but it is iterated on
 
     final Class<? extends GenericValue> exprType;
-    final Class<? extends Number> primaryType;
+    final Class<? extends Number>       primaryType;
 
     private NumericType(final Class<? extends GenericValue> exprType, final Class<? extends Number> primaryType) {
         this.exprType = exprType;

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010.  The Apache Software Foundation
+ * Copyright (c) 2011.  The Apache Software Foundation
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -43,15 +43,15 @@ public abstract class HResultSetImpl<T, R> implements HResultSet<T> {
     private final AtomicLong returnedRecordCount = new AtomicLong(0L);
     private final long returnedRecordLimit;
 
-    private AtomicBoolean atomicClosed = new AtomicBoolean(false);
-    private final List<ResultScanner> resultScannerList = Lists.newArrayList();
-    private ResultScanner currentResultScanner = null;
-    private AggregateRecord aggregateRecord;
-    private final HTableWrapper tableWrapper;
+    private       AtomicBoolean       atomicClosed         = new AtomicBoolean(false);
+    private final List<ResultScanner> resultScannerList    = Lists.newArrayList();
+    private       ResultScanner       currentResultScanner = null;
+    private       AggregateRecord aggregateRecord;
+    private final HTableWrapper   tableWrapper;
     private final AtomicBoolean tableWrapperClosed = new AtomicBoolean(false);
 
-    private final Query<T> query;
-    private final ExpressionTree clientExpressionTree;
+    private final Query<T>                   query;
+    private final ExpressionTree             clientExpressionTree;
     private final CompletionQueueExecutor<R> completionQueueExecutor;
 
     protected HResultSetImpl(final Query<T> query,

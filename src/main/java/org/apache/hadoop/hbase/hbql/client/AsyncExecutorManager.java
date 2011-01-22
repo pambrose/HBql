@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010.  The Apache Software Foundation
+ * Copyright (c) 2011.  The Apache Software Foundation
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -29,9 +29,9 @@ import java.util.Set;
 
 public class AsyncExecutorManager {
 
-    public static int defaultMinThreadCount = 1;
-    public static int defaultMaxThreadCount = 10;
-    public static long defaultKeepAliveSecs = Long.MAX_VALUE;
+    public static int  defaultMinThreadCount = 1;
+    public static int  defaultMaxThreadCount = 10;
+    public static long defaultKeepAliveSecs  = Long.MAX_VALUE;
 
     private static Map<String, AsyncExecutorImpl> executorMap = Maps.newConcurrentHashMap();
 

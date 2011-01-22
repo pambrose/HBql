@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010.  The Apache Software Foundation
+ * Copyright (c) 2011.  The Apache Software Foundation
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -34,7 +34,7 @@ public class DefaultArg extends ExpressionProperty implements Serializable {
 
     // We have to make value transient because Object is not serializable for RecordFilter
     // We will compute it again on the server after reset is called
-    private Serializable value = null;
+    private Serializable  value          = null;
     private AtomicBoolean atomicComputed = new AtomicBoolean(false);
 
     public DefaultArg(final Class<? extends GenericValue> exprType, final GenericValue expr) throws HBqlException {

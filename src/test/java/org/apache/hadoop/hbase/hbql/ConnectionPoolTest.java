@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010.  The Apache Software Foundation
+ * Copyright (c) 2011.  The Apache Software Foundation
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -42,15 +42,15 @@ import java.util.concurrent.Future;
 
 public class ConnectionPoolTest extends TestSupport {
 
-    static int count = 10;
-    static int workerCount = 10;
-    static final int clients = 50;
-    static final int iterations = 50;
+    static       int count       = 10;
+    static       int workerCount = 10;
+    static final int clients     = 50;
+    static final int iterations  = 50;
 
     static HConnection connection = null;
 
     static HConnectionPool connectionPool = null;
-    static ExecutorService exec = Executors.newFixedThreadPool(workerCount);
+    static ExecutorService exec           = Executors.newFixedThreadPool(workerCount);
 
     static Random randomVal = new Random();
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010.  The Apache Software Foundation
+ * Copyright (c) 2011.  The Apache Software Foundation
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -34,14 +34,14 @@ public final class ColumnDefinition implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private String columnName;
-    private String aliasName;
-    private boolean isArray;
-    private FieldType fieldType;
+    private           String       columnName;
+    private           String       aliasName;
+    private           boolean      isArray;
+    private           FieldType    fieldType;
     private transient GenericValue defaultValue;
-    private ColumnWidth columnWidth;
-    private String getter;
-    private String setter;
+    private           ColumnWidth  columnWidth;
+    private           String       getter;
+    private           String       setter;
 
     private FamilyMapping familyMapping = null;
 

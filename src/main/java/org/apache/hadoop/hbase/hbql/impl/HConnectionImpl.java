@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010.  The Apache Software Foundation
+ * Copyright (c) 2011.  The Apache Software Foundation
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -21,14 +21,30 @@
 package org.apache.hadoop.hbase.hbql.impl;
 
 import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.hbase.*;
+import org.apache.hadoop.hbase.HBaseConfiguration;
+import org.apache.hadoop.hbase.HColumnDescriptor;
+import org.apache.hadoop.hbase.HTableDescriptor;
+import org.apache.hadoop.hbase.MasterNotRunningException;
+import org.apache.hadoop.hbase.ZooKeeperConnectionException;
 import org.apache.hadoop.hbase.client.HBaseAdmin;
 import org.apache.hadoop.hbase.client.HTablePool;
 import org.apache.hadoop.hbase.client.tableindexed.IndexSpecification;
 import org.apache.hadoop.hbase.client.tableindexed.IndexedTable;
 import org.apache.hadoop.hbase.client.tableindexed.IndexedTableAdmin;
 import org.apache.hadoop.hbase.client.tableindexed.IndexedTableDescriptor;
-import org.apache.hadoop.hbase.hbql.client.*;
+import org.apache.hadoop.hbase.hbql.client.AsyncExecutor;
+import org.apache.hadoop.hbase.hbql.client.AsyncExecutorManager;
+import org.apache.hadoop.hbase.hbql.client.ExecutionResults;
+import org.apache.hadoop.hbase.hbql.client.HBatch;
+import org.apache.hadoop.hbase.hbql.client.HBqlException;
+import org.apache.hadoop.hbase.hbql.client.HConnection;
+import org.apache.hadoop.hbase.hbql.client.HMapping;
+import org.apache.hadoop.hbase.hbql.client.HPreparedStatement;
+import org.apache.hadoop.hbase.hbql.client.HRecord;
+import org.apache.hadoop.hbase.hbql.client.HResultSet;
+import org.apache.hadoop.hbase.hbql.client.HStatement;
+import org.apache.hadoop.hbase.hbql.client.QueryExecutorPool;
+import org.apache.hadoop.hbase.hbql.client.QueryExecutorPoolManager;
 import org.apache.hadoop.hbase.hbql.mapping.AnnotationResultAccessor;
 import org.apache.hadoop.hbase.hbql.mapping.FamilyMapping;
 import org.apache.hadoop.hbase.hbql.mapping.TableMapping;
@@ -149,7 +165,8 @@ public class HConnectionImpl extends PoolableElement<HConnectionImpl> implements
 
         if (accessor != null) {
             return accessor;
-        } else {
+        }
+        else {
             accessor = AnnotationResultAccessor.newAnnotationMapping(this, clazz);
             getAnnotationMappingMap().put(clazz, accessor);
             return accessor;
@@ -492,7 +509,7 @@ public class HConnectionImpl extends PoolableElement<HConnectionImpl> implements
         this.validateQueryExecutorPoolNameExists(this.getQueryExecutorPoolName());
 
         final QueryExecutorPool pool = QueryExecutorPoolManager.getQueryExecutorPool(this.getQueryExecutorPoolName());
-        final CompletionQueueExecutor executorQueue = ((QueryExecutorPoolImpl) pool).take();
+        final CompletionQueueExecutor executorQueue = ((QueryExecutorPoolImpl)pool).take();
 
         // Reset it prior to handing it out
         executorQueue.resetElement();
@@ -509,7 +526,7 @@ public class HConnectionImpl extends PoolableElement<HConnectionImpl> implements
 
         final AsyncExecutor executor = AsyncExecutorManager.getAsyncExecutor(this.getAsyncExecutorName());
 
-        return ((AsyncExecutorImpl) executor);
+        return ((AsyncExecutorImpl)executor);
     }
 
 

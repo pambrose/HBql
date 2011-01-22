@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010.  The Apache Software Foundation
+ * Copyright (c) 2011.  The Apache Software Foundation
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -43,10 +43,10 @@ import java.util.NavigableMap;
 
 public class FamilySelectElement implements SelectElement {
 
-    private final List<String> familyNameList = Lists.newArrayList();
-    private final List<byte[]> familyNameBytesList = Lists.newArrayList();
-    private final List<ColumnAttrib> attribsUsedInExpr = Lists.newArrayList();
-    private final String familyName;
+    private final List<String>       familyNameList      = Lists.newArrayList();
+    private final List<byte[]>       familyNameBytesList = Lists.newArrayList();
+    private final List<ColumnAttrib> attribsUsedInExpr   = Lists.newArrayList();
+    private final String  familyName;
     private final boolean useAllFamilies;
 
     private MappingContext mappingContext;

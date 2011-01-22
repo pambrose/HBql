@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010.  The Apache Software Foundation
+ * Copyright (c) 2011.  The Apache Software Foundation
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -25,11 +25,11 @@ import org.apache.hadoop.hbase.hbql.client.QueryExecutorPool;
 
 public class QueryExecutorPoolImpl extends ElementPool<CompletionQueueExecutor> implements QueryExecutorPool {
 
-    private final int minThreadCount;
-    private final int maxThreadCount;
-    private final long keepAliveSecs;
+    private final int     minThreadCount;
+    private final int     maxThreadCount;
+    private final long    keepAliveSecs;
     private final boolean threadsReadResults;
-    private final int completionQueueSize;
+    private final int     completionQueueSize;
 
     public QueryExecutorPoolImpl(final String poolName,
                                  final int maxExecutorPoolSize,

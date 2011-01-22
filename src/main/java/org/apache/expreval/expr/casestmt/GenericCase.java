@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010.  The Apache Software Foundation
+ * Copyright (c) 2011.  The Apache Software Foundation
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -32,7 +32,7 @@ import java.util.List;
 public abstract class GenericCase extends DelegateStmt<GenericCase> {
 
     private final List<GenericCaseWhen> whenExprList;
-    private GenericCaseElse elseExpr;
+    private       GenericCaseElse       elseExpr;
 
     protected GenericCase(final ExpressionType type, final List<GenericCaseWhen> whenExprList, final GenericCaseElse elseExpr) {
         super(type);

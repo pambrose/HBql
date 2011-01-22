@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010.  The Apache Software Foundation
+ * Copyright (c) 2011.  The Apache Software Foundation
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -44,10 +44,10 @@ public class InsertStatement extends StatementWithParameters implements Connecti
     private final List<SelectExpressionContext> columnList = Lists.newArrayList();
     private final InsertValueSource insertValuesSource;
 
-    private HConnectionImpl connection = null;
-    private boolean validated = false;
-    private HRecord record = null;
-    private String invalidInsertColumn = null;
+    private HConnectionImpl connection          = null;
+    private boolean         validated           = false;
+    private HRecord         record              = null;
+    private String          invalidInsertColumn = null;
 
     public InsertStatement(final StatementPredicate predicate,
                            final String mappingName,

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010.  The Apache Software Foundation
+ * Copyright (c) 2011.  The Apache Software Foundation
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -54,7 +54,7 @@ public enum Operator {
     AND("AND", null, null),
     OR("OR", null, null);
 
-    final String opStr;
+    final String                  opStr;
     final CompareFilter.CompareOp compareOpLeft;
     final CompareFilter.CompareOp compareOpRight;
 

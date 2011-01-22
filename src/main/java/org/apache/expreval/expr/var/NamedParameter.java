@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010.  The Apache Software Foundation
+ * Copyright (c) 2011.  The Apache Software Foundation
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -55,12 +55,12 @@ public class NamedParameter implements GenericValue {
 
     private static long counter = Long.MIN_VALUE;
 
-    private MultipleExpressionContext context = null;
-    private GenericValue typedExpr = null;
-    private List<GenericValue> typedExprList = null;
+    private MultipleExpressionContext context       = null;
+    private GenericValue              typedExpr     = null;
+    private List<GenericValue>        typedExprList = null;
 
     private String paramName;
-    private long position;
+    private long   position;
 
     public NamedParameter() {
     }

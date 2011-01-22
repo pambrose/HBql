@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010.  The Apache Software Foundation
+ * Copyright (c) 2011.  The Apache Software Foundation
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -67,11 +67,12 @@ public class IndexRequest implements RowRequest {
 
         if (this.getColumnAttribs() == null) {
             attribs = null;
-        } else {
+        }
+        else {
             final List<String> columnList = Lists.newArrayList();
             for (final ColumnAttrib columnAttrib : this.getColumnAttribs())
                 columnList.add(columnAttrib.isASelectFamilyAttrib() ? columnAttrib.getFamilyName()
-                                       : columnAttrib.getFamilyQualifiedName());
+                                                                    : columnAttrib.getFamilyQualifiedName());
             attribs = Util.getStringsAsBytes(columnList);
         }
         return attribs;
@@ -81,20 +82,20 @@ public class IndexRequest implements RowRequest {
                                           final WithArgs withArgs,
                                           final HTableInterface table) throws HBqlException {
 
-        final IndexedTable index = (IndexedTable) table;
+        final IndexedTable index = (IndexedTable)table;
 
         byte[] startKey = null;
         byte[] stopKey = null;
 
         if (this.getStartRow() != HConstants.EMPTY_START_ROW) {
-            final TableMapping tableMapping = (TableMapping) mapping;
+            final TableMapping tableMapping = (TableMapping)mapping;
             tableMapping.validateKeyInfo(withArgs.getIndexName());
             final int width = tableMapping.getKeyInfo().getWidth();
             startKey = Bytes.add(this.getStartRow(), Util.getFixedWidthString(Character.MIN_VALUE, width));
         }
 
         if (this.getStopRow() != HConstants.EMPTY_END_ROW) {
-            final TableMapping tableMapping = (TableMapping) mapping;
+            final TableMapping tableMapping = (TableMapping)mapping;
             tableMapping.validateKeyInfo(withArgs.getIndexName());
             final int width = tableMapping.getKeyInfo().getWidth();
             stopKey = Bytes.add(this.getStopRow(), Util.getFixedWidthString(Character.MAX_VALUE, width));

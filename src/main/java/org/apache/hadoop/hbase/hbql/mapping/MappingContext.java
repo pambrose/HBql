@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010.  The Apache Software Foundation
+ * Copyright (c) 2011.  The Apache Software Foundation
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -29,8 +29,8 @@ public class MappingContext implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private String mappingName = null;
-    private Mapping mapping = null;
+    private String         mappingName    = null;
+    private Mapping        mapping        = null;
     private ResultAccessor resultAccessor = null;
 
     public MappingContext() {

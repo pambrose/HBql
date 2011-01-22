@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010.  The Apache Software Foundation
+ * Copyright (c) 2011.  The Apache Software Foundation
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -36,7 +36,7 @@ public class NamedParameters implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private final SortedSet<NamedParameter> paramSet = new TreeSet<NamedParameter>(NamedParameter.getComparator());
+    private final SortedSet<NamedParameter>             paramSet        = new TreeSet<NamedParameter>(NamedParameter.getComparator());
     private final AtomicReference<List<NamedParameter>> atomicParamList = AtomicReferences.newAtomicReference();
 
     private SortedSet<NamedParameter> getParamSet() {
@@ -59,7 +59,8 @@ public class NamedParameters implements Serializable {
                     // This takes the ordered set and converts to a list
                     // The order is determined by when the param was created.
                     final int size = this.getParamSet().size();
-                    final List<NamedParameter> val = Lists.newArrayList(this.getParamSet().toArray(new NamedParameter[size]));
+                    final List<NamedParameter> val = Lists.newArrayList(this.getParamSet()
+                                                                            .toArray(new NamedParameter[size]));
                     this.getAtomicParamList().set(val);
                 }
             }

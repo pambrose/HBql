@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010.  The Apache Software Foundation
+ * Copyright (c) 2011.  The Apache Software Foundation
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -60,11 +60,11 @@ public enum FieldType implements Serializable {
     DateType(Date.class, DateValue.class, -1, -1, "DATE", "DATETIME"),
     ObjectType(Object.class, ObjectValue.class, -1, -1, "OBJECT", "OBJ");
 
-    private Class componentType;
+    private Class                         componentType;
     private Class<? extends GenericValue> exprType;
-    private int typeRanking;
-    private int size;
-    private List<String> synonymList;
+    private int                           typeRanking;
+    private int                           size;
+    private List<String>                  synonymList;
 
     FieldType() {
     }

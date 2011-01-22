@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010.  The Apache Software Foundation
+ * Copyright (c) 2011.  The Apache Software Foundation
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -28,10 +28,10 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class CurrentAndVersionValue<T> extends Value {
 
-    private final AtomicReference<NavigableMap<Long, T>> atomicVersionMap = AtomicReferences.newAtomicReference();
-    private boolean currentValueSet = false;
-    private T currentValue = null;
-    private long currentValueTimestamp = -1;
+    private final AtomicReference<NavigableMap<Long, T>> atomicVersionMap      = AtomicReferences.newAtomicReference();
+    private       boolean                                currentValueSet       = false;
+    private       T                                      currentValue          = null;
+    private       long                                   currentValueTimestamp = -1;
 
     public CurrentAndVersionValue(final String name) {
         super(name);

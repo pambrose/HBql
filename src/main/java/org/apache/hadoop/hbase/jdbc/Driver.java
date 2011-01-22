@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010.  The Apache Software Foundation
+ * Copyright (c) 2011.  The Apache Software Foundation
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -52,7 +52,7 @@ public class Driver implements java.sql.Driver {
                 final String var = vals[0].toLowerCase();
 
                 if (!var.equals(HConnectionImpl.MAXTABLEREFS)
-                        && !var.equals(HConnectionImpl.MASTER))
+                    && !var.equals(HConnectionImpl.MASTER))
                     throw new SQLException("Unknown JDBC URL option: " + var);
 
                 retval.put(var, vals[1]);
@@ -81,7 +81,7 @@ public class Driver implements java.sql.Driver {
         final Map<String, String> argMap = getArgMap(url);
 
         final int maxtablerefs = argMap.containsKey(HConnectionImpl.MAXTABLEREFS)
-                ? Integer.parseInt(argMap.get(HConnectionImpl.MAXTABLEREFS)) : Integer.MAX_VALUE;
+                                 ? Integer.parseInt(argMap.get(HConnectionImpl.MAXTABLEREFS)) : Integer.MAX_VALUE;
         return new ConnectionImpl(config, maxtablerefs);
     }
 

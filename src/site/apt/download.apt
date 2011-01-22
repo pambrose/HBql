@@ -3,11 +3,11 @@
     ------
     ------
 
-Releases for HBase 0.89
+Releases for HBase 0.90.0.1
 
-    *{{{./downloads/hbql-0.89.20100924.1.zip}hbql-0.89.20100924.1.zip}}
+    *{{{./downloads/hbql-0.90.0.1.zip}hbql-0.90.0.1.zip}}
 
-    *{{{./downloads/hbql-0.89.20100924.1.tar.gz}hbql-0.89.20100924.1.tar.gz}}
+    *{{{./downloads/hbql-0.90.0.1.tar.gz}hbql-0.90.0.1.tar.gz}}
 
 Releases for HBase 0.20
 
@@ -16,9 +16,9 @@ Releases for HBase 0.20
     *{{{./downloads/hbql-0.9.27-alpha.tar.gz}hbql-0.9.27-alpha.tar.gz}}
 
 
-Javadocs for HBase 0.89
+Javadocs for HBase 0.90.0.1
 
-    *{{{./downloads/javadocs-0.89.20100924.1.zip}javadocs-0.89.20100924.1.zip}}
+    *{{{./downloads/javadocs-0.90.0.1.zip}javadocs-0.90.0.1.zip}}
 
 Javadocs for HBase 0.20
 
@@ -36,9 +36,9 @@ git clone git://github.com/pambrose/HBql.git
 
 Release Notes
 
-    0.89.20100924.1 -- 11/22/10
+    0.90.0.1 -- 01/23/11
 
-        * Added support for HBase 0.89.20100924
+        * Added support for HBase 0.90.0
 
     0.9.27-alpha -- 05/20/10
 

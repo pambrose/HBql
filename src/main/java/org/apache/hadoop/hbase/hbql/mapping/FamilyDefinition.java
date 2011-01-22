@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010.  The Apache Software Foundation
+ * Copyright (c) 2011.  The Apache Software Foundation
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -82,7 +82,7 @@ public class FamilyDefinition {
                                             final FamilyProperty value) throws HBqlException {
         if (assignee != null)
             throw new HBqlException("Multiple " + value.getPropertyType().getDescription()
-                                            + " values for " + this.getFamilyName() + " not allowed");
+                                    + " values for " + this.getFamilyName() + " not allowed");
         return value;
     }
 
@@ -118,12 +118,12 @@ public class FamilyDefinition {
                     break;
 
                 case BLOOMFILTER_TYPE:
-                    this.bloomFilterType = (BloomFilterTypeProperty) this
+                    this.bloomFilterType = (BloomFilterTypeProperty)this
                             .validateProperty(this.bloomFilterType, familyProperty);
                     break;
 
                 case COMPRESSION_TYPE:
-                    this.compressionType = (CompressionTypeProperty) this
+                    this.compressionType = (CompressionTypeProperty)this
                             .validateProperty(this.compressionType, familyProperty);
                     break;
             }

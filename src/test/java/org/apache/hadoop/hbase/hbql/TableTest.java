@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010.  The Apache Software Foundation
+ * Copyright (c) 2011.  The Apache Software Foundation
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -74,15 +74,15 @@ public class TableTest extends TestSupport {
         }
         assertFalse(connection.tableExists(tableName));
         connection.execute("CREATE TABLE " + tableName
-                                   + " (family1 ("
-                                   + "MAX_VERSIONS:  12, "
-                                   + "BLOOMFILTER_TYPE:  ROW, "
-                                   + "BLOCK_SIZE: 123, "
-                                   + "BLOCK_CACHE_ENABLED: TRUE, "
-                                   + "COMPRESSION_TYPE: GZ, "
-                                   + "IN_MEMORY: TRUE, "
-                                   + "TTL: 440"
-                                   + "))");
+                           + " (family1 ("
+                           + "MAX_VERSIONS:  12, "
+                           + "BLOOMFILTER_TYPE:  ROW, "
+                           + "BLOCK_SIZE: 123, "
+                           + "BLOCK_CACHE_ENABLED: TRUE, "
+                           + "COMPRESSION_TYPE: GZ, "
+                           + "IN_MEMORY: TRUE, "
+                           + "TTL: 440"
+                           + "))");
         assertTrue(connection.tableExists(tableName));
         HTableDescriptor table = connection.getHTableDescriptor(tableName);
         HColumnDescriptor[] hcd = table.getColumnFamilies();

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010.  The Apache Software Foundation
+ * Copyright (c) 2011.  The Apache Software Foundation
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -47,7 +47,7 @@ public class HRecordImpl implements HRecord {
 
     private List<String> namePositionList = Lists.newArrayList();
 
-    private AtomicReference<ElementMap<ColumnValue>> atomicColumnValuesMap = AtomicReferences.newAtomicReference();
+    private AtomicReference<ElementMap<ColumnValue>>      atomicColumnValuesMap   = AtomicReferences.newAtomicReference();
     private AtomicReference<ElementMap<UnMappedValueMap>> atomicUnMappedValuesMap = AtomicReferences.newAtomicReference();
 
     public HRecordImpl() {

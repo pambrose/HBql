@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010.  The Apache Software Foundation
+ * Copyright (c) 2011.  The Apache Software Foundation
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -44,11 +44,11 @@ public abstract class ColumnAttrib implements Serializable {
 
     private ColumnDefinition columnDefinition;
 
-    private AtomicReference<byte[]> atomicFamilyQualifiedBytes = AtomicReferences.newAtomicReference();
-    private AtomicReference<byte[]> atomicFamilyBytes = AtomicReferences.newAtomicReference();
-    private AtomicReference<byte[]> atomicColumnBytes = AtomicReferences.newAtomicReference();
-    private transient Method getterMethod = null;
-    private transient Method setterMethod = null;
+    private           AtomicReference<byte[]> atomicFamilyQualifiedBytes = AtomicReferences.newAtomicReference();
+    private           AtomicReference<byte[]> atomicFamilyBytes          = AtomicReferences.newAtomicReference();
+    private           AtomicReference<byte[]> atomicColumnBytes          = AtomicReferences.newAtomicReference();
+    private transient Method                  getterMethod               = null;
+    private transient Method                  setterMethod               = null;
     private boolean embedded;
 
     public ColumnAttrib() {

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010.  The Apache Software Foundation
+ * Copyright (c) 2011.  The Apache Software Foundation
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -40,7 +40,7 @@ public class SelectValuesInsertSource extends InsertValueSource {
 
     private final SelectStatement selectStatement;
     private Iterator<HRecord> resultsIterator = null;
-    private HRecord currentRecord = null;
+    private HRecord           currentRecord   = null;
 
 
     public SelectValuesInsertSource(final SelectStatement selectStatement) {

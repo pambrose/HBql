@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010.  The Apache Software Foundation
+ * Copyright (c) 2011.  The Apache Software Foundation
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -34,14 +34,14 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class AsyncExecutorImpl implements AsyncExecutor {
 
-    private final AtomicBoolean atomicShutdown = new AtomicBoolean(false);
+    private final AtomicBoolean atomicShutdown       = new AtomicBoolean(false);
     private final AtomicInteger workSubmittedCounter = new AtomicInteger(0);
     private final LocalThreadPoolExecutor threadPoolExecutor;
 
     private final String poolName;
-    private final int minThreadCount;
-    private final int maxThreadCount;
-    private final long keepAliveSecs;
+    private final int    minThreadCount;
+    private final int    maxThreadCount;
+    private final long   keepAliveSecs;
 
     private static class LocalThreadPoolExecutor extends ThreadPoolExecutor {
 

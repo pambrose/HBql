@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010.  The Apache Software Foundation
+ * Copyright (c) 2011.  The Apache Software Foundation
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -35,8 +35,8 @@ import java.util.Iterator;
 public class ObjectResultSet<T> implements Iterable<T> {
 
     private final ObjectQueryImpl<T> objectQuery;
-    private final Collection<T> objects;
-    private final ExpressionTree expressionTree;
+    private final Collection<T>      objects;
+    private final ExpressionTree     expressionTree;
 
     private Iterator<T> objectIter = null;
 

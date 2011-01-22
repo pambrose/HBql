@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010.  The Apache Software Foundation
+ * Copyright (c) 2011.  The Apache Software Foundation
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -42,7 +42,7 @@ public abstract class SelectStatementArgs extends ExpressionProperty {
         WIDTH(new ArgumentListTypeSignature(IntegerValue.class), "WIDTH");
 
         private final ArgumentListTypeSignature typeSignature;
-        private final String description;
+        private final String                    description;
 
         ArgType(final ArgumentListTypeSignature typeSignature, final String description) {
             this.typeSignature = typeSignature;

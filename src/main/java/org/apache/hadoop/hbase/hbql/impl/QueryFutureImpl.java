@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010.  The Apache Software Foundation
+ * Copyright (c) 2011.  The Apache Software Foundation
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -28,10 +28,10 @@ import java.util.concurrent.TimeUnit;
 
 public class QueryFutureImpl implements QueryFuture {
 
-    private final CountDownLatch latch = new CountDownLatch(1);
-    private HBqlException caughtException = null;
-    private long startTime = -1L;
-    private long completeTime = -1L;
+    private final CountDownLatch latch           = new CountDownLatch(1);
+    private       HBqlException  caughtException = null;
+    private       long           startTime       = -1L;
+    private       long           completeTime    = -1L;
 
     public HBqlException getHBqlException() {
         return this.caughtException;

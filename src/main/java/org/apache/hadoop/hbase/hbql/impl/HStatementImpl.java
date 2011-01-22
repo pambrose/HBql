@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010.  The Apache Software Foundation
+ * Copyright (c) 2011.  The Apache Software Foundation
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -40,7 +40,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class HStatementImpl implements HStatement {
 
-    private final AtomicBoolean atomicClosed = new AtomicBoolean(false);
+    private final AtomicBoolean atomicClosed        = new AtomicBoolean(false);
     private final AtomicBoolean ignoreQueryExecutor = new AtomicBoolean(false);
     private final HConnectionImpl connection;
     private HResultSet resultSet = null;

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010.  The Apache Software Foundation
+ * Copyright (c) 2011.  The Apache Software Foundation
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -137,7 +137,8 @@ public class SingleColumnValueFilter extends InstrumentedFilter {
         if (this.matchedColumn) {
             // We already found and matched the single column, all keys now pass
             return ReturnCode.INCLUDE;
-        } else if (this.latestVersionOnly && this.foundColumn) {
+        }
+        else if (this.latestVersionOnly && this.foundColumn) {
             // We found but did not match the single column, skip to next row
             return ReturnCode.NEXT_ROW;
         }
@@ -250,7 +251,7 @@ public class SingleColumnValueFilter extends InstrumentedFilter {
         }
         this.compareOp = CompareFilter.CompareOp.valueOf(in.readUTF());
         this.comparator =
-                (WritableByteArrayComparable) HbaseObjectWritable.readObject(in, null);
+                (WritableByteArrayComparable)HbaseObjectWritable.readObject(in, null);
         this.foundColumn = in.readBoolean();
         this.matchedColumn = in.readBoolean();
         this.filterIfMissing = in.readBoolean();

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010.  The Apache Software Foundation
+ * Copyright (c) 2011.  The Apache Software Foundation
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -33,9 +33,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public abstract class ResultSetIterator<T, R> implements Iterator<T> {
 
     private final HResultSetImpl<T, R> resultSet;
-    private Iterator<Result> currentResultIterator = null;
-    private volatile T nextObject = null;
-    private final AtomicBoolean iteratorComplete = new AtomicBoolean(false);
+    private          Iterator<Result> currentResultIterator = null;
+    private volatile T                nextObject            = null;
+    private final    AtomicBoolean    iteratorComplete      = new AtomicBoolean(false);
 
     protected ResultSetIterator(final HResultSetImpl<T, R> resultSet) throws HBqlException {
         this.resultSet = resultSet;

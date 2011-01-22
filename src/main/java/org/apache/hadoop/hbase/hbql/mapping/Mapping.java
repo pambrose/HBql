@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010.  The Apache Software Foundation
+ * Copyright (c) 2011.  The Apache Software Foundation
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -38,15 +38,16 @@ public abstract class Mapping implements Serializable {
 
     private static final long serialVersionUID = 3L;
 
-    private final transient AtomicReference<Map<String, ExpressionTree>> atomicEvalMap = AtomicReferences.newAtomicReference();
-    private final Map<String, ColumnAttrib> columnAttribByVariableNameMap = Maps.newHashMap();
-    private final Set<ColumnAttrib> columnAttribSet = Sets.newHashSet();
+    private final transient AtomicReference<Map<String, ExpressionTree>> atomicEvalMap                 = AtomicReferences
+            .newAtomicReference();
+    private final           Map<String, ColumnAttrib>                    columnAttribByVariableNameMap = Maps.newHashMap();
+    private final           Set<ColumnAttrib>                            columnAttribSet               = Sets.newHashSet();
 
-    private ColumnAttrib keyAttrib = null;
-    private List<String> evalList = null;
-    private int expressionTreeCacheSize = 25;
-    private String mappingName = null;
-    private String tableName = null;
+    private ColumnAttrib keyAttrib               = null;
+    private List<String> evalList                = null;
+    private int          expressionTreeCacheSize = 25;
+    private String       mappingName             = null;
+    private String       tableName               = null;
 
 
     // For serialization

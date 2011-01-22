@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010.  The Apache Software Foundation
+ * Copyright (c) 2011.  The Apache Software Foundation
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -100,7 +100,8 @@ public class DeleteStatement extends StatementWithParameters implements Connecti
         for (final String deleteItem : this.originaltemList) {
             if (deleteItem.contains(":")) {
                 this.getDeleteItemList().add(deleteItem);
-            } else {
+            }
+            else {
                 final TableMapping mapping = this.getMappingContext().getTableMapping();
                 final ColumnAttrib attrib = mapping.getAttribByVariableName(deleteItem);
                 if (attrib == null)
@@ -180,7 +181,8 @@ public class DeleteStatement extends StatementWithParameters implements Connecti
                             if (deleteItem.endsWith(":*")) {
                                 final String familyName = deleteItem.substring(0, deleteItem.length() - 2);
                                 rowDelete.deleteFamily(familyName.getBytes());
-                            } else {
+                            }
+                            else {
                                 final int delim = deleteItem.indexOf(":");
                                 String family = deleteItem.substring(0, delim);
                                 String qualifier = deleteItem.substring(delim + 1, deleteItem.length());

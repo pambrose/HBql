@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010.  The Apache Software Foundation
+ * Copyright (c) 2011.  The Apache Software Foundation
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -34,10 +34,10 @@ import java.util.Set;
 
 public class CreateMappingStatement extends StatementWithMapping implements ConnectionStatement {
 
-    private final boolean tempMapping;
-    private final boolean systemMapping;
-    private final String tableName;
-    private final KeyInfo keyInfo;
+    private final boolean             tempMapping;
+    private final boolean             systemMapping;
+    private final String              tableName;
+    private final KeyInfo             keyInfo;
     private final List<FamilyMapping> familyMappingList;
 
     public CreateMappingStatement(final StatementPredicate predicate,

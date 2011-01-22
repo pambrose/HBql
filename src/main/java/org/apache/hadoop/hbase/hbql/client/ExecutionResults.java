@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010.  The Apache Software Foundation
+ * Copyright (c) 2011.  The Apache Software Foundation
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -26,10 +26,10 @@ import java.io.PrintStream;
 public class ExecutionResults {
 
     private final ByteArrayOutputStream baos;
-    public final PrintStream out;
+    public final  PrintStream           out;
 
-    private boolean success = true;
-    private int count = -1;
+    private boolean success   = true;
+    private int     count     = -1;
     private boolean predicate = true;
 
     public ExecutionResults() {

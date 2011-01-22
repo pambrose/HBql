@@ -41,7 +41,7 @@ A blog for announcements is [here] [al].
 Supported Platforms
 -------------------
 
-HBql is compatible with Java 1.6 and HBase 0.20.4+ and HBase 0.89.20100924.  The console is limited to
+HBql is compatible with Java 1.6 and HBase 0.20.4+ and HBase 0.90.0.  The console is limited to
 those platforms supported by [JLine] [jl].
 
    [jl]: http://jline.sourceforge.net/

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010.  The Apache Software Foundation
+ * Copyright (c) 2011.  The Apache Software Foundation
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -27,8 +27,27 @@ import org.apache.hadoop.hbase.hbql.impl.HConnectionImpl;
 import org.apache.hadoop.hbase.hbql.util.AtomicReferences;
 import org.apache.hadoop.hbase.hbql.util.Lists;
 
-import javax.sql.*;
-import java.sql.*;
+import javax.sql.ConnectionEvent;
+import javax.sql.ConnectionEventListener;
+import javax.sql.PooledConnection;
+import javax.sql.StatementEvent;
+import javax.sql.StatementEventListener;
+import java.sql.Array;
+import java.sql.Blob;
+import java.sql.CallableStatement;
+import java.sql.Clob;
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.NClob;
+import java.sql.PreparedStatement;
+import java.sql.SQLClientInfoException;
+import java.sql.SQLException;
+import java.sql.SQLFeatureNotSupportedException;
+import java.sql.SQLWarning;
+import java.sql.SQLXML;
+import java.sql.Savepoint;
+import java.sql.Statement;
+import java.sql.Struct;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -48,7 +67,7 @@ public class ConnectionImpl implements Connection, PooledConnection {
     }
 
     public ConnectionImpl(final HConnection hconnectionImpl) {
-        this.hconnectionImpl = (HConnectionImpl) hconnectionImpl;
+        this.hconnectionImpl = (HConnectionImpl)hconnectionImpl;
     }
 
     public HConnectionImpl getHConnectionImpl() {

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010.  The Apache Software Foundation
+ * Copyright (c) 2011.  The Apache Software Foundation
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -92,7 +92,7 @@ public class PageFilter extends InstrumentedFilter {
     public boolean filterAllRemaining() {
         if (this.getVerbose())
             LOG.debug("In PageFilter.filterAllRemaining() " + (this.rowsAccepted >= this.pageSize)
-                              + " " + this.rowsAccepted + " of " + this.pageSize);
+                      + " " + this.rowsAccepted + " of " + this.pageSize);
         return this.rowsAccepted >= this.pageSize;
     }
 
@@ -129,7 +129,7 @@ public class PageFilter extends InstrumentedFilter {
         Configuration conf = HBaseConfiguration.create();
         this.pageSize = in.readLong();
         this.verbose = in.readBoolean();
-        this.filter = (Filter) HbaseObjectWritable.readObject(in, conf);
+        this.filter = (Filter)HbaseObjectWritable.readObject(in, conf);
     }
 
     public void write(final DataOutput out) throws IOException {

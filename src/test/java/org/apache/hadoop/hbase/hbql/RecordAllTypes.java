@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010.  The Apache Software Foundation
+ * Copyright (c) 2011.  The Apache Software Foundation
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -34,31 +34,31 @@ import java.util.Random;
 
 public class RecordAllTypes implements Serializable {
 
-    public String keyval = null;
-    public boolean booleanValue = true;
+    public String    keyval            = null;
+    public boolean   booleanValue      = true;
     public boolean[] booleanArrayValue = null;
-    public byte byteValue = 0;
-    public byte[] byteArrayValue = null;
-    public char charValue = 0;
+    public byte      byteValue         = 0;
+    public byte[]    byteArrayValue    = null;
+    public char      charValue         = 0;
     public char[] charArrayValue;
     public short shortValue = 0;
     public short[] shortArrayValue;
     public int intValue = 0;
     public int[] intArrayValue;
-    public long longValue = 0L;
-    public long[] longArrayValue = null;
-    public float floatValue = 0;
-    public float[] floatArrayValue = null;
-    public double doubleValue = 0;
-    public double[] doubleArrayValue = null;
-    public String stringValue = null;
-    public String[] stringArrayValue = null;
-    public Date dateValue = new Date();
-    public Date[] dateArrayValue = null;
-    public Map<String, String> mapValue = null;
-    public Map<String, String>[] mapArrayValue = null;
-    public TestObject objectValue = null;
-    public TestObject[] objectArrayValue = null;
+    public long                  longValue        = 0L;
+    public long[]                longArrayValue   = null;
+    public float                 floatValue       = 0;
+    public float[]               floatArrayValue  = null;
+    public double                doubleValue      = 0;
+    public double[]              doubleArrayValue = null;
+    public String                stringValue      = null;
+    public String[]              stringArrayValue = null;
+    public Date                  dateValue        = new Date();
+    public Date[]                dateArrayValue   = null;
+    public Map<String, String>   mapValue         = null;
+    public Map<String, String>[] mapArrayValue    = null;
+    public TestObject            objectValue      = null;
+    public TestObject[]          objectArrayValue = null;
 
 
     public static class TestObject implements Serializable {

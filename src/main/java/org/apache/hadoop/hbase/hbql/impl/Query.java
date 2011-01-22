@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010.  The Apache Software Foundation
+ * Copyright (c) 2011.  The Apache Software Foundation
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -38,8 +38,8 @@ import java.util.Set;
 
 public class Query<T> {
 
-    private final HConnectionImpl connection;
-    private final SelectStatement selectStatement;
+    private final HConnectionImpl        connection;
+    private final SelectStatement        selectStatement;
     private final List<QueryListener<T>> queryListeners;
 
     private Query(final HConnectionImpl conn,

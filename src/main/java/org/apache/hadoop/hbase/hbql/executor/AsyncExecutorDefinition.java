@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010.  The Apache Software Foundation
+ * Copyright (c) 2011.  The Apache Software Foundation
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -27,12 +27,12 @@ import java.util.List;
 
 public class AsyncExecutorDefinition {
 
-    private final String name;
+    private final String                 name;
     private final List<ExecutorProperty> executorPropertyList;
 
     private ExecutorProperty minThreadCount = null;
     private ExecutorProperty maxThreadCount = null;
-    private ExecutorProperty keepAliveSecs = null;
+    private ExecutorProperty keepAliveSecs  = null;
 
     public AsyncExecutorDefinition(final String name, final List<ExecutorProperty> executorPropertyList) {
         this.name = name;

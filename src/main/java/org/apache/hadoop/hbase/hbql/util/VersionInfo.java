@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010.  The Apache Software Foundation
+ * Copyright (c) 2011.  The Apache Software Foundation
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -25,7 +25,7 @@ package org.apache.hadoop.hbase.hbql.util;
  * information.  Taken from hadoop.  Only name of annotation is different.
  */
 public class VersionInfo {
-    private static Package myPackage;
+    private static Package           myPackage;
     private static VersionAnnotation version;
 
     static {

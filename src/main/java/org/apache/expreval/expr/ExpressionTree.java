@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010.  The Apache Software Foundation
+ * Copyright (c) 2011.  The Apache Software Foundation
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -36,7 +36,7 @@ public class ExpressionTree extends MultipleExpressionContext {
     private static FunctionTypeSignature exprSig = new FunctionTypeSignature(BooleanValue.class, BooleanValue.class);
 
     private boolean useResultData = false;
-    private boolean allowColumns = true;
+    private boolean allowColumns  = true;
 
     private Mapping embeddedMapping = null;
 

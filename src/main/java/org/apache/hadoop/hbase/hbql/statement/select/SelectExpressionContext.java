@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010.  The Apache Software Foundation
+ * Copyright (c) 2011.  The Apache Software Foundation
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -47,11 +47,11 @@ public class SelectExpressionContext extends MultipleExpressionContext implement
 
     private String asName;
 
-    private ColumnAttrib columnAttrib = null;
-    private String familyName = null;
-    private String columnName = null;
-    private byte[] familyNameBytes = null;
-    private byte[] columnNameBytes = null;
+    private ColumnAttrib columnAttrib    = null;
+    private String       familyName      = null;
+    private String       columnName      = null;
+    private byte[]       familyNameBytes = null;
+    private byte[]       columnNameBytes = null;
 
     private SelectExpressionContext(final GenericValue genericValue, final String asName) {
         super(null, genericValue);

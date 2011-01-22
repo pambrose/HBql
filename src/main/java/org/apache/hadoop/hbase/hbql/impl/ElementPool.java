@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010.  The Apache Software Foundation
+ * Copyright (c) 2011.  The Apache Software Foundation
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -30,10 +30,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 public abstract class ElementPool<T extends PoolableElement> {
 
     private final AtomicInteger createdElementCounter = new AtomicInteger(0);
-    private final AtomicInteger takenElementCounter = new AtomicInteger(0);
+    private final AtomicInteger takenElementCounter   = new AtomicInteger(0);
     private final BlockingQueue<T> elementPool;
-    private final String name;
-    private final int maxPoolSize;
+    private final String           name;
+    private final int              maxPoolSize;
 
     public ElementPool(final String name, final int maxPoolSize) {
         this.name = name;

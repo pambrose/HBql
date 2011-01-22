@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010.  The Apache Software Foundation
+ * Copyright (c) 2011.  The Apache Software Foundation
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -22,8 +22,8 @@ package org.apache.yaoql;
 
 public class ObjectAllTypes {
 
-    private String keyval = null;
-    private int intValue = -1;
+    private String keyval      = null;
+    private int    intValue    = -1;
     private String stringValue = "";
 
     public ObjectAllTypes() {

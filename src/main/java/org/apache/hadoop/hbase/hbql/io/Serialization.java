@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010.  The Apache Software Foundation
+ * Copyright (c) 2011.  The Apache Software Foundation
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -29,7 +29,7 @@ public abstract class Serialization {
         JAVA, HADOOP
     }
 
-    private static final Serialization java = new JavaSerialization();
+    private static final Serialization java   = new JavaSerialization();
     private static final Serialization hadoop = new HadoopSerialization();
 
     public static Serialization getSerializationStrategy(final TYPE type) {

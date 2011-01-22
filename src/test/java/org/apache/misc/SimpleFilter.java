@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010.  The Apache Software Foundation
+ * Copyright (c) 2011.  The Apache Software Foundation
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -72,7 +72,7 @@ public class SimpleFilter {
 
         for (Result result : table.getScanner(scan))
             System.out.println(Bytes.toString(result.getRow()) + " - "
-                                       + Bytes.toString(result.getValue(family, val1)) + " - "
-                                       + Bytes.toInt(result.getValue(family, val2)));
+                               + Bytes.toString(result.getValue(family, val1)) + " - "
+                               + Bytes.toInt(result.getValue(family, val2)));
     }
 }

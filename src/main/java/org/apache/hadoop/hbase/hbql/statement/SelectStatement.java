@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010.  The Apache Software Foundation
+ * Copyright (c) 2011.  The Apache Software Foundation
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -36,11 +36,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class SelectStatement extends StatementWithParameters implements HBqlStatement {
 
     private final List<ColumnAttrib> selectColumnAttribList = Lists.newArrayList();
-    private final AtomicInteger expressionCounter = new AtomicInteger(-1);
+    private final AtomicInteger      expressionCounter      = new AtomicInteger(-1);
     private final List<SelectElement> selectElementList;
-    private final WithArgs withArgs;
+    private final WithArgs            withArgs;
 
-    private boolean validated = false;
+    private boolean validated      = false;
     private boolean aggregateQuery = false;
 
     public SelectStatement(final List<SelectElement> selectElementList,

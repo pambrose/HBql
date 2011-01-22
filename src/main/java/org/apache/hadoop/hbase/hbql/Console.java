@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010.  The Apache Software Foundation
+ * Copyright (c) 2011.  The Apache Software Foundation
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -101,7 +101,8 @@ public class Console {
                 System.out.println("Incorrect syntax: " + option);
                 usage();
                 return false;
-            } else {
+            }
+            else {
                 config = HConnectionImpl.getConfiguration(vals[1]);
                 return true;
             }
@@ -112,7 +113,8 @@ public class Console {
             System.out.println("Unknown option: " + option);
             usage();
             return false;
-        } else {
+        }
+        else {
             // Assume that an arg without "-" prefix is a filename
             processCommandLine = false;
             final ImportStatement importStmt = new ImportStatement(option);
@@ -125,7 +127,7 @@ public class Console {
     private synchronized static HConnectionImpl getConnection() throws HBqlException {
 
         if (conn == null)
-            conn = (HConnectionImpl) HConnectionManager.newConnection(config);
+            conn = (HConnectionImpl)HConnectionManager.newConnection(config);
 
         return conn;
     }
@@ -134,8 +136,8 @@ public class Console {
 
         final List<SimpleCompletor> completors = Lists.newArrayList();
         completors.add(new SimpleCompletor(new String[]{"select", "insert", "create", "table", "mapping",
-                "describe", "drop", "enable", "disable", "show",
-                "executor", "pool"}));
+                                                        "describe", "drop", "enable", "disable", "show",
+                                                        "executor", "pool"}));
 
         final ConsoleReader reader = new ConsoleReader();
         reader.setBellEnabled(false);

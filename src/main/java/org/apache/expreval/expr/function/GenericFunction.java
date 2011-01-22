@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010.  The Apache Software Foundation
+ * Copyright (c) 2011.  The Apache Software Foundation
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -109,8 +109,8 @@ public abstract class GenericFunction extends GenericExpression {
         QUERYEXECUTORPOOLEXISTS(new FunctionTypeSignature(BooleanValue.class, StringValue.class), false, false);
 
         private final FunctionTypeSignature typeSignature;
-        private final boolean anAggregateValue;
-        private final boolean optimiziable;
+        private final boolean               anAggregateValue;
+        private final boolean               optimiziable;
 
         private FunctionType(final FunctionTypeSignature typeSignature,
                              final boolean anAggregateValue,

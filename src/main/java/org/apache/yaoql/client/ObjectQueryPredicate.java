@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010.  The Apache Software Foundation
+ * Copyright (c) 2011.  The Apache Software Foundation
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -36,7 +36,7 @@ public class ObjectQueryPredicate<T> extends ParameterBinding implements Predica
 
     private final String query;
     private ExpressionTree expressionTree = null;
-    private AtomicBoolean initialized = new AtomicBoolean(false);
+    private AtomicBoolean  initialized    = new AtomicBoolean(false);
 
     public ObjectQueryPredicate(final String query) {
         this.query = query;

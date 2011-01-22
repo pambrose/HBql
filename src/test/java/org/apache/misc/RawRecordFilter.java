@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010.  The Apache Software Foundation
+ * Copyright (c) 2011.  The Apache Software Foundation
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -46,16 +46,16 @@ public class RawRecordFilter {
         HConnection connection = HConnectionManager.newConnection();
 
         connection.execute("CREATE TEMP MAPPING testobjects alias testobjects2"
-                                   + "("
-                                   + "keyval key, "
-                                   + "family1 ("
-                                   + "  author string alias author, "
-                                   + "  title string  alias title"
-                                   + "))");
+                           + "("
+                           + "keyval key, "
+                           + "family1 ("
+                           + "  author string alias author, "
+                           + "  title string  alias title"
+                           + "))");
 
         HMapping mapping = connection.getMapping("testobjects");
 
-        final RecordFilter filter = ((TableMapping) mapping)
+        final RecordFilter filter = ((TableMapping)mapping)
                 .newRecordFilter("title LIKE '.*3.*' OR family1:author LIKE '.*4.*'");
 
         Scan scan = new Scan();
@@ -68,8 +68,8 @@ public class RawRecordFilter {
 
         for (Result result : scanner) {
             System.out.println(Bytes.toString(result.getRow()) + " - "
-                                       + Bytes.toString(result.getValue(family, author)) + " - "
-                                       + Bytes.toString(result.getValue(family, title)));
+                               + Bytes.toString(result.getValue(family, author)) + " - "
+                               + Bytes.toString(result.getValue(family, title)));
         }
     }
 }

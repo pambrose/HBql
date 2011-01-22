@@ -11,7 +11,7 @@ Installation
 
     * Add the following jars to your client classpath.
 
-        ** $HBQL_HOME/hbql-0.89.20100924.1.jar
+        ** $HBQL_HOME/hbql-0.90.0.1.jar
 
         ** $TRX_HOME/org/apache/hbase-trx-0.90.0-DEV-2.jar
 
@@ -21,7 +21,7 @@ Installation
 
     * Add the following jar to HBASE_CLASSPATH in $HBASE_HOME/conf/hbase-env.sh and restart hbase.
 
-        ** $HBQL_HOME/hbql-0.89.20100924.1.jar
+        ** $HBQL_HOME/hbql-0.90.0.1.jar
 
         ** $TRX_HOME/org/apache/hbase-trx-0.90.0-DEV-2.jar
 

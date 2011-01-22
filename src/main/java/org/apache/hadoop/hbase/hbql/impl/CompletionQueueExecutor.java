@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010.  The Apache Software Foundation
+ * Copyright (c) 2011.  The Apache Software Foundation
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -40,12 +40,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public abstract class CompletionQueueExecutor<T> extends PoolableElement<CompletionQueueExecutor> {
 
-    private final AtomicBoolean atomicShutdown = new AtomicBoolean(false);
-    private final AtomicInteger workSubmittedCounter = new AtomicInteger(0);
-    private final ExecutorService submitterThread = Executors.newSingleThreadExecutor();
-    private final List<HBqlException> exceptionList = Lists.newArrayList();
+    private final AtomicBoolean       atomicShutdown       = new AtomicBoolean(false);
+    private final AtomicInteger       workSubmittedCounter = new AtomicInteger(0);
+    private final ExecutorService     submitterThread      = Executors.newSingleThreadExecutor();
+    private final List<HBqlException> exceptionList        = Lists.newArrayList();
     private final LocalThreadPoolExecutor threadPoolExecutor;
-    private final CompletionQueue<T> completionQueue;
+    private final CompletionQueue<T>      completionQueue;
 
     private static class LocalCallerRunsPolicy extends ThreadPoolExecutor.CallerRunsPolicy {
 

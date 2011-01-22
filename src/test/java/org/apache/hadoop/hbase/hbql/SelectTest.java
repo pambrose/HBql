@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010.  The Apache Software Foundation
+ * Copyright (c) 2011.  The Apache Software Foundation
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -44,11 +44,11 @@ import java.util.Random;
 
 public class SelectTest extends TestSupport {
 
-    static HConnection connection = null;
-    static List<String> keyList = Lists.newArrayList();
-    static List<String> val1List = Lists.newArrayList();
-    static List<Integer> val5List = Lists.newArrayList();
-    static int[] val8check = null;
+    static HConnection   connection = null;
+    static List<String>  keyList    = Lists.newArrayList();
+    static List<String>  val1List   = Lists.newArrayList();
+    static List<Integer> val5List   = Lists.newArrayList();
+    static int[]         val8check  = null;
 
     static Random randomVal = new Random();
 

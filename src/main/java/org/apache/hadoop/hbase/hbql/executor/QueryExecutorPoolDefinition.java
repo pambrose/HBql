@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010.  The Apache Software Foundation
+ * Copyright (c) 2011.  The Apache Software Foundation
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -27,14 +27,14 @@ import java.util.List;
 
 public class QueryExecutorPoolDefinition {
 
-    private final String poolName;
+    private final String                 poolName;
     private final List<ExecutorProperty> executorPropertyList;
 
     private ExecutorProperty maxExecutorPoolSize = null;
-    private ExecutorProperty minThreadCount = null;
-    private ExecutorProperty maxThreadCount = null;
-    private ExecutorProperty keepAliveSecs = null;
-    private ExecutorProperty threadsReadResults = null;
+    private ExecutorProperty minThreadCount      = null;
+    private ExecutorProperty maxThreadCount      = null;
+    private ExecutorProperty keepAliveSecs       = null;
+    private ExecutorProperty threadsReadResults  = null;
     private ExecutorProperty completionQueueSize = null;
 
     public QueryExecutorPoolDefinition(final String poolName, final List<ExecutorProperty> executorPropertyList) {

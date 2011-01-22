@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010.  The Apache Software Foundation
+ * Copyright (c) 2011.  The Apache Software Foundation
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -31,8 +31,8 @@ import java.util.List;
 
 public class SingleRowInsertSource extends InsertValueSource {
 
-    private final List<SelectExpressionContext> valueList = Lists.newArrayList();
-    private boolean calledForValues = false;
+    private final List<SelectExpressionContext> valueList       = Lists.newArrayList();
+    private       boolean                       calledForValues = false;
 
     public SingleRowInsertSource(final List<GenericValue> valueList) {
         for (final GenericValue val : valueList)

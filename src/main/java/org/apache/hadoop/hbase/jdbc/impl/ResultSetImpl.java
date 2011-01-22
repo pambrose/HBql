@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010.  The Apache Software Foundation
+ * Copyright (c) 2011.  The Apache Software Foundation
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -50,10 +50,10 @@ import java.util.Map;
 
 public class ResultSetImpl implements ResultSet {
 
-    private final StatementImpl statement;
-    private final Query<HRecord> query;
+    private final StatementImpl       statement;
+    private final Query<HRecord>      query;
     private final HResultSet<HRecord> results;
-    private final Iterator<HRecord> resultsIterator;
+    private final Iterator<HRecord>   resultsIterator;
     private HRecordImpl currentHRecordImpl = null;
 
     public ResultSetImpl(final StatementImpl statement,

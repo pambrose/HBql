@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010.  The Apache Software Foundation
+ * Copyright (c) 2011.  The Apache Software Foundation
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -20,7 +20,11 @@
 
 package org.apache.hadoop.hbase.jdbc.impl;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.ResultSet;
+import java.sql.RowIdLifetime;
+import java.sql.SQLException;
 
 public class DatabaseMetaDataImpl implements DatabaseMetaData {
 
@@ -65,7 +69,7 @@ public class DatabaseMetaDataImpl implements DatabaseMetaData {
     }
 
     public String getDatabaseProductVersion() throws SQLException {
-        return "0.89.20100924";
+        return "0.90.0";
     }
 
     public String getDriverName() throws SQLException {
@@ -73,7 +77,7 @@ public class DatabaseMetaDataImpl implements DatabaseMetaData {
     }
 
     public String getDriverVersion() throws SQLException {
-        return "0.89.20100924.1";
+        return "0.90.0.1";
     }
 
     public int getDriverMajorVersion() {

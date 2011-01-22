@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010.  The Apache Software Foundation
+ * Copyright (c) 2011.  The Apache Software Foundation
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -39,7 +39,7 @@ public class MappingManager {
     private static final String SYSTEM_MAPPINGS = "system_mappings";
 
     private final HConnectionImpl connection;
-    private final Map<String, TableMapping> userMappingsMap = Maps.newConcurrentHashMap();
+    private final Map<String, TableMapping> userMappingsMap   = Maps.newConcurrentHashMap();
     private final Map<String, TableMapping> systemMappingsMap = Maps.newConcurrentHashMap();
     private final Map<String, TableMapping> cachedMappingsMap = Maps.newConcurrentHashMap();
 

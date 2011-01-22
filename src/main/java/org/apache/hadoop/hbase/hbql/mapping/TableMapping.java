@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010.  The Apache Software Foundation
+ * Copyright (c) 2011.  The Apache Software Foundation
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -42,13 +42,13 @@ public class TableMapping extends Mapping implements HMapping {
     private static final long serialVersionUID = 3L;
 
     private transient HConnectionImpl connection;
-    private boolean tempMapping;
-    private boolean systemMapping;
+    private           boolean         tempMapping;
+    private           boolean         systemMapping;
     private KeyInfo keyInfo = null;
 
-    private final Map<String, HRecordAttrib> columnAttribByFamilyQualifiedNameMap = Maps.newHashMap();
-    private final Map<String, HRecordAttrib> versionAttribMap = Maps.newHashMap();
-    private final Map<String, List<HRecordAttrib>> columnAttribListByFamilyNameMap = Maps.newHashMap();
+    private final Map<String, HRecordAttrib>       columnAttribByFamilyQualifiedNameMap = Maps.newHashMap();
+    private final Map<String, HRecordAttrib>       versionAttribMap                     = Maps.newHashMap();
+    private final Map<String, List<HRecordAttrib>> columnAttribListByFamilyNameMap      = Maps.newHashMap();
 
     private final Map<String, HRecordAttrib> unMappedAttribsMap = Maps.newHashMap();
 
@@ -304,16 +304,16 @@ public class TableMapping extends Mapping implements HMapping {
         final StringBuilder sbuf = new StringBuilder();
 
         sbuf.append("CREATE ")
-                .append(this.isTempMapping() ? "TEMP " : "")
-                .append("MAPPING ")
-                .append(this.getMappingName());
+            .append(this.isTempMapping() ? "TEMP " : "")
+            .append("MAPPING ")
+            .append(this.getMappingName());
 
         if (!(this.getMappingName().equals(this.getTableName())))
             sbuf.append(" FOR TABLE ").append(this.getTableName());
 
         sbuf.append(" (\n  ")
-                .append(this.getKeyAttrib().getColumnName())
-                .append(" KEY");
+            .append(this.getKeyAttrib().getColumnName())
+            .append(" KEY");
 
         for (final String familyName : this.getColumnAttribListByFamilyNameMap().keySet()) {
 
